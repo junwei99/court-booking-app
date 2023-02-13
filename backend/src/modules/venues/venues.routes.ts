@@ -1,8 +1,8 @@
 import express from "express"
-import { fetchVenueByIdCtrl } from "@/modules/venues/venues.controllers"
 import { fetchVenuesCtrl } from "@/modules/venues/controllers/fetch-venues"
 import { createVenueCrl } from "@/modules/venues/controllers/create-venue"
-import { createAmenityCtrl } from "./controllers/create-amenities"
+import { createAmenityCtrl } from "@/modules/venues/controllers/create-amenities"
+import { fetchVenueByIdCtrl } from "@/modules/venues/controllers/fetch-venue-by-id"
 
 const router = express.Router()
 
