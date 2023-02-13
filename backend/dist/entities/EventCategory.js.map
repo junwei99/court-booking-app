@@ -1,0 +1,1 @@
+{"version":3,"file":"EventCategory.js","sourceRoot":"","sources":["../../src/entities/EventCategory.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qCAA4E;AAGrE,IAAM,aAAa,GAAnB,MAAM,aAAc,SAAQ,oBAAU;CAS5C,CAAA;AARC;IAAC,IAAA,gCAAsB,GAAE;;yCACf;AAEV;IAAC,IAAA,gBAAM,GAAE;;2CACG;AAEZ;IAAC,IAAA,gBAAM,GAAE;;2CACG;AARD,aAAa;IADzB,IAAA,gBAAM,EAAC,kBAAkB,CAAC;GACd,aAAa,CASzB;AATY,sCAAa"}
