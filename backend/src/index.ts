@@ -5,6 +5,7 @@ import path from "path"
 import bodyParser from "body-parser"
 import { Client } from "pg"
 import { venueRoutes } from "@/modules/venues/venues.routes"
+import { apiErrorHandler } from "@/middlewares/api-error-handler.middlewares"
 
 export const client = new Client({
   host: "localhost",
@@ -28,6 +29,7 @@ async function main() {
     await client.connect()
     app.use(express.json())
     routesList.map((route) => app.use(route))
+    app.use(apiErrorHandler)
     app.listen(8081, () => {
       console.log("running on port 8081")
     })
