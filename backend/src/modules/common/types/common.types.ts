@@ -9,7 +9,7 @@ export interface TReqQuery<T> extends Express.Request {
   query: T
 }
 
-export type TRoute = typeof ROUTES[keyof typeof ROUTES] & string
+export type TRoute = typeof ROUTES[keyof typeof ROUTES]
 
 export type TReqMethod = "get" | "post" | "put" | "delete"
 
