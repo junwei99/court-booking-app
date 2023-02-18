@@ -1,14 +1,17 @@
-import express from "express"
+import { Router } from "express"
 import { fetchVenuesCtrl } from "@/modules/venues/controllers/fetch-venues"
 import { createVenueCrl } from "@/modules/venues/controllers/create-venue"
 import { createAmenityCtrl } from "@/modules/venues/controllers/create-amenities"
 import { fetchVenueByIdCtrl } from "@/modules/venues/controllers/fetch-venue-by-id"
+import { ROUTES } from "@/constants/routes.constants"
 
-const router = express.Router()
+const router = Router()
 
-router.get("/api/venues", fetchVenuesCtrl)
-router.get("/api/venue/:venueId", fetchVenueByIdCtrl)
-router.post("/api/venue", createVenueCrl)
-router.post("/api/amenity", createAmenityCtrl)
+const { VENUE_LIST, VENUE, AMENITY } = ROUTES
+
+router.get(VENUE_LIST, fetchVenuesCtrl)
+router.get(VENUE + ":venueId", fetchVenueByIdCtrl)
+router.post(VENUE, createVenueCrl)
+router.post(AMENITY, createAmenityCtrl)
 
 export { router as venueRoutes }

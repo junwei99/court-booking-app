@@ -28,7 +28,7 @@ async function main() {
   try {
     await client.connect()
     app.use(express.json())
-    routesList.map((route) => app.use(route))
+    routesList.map((route) => app.use("/api", route))
     app.use(apiErrorHandler)
     app.listen(8081, () => {
       console.log("running on port 8081")
