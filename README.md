@@ -1,12 +1,12 @@
 # Court Booking App
 
-## Description
+### Description
 
 A simple sports venue booking app inspired by Courtsite
 
 &nbsp;
 
-## Tech stacks
+### Tech stacks
 
 #### Frontend
 
