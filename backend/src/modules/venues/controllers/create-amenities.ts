@@ -1,11 +1,11 @@
-import express from "express"
+import { NextFunction, Response } from "express"
 import { createAmenitiesService } from "@/modules/venues/services/venues.services"
 import { TReqBody } from "@/modules/common/types/common.types"
 
 export const createAmenityCtrl = async (
   req: TReqBody<{ amenityList: Array<{ name: string }> }>,
-  res: express.Response,
-  next: express.NextFunction
+  res: Response,
+  next: NextFunction
 ) => {
   const { amenityList } = req.body
 

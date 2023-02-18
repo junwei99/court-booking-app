@@ -1,10 +1,10 @@
-import express from "express"
+import { NextFunction, Request, Response } from "express"
 import { getVenueByIdService } from "@/modules/venues/services/venues.services"
 
 export const fetchVenueByIdCtrl = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) => {
   const { venueId } = req.params
 

@@ -1,12 +1,12 @@
-import express from "express"
+import { NextFunction, Response } from "express"
 import { createVenueService } from "@/modules/venues/services/venues.services"
 import { TReqBody } from "@/modules/common/types/common.types"
 import { IInsertVenueParams } from "../queries/create-venues/create-venues.queries"
 
 export const createVenueCrl = async (
   req: TReqBody<IInsertVenueParams>,
-  res: express.Response,
-  next: express.NextFunction
+  res: Response,
+  next: NextFunction
 ) => {
   const { socialMedia } = req.body
 

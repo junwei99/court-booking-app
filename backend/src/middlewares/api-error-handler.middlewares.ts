@@ -1,11 +1,11 @@
-import express from "express"
+import { NextFunction, Request, Response } from "express"
 import { ApiError } from "@/utils/ApiError"
 
 export const apiErrorHandler = (
   err: ApiError | Error,
-  _req: express.Request,
-  res: express.Response,
-  _next: express.NextFunction
+  _req: Request,
+  res: Response,
+  _next: NextFunction
 ) => {
   if (err instanceof ApiError) {
     res.status(err.code).json({ message: err.message })
