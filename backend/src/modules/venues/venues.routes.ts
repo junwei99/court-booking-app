@@ -7,7 +7,7 @@ import { ROUTES } from "@/constants/routes.constants"
 import { TCtrlRouteList } from "@/modules/common/types/common.types"
 import { mapRoutesInController } from "@/modules/common/utils/controller.utils"
 
-const router = Router()
+const venueRouter = Router()
 
 const { VENUE_LIST, VENUE, VENUE_BY_VENUEID, AMENITY } = ROUTES
 
@@ -18,6 +18,6 @@ const routeList: TCtrlRouteList = [
   [AMENITY, "post", createAmenityCtrl],
 ]
 
-mapRoutesInController(routeList, router)
+mapRoutesInController(routeList, venueRouter)
 
-export { router as venueRoutes }
+export { venueRouter }

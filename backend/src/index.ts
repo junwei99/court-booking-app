@@ -4,8 +4,9 @@ import cors from "cors"
 import path from "path"
 import bodyParser from "body-parser"
 import { Client } from "pg"
-import { venueRoutes } from "@/modules/venues/venues.routes"
+import { venueRouter } from "@/modules/venues/venues.routes"
 import { apiErrorHandler } from "@/middlewares/api-error-handler.middlewares"
+import { eventUnitRouter } from "@/modules/event-units/event-units.routes"
 
 export const client = new Client({
   host: "localhost",
@@ -22,7 +23,7 @@ app.set("views", path.join(__dirname, "../src/views"))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-const routesList = [venueRoutes]
+const routesList = [venueRouter, eventUnitRouter]
 
 async function main() {
   try {
