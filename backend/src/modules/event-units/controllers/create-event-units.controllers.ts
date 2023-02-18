@@ -1,17 +1,18 @@
-import express from "express"
-import { ApiError } from "@/utils/ApiError"
+import { NextFunction, Response } from "express"
+import { TReqBody } from "@/modules/common/types/common.types"
+import { eventUnitServices } from "@/modules/event-units/services/event-units.services"
+import { IInsertEventUnitsParams } from "@/modules/event-units/queries/create-event-units.queries"
 
-interface IEventUnitReq {
-  name: string
-  price: number
-  venueId: number
-  eventCategoryId: number
-}
-
+//TODO: wrong req type, it is using snake case, should use camel case
 export const createEventUnitsCtrl = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  req: TReqBody<IInsertEventUnitsParams>,
+  res: Response,
+  next: NextFunction
 ) => {
-  const { eventUnitList }: { eventUnitList: Array<IEventUnitReq> } = req.body
+  const { eventUnitList } = req.body
+
+  //TODO: should convert the ids to number first
+  const output = eventUnitServices.createEventUnits(req.body)
+
+  res.json(output)
 }

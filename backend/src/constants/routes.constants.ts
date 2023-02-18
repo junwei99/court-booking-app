@@ -3,5 +3,5 @@ export const ROUTES = {
   VENUE: "/venue",
   VENUE_BY_VENUEID: "/venue/:venueId",
   AMENITY: "/amenity",
-  EVENT_UNITS: "event-units",
+  EVENT_UNITS: "/event-units",
 } as const
