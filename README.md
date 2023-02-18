@@ -4,9 +4,7 @@
 
 A simple sports venue booking app inspired by Courtsite
 
-&nbsp;
-
-### Tech stacks
+### Tech stack
 
 #### Frontend
 
