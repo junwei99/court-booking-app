@@ -12,4 +12,4 @@ A simple sports venue booking app inspired by Courtsite
 
 #### Backend
 
-- Typescript, Node (Express), PgTyped, PostgreSQL
+- Typescript (Node), Express, PgTyped, PostgreSQL
