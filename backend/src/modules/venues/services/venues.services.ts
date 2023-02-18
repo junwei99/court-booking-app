@@ -5,7 +5,7 @@ import {
   IInsertVenueParams,
   insertVenue,
 } from "@/modules/venues/queries/create-venues/create-venues.queries"
-import { insertAmenitiesSQL } from "../queries/create-amenities/create-amenities.queries"
+import { insertAmenityList } from "@/modules/venues/queries/create-amenities/create-amenity-list.queries"
 
 export const getVenueByIdService = async (venueId: number) => {
   const [venue] = await queryVenueById.run({ venueId }, client)
@@ -58,5 +58,5 @@ export const createVenueService = async (venueParam: IInsertVenueParams) => {
 export const createAmenitiesService = async (
   amenityList: Array<{ name: string }>
 ) => {
-  return await insertAmenitiesSQL.run({ amenityList }, client)
+  return await insertAmenityList.run({ amenityList }, client)
 }
