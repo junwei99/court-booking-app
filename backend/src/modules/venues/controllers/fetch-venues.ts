@@ -7,5 +7,6 @@ export const fetchVenuesCtrl = async (
   next: express.NextFunction
 ) => {
   const venueList = await getVenueListService()
+
   res.json(venueList)
 }

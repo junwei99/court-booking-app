@@ -2,17 +2,15 @@ import express from "express"
 import { ApiError } from "@/utils/ApiError"
 
 export const apiErrorHandler = (
-  err: ApiError,
-  req: express.Request,
+  err: ApiError | Error,
+  _req: express.Request,
   res: express.Response,
-  next: express.NextFunction
+  _next: express.NextFunction
 ) => {
-  console.error(err)
-
   if (err instanceof ApiError) {
-    res.status(err.code).json(err.message)
+    res.status(err.code).json({ message: err.message })
     return
   }
 
-  res.status(500).json("something went wrong")
+  res.status(500).json("Oops, an unexpected error occurred")
 }

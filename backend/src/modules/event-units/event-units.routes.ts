@@ -1,11 +1,15 @@
-import { ROUTES } from "@/constants/routes.constants"
 import { Router } from "express"
-import { createEventUnitsCtrl } from "@/modules/event-units/controllers/create-event-units.controllers"
+import { ROUTES } from "@/constants/routes.constants"
+import { TCtrlRouteList } from "@/modules/common/types/common.types"
+import { mapRoutesInController } from "@/modules/common/utils/controller.utils"
+import { createEventUnitsCtrl } from "./controllers/create-event-units.controllers"
 
 const router = Router()
 
 const { EVENT_UNITS } = ROUTES
 
-router.post(EVENT_UNITS, createEventUnitsCtrl)
+const routeList: TCtrlRouteList = [[EVENT_UNITS, "post", createEventUnitsCtrl]]
 
-export { router as eventUnitRoutes }
+mapRoutesInController(routeList, router)
+
+export { router as eventUnitsRoutes }

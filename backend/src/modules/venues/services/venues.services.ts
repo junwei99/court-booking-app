@@ -8,7 +8,29 @@ import {
 import { insertAmenitiesSQL } from "../queries/create-amenities/create-amenities.queries"
 
 export const getVenueByIdService = async (venueId: number) => {
-  return await queryVenueById.run({ venueId }, client)
+  const [venue] = await queryVenueById.run({ venueId }, client)
+
+  if (venue?.id) {
+    return {
+      title: venue.title,
+      address: venue.address,
+      description: venue.description,
+      images: venue.images,
+      priceRange: {
+        min: venue.min_price,
+        max: venue.max_price,
+      },
+      contactUsInfo: {
+        phoneNum: venue.phone_num,
+        website: venue.website,
+        socialMedia: venue.social_media,
+      },
+      amenities: venue.amenities,
+      eventCategories: venue.event_categories,
+    }
+  }
+
+  throw new Error("No Venue Found")
 }
 
 export const getVenueListService = async () => {
@@ -28,8 +50,6 @@ export const getVenueListService = async () => {
 }
 
 export const createVenueService = async (venueParam: IInsertVenueParams) => {
-  console.log({ venueParam })
-
   const createdVenue = await insertVenue.run(venueParam, client)
 
   return createdVenue

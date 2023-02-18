@@ -1,7 +1,16 @@
-export interface TypedRequestBody<T> extends Express.Request {
+import { ROUTES } from "@/constants/routes.constants"
+import { RequestHandler } from "express"
+
+export interface TReqBody<T> extends Express.Request {
   body: T
 }
 
-export interface TypedRequestQuery<T> extends Express.Request {
+export interface TReqQuery<T> extends Express.Request {
   query: T
 }
+
+export type TRoute = typeof ROUTES[keyof typeof ROUTES] & string
+
+export type TReqMethod = "get" | "post" | "put" | "delete"
+
+export type TCtrlRouteList = Array<[TRoute, TReqMethod, RequestHandler]>

@@ -4,14 +4,20 @@ import { createVenueCrl } from "@/modules/venues/controllers/create-venue"
 import { createAmenityCtrl } from "@/modules/venues/controllers/create-amenities"
 import { fetchVenueByIdCtrl } from "@/modules/venues/controllers/fetch-venue-by-id"
 import { ROUTES } from "@/constants/routes.constants"
+import { TCtrlRouteList } from "@/modules/common/types/common.types"
+import { mapRoutesInController } from "@/modules/common/utils/controller.utils"
 
 const router = Router()
 
-const { VENUE_LIST, VENUE, AMENITY } = ROUTES
+const { VENUE_LIST, VENUE, VENUE_BY_VENUEID, AMENITY } = ROUTES
 
-router.get(VENUE_LIST, fetchVenuesCtrl)
-router.get(VENUE + ":venueId", fetchVenueByIdCtrl)
-router.post(VENUE, createVenueCrl)
-router.post(AMENITY, createAmenityCtrl)
+const routeList: TCtrlRouteList = [
+  [VENUE_LIST, "get", fetchVenuesCtrl],
+  [VENUE_BY_VENUEID, "get", fetchVenueByIdCtrl],
+  [VENUE, "post", createVenueCrl],
+  [AMENITY, "post", createAmenityCtrl],
+]
+
+mapRoutesInController(routeList, router)
 
 export { router as venueRoutes }
