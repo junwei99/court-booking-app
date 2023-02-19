@@ -1,4 +1,4 @@
-import { TCreateEventUnitsParam } from "../types/event-units.types"
+import { TCreateEventUnitsParam } from "@/modules/event-units/types/event-units.types"
 import { insertEventUnits } from "@/modules/event-units/queries/create-event-units/create-event-units.queries"
 import { client } from "@/index"
 
