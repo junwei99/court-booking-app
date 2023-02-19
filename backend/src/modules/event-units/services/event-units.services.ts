@@ -5,6 +5,10 @@ import {
   IInsertEventCategoriesParams,
   insertEventCategories,
 } from "@/modules/event-units/queries/create-event-categories/create-event-categories.queries"
+import {
+  IQueryEventCategoriesOfVenueParams,
+  queryEventCategoriesOfVenue,
+} from "../queries/query-event-categories-of-venue/query-event-categories-of-venue.queries"
 
 export const createEventUnitsService = async (
   eventUnitParams: TCreateEventUnitsParam
@@ -24,4 +28,14 @@ export const createEventCategoriesService = async (
     client
   )
   return createdEventCategoryIds
+}
+
+export const getEventCategoriesOfVenueService = async (
+  venueId: IQueryEventCategoriesOfVenueParams["venueId"]
+) => {
+  const eventCategoryListOfVenue = await queryEventCategoriesOfVenue.run(
+    { venueId },
+    client
+  )
+  return eventCategoryListOfVenue
 }

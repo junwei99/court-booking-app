@@ -7,7 +7,7 @@ export interface TReqBody<T> extends Express.Request {
 }
 
 export interface TReqQuery<T> extends Express.Request {
-  query: T
+  params: T
 }
 
 export type TRoute = typeof ROUTES[keyof typeof ROUTES]
