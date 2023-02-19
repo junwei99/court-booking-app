@@ -57,15 +57,24 @@ export const getVenueListService = async () => {
 export const createVenueService = async (venueParam: IInsertVenueParams) => {
   const createdVenue = await insertVenue.run(venueParam, client)
 
-  if (createdVenue.length > 0 && createdVenue[0].id) {
+  if (createdVenue?.length > 0 && createdVenue[0].id) {
     return createdVenue
   }
 
-  throw new HandledError("Venue not created")
+  throw new HandledError("Failed to create venue")
 }
 
 export const createAmenitiesService = async (
   amenityList: Array<{ name: string }>
 ) => {
-  return await insertAmenityList.run({ amenityList }, client)
+  const createdAmenityIdList = await insertAmenityList.run(
+    { amenityList },
+    client
+  )
+
+  if (createdAmenityIdList?.length > 0) {
+    return createAmenitiesService
+  }
+
+  throw new HandledError("Failed to create amenities")
 }
