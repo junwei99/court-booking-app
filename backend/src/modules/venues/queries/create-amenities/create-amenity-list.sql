@@ -2,4 +2,4 @@
   @name insertAmenityList
   @param amenityList -> ((name)...)
 */
-INSERT INTO amenity (name) VALUES :amenityList;
+INSERT INTO amenity (name) VALUES :amenityList RETURNING id;

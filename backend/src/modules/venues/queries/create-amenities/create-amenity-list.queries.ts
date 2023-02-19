@@ -9,7 +9,9 @@ export interface IInsertAmenityListParams {
 }
 
 /** 'InsertAmenityList' return type */
-export type IInsertAmenityListResult = void;
+export interface IInsertAmenityListResult {
+  id: number;
+}
 
 /** 'InsertAmenityList' query type */
 export interface IInsertAmenityListQuery {
@@ -17,12 +19,12 @@ export interface IInsertAmenityListQuery {
   result: IInsertAmenityListResult;
 }
 
-const insertAmenityListIR: any = {"usedParamSet":{"amenityList":true},"params":[{"name":"amenityList","required":false,"transform":{"type":"pick_array_spread","keys":[{"name":"name","required":false}]},"locs":[{"a":34,"b":45}]}],"statement":"INSERT INTO amenity (name) VALUES :amenityList"};
+const insertAmenityListIR: any = {"usedParamSet":{"amenityList":true},"params":[{"name":"amenityList","required":false,"transform":{"type":"pick_array_spread","keys":[{"name":"name","required":false}]},"locs":[{"a":34,"b":45}]}],"statement":"INSERT INTO amenity (name) VALUES :amenityList RETURNING id"};
 
 /**
  * Query generated from SQL:
  * ```
- * INSERT INTO amenity (name) VALUES :amenityList
+ * INSERT INTO amenity (name) VALUES :amenityList RETURNING id
  * ```
  */
 export const insertAmenityList = new PreparedQuery<IInsertAmenityListParams,IInsertAmenityListResult>(insertAmenityListIR);

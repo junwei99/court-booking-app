@@ -6,6 +6,7 @@ import {
   insertVenue,
 } from "@/modules/venues/queries/create-venues/create-venues.queries"
 import { insertAmenityList } from "@/modules/venues/queries/create-amenities/create-amenity-list.queries"
+import { HandledError } from "@/modules/common/utils/HandledError.utils"
 
 export const getVenueByIdService = async (venueId: number) => {
   const [venue] = await queryVenueById.run({ venueId }, client)
@@ -30,29 +31,37 @@ export const getVenueByIdService = async (venueId: number) => {
     }
   }
 
-  throw new Error("No Venue Found")
+  throw new HandledError("No Venue Found")
 }
 
 export const getVenueListService = async () => {
   const venueList = await queryVenues.run(undefined, client)
 
-  return venueList.map((venue) => ({
-    id: venue.id,
-    title: venue.title,
-    eventCategories: { name: venue.event_categories },
-    priceRange: {
-      min: venue.min_price,
-      max: venue.max_price,
-    },
-    location: venue.location_name,
-    image: venue.images[0],
-  }))
+  if (venueList?.length >= 0) {
+    return venueList.map((venue) => ({
+      id: venue.id,
+      title: venue.title,
+      eventCategories: { name: venue.event_categories },
+      priceRange: {
+        min: venue.min_price,
+        max: venue.max_price,
+      },
+      location: venue.location_name,
+      image: venue.images[0],
+    }))
+  }
+
+  throw new HandledError("Failed to fetch venue list")
 }
 
 export const createVenueService = async (venueParam: IInsertVenueParams) => {
   const createdVenue = await insertVenue.run(venueParam, client)
 
-  return createdVenue
+  if (createdVenue.length > 0 && createdVenue[0].id) {
+    return createdVenue
+  }
+
+  throw new HandledError("Venue not created")
 }
 
 export const createAmenitiesService = async (

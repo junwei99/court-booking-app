@@ -1,22 +1,18 @@
 import { NextFunction, Request, Response } from "express"
-import { ApiError } from "@/utils/ApiError"
-import { API_STATUS_CODES } from "@/modules/common/constants/apis.constants"
+import { ApiRes } from "@/modules/common/utils/ApiResponse.utils"
+import { HandledError } from "@/modules/common/utils/HandledError.utils"
 
 export const apiErrorHandler = (
-  err: ApiError,
+  err: HandledError | Error,
   _req: Request,
   res: Response,
   _next: NextFunction
 ) => {
-  if (err instanceof ApiError) {
-    res
-      .status(err.code)
-      .json({ status: API_STATUS_CODES.ERROR, message: err.message })
-    return
+  const apiRes = new ApiRes(res)
+
+  if (err instanceof HandledError) {
+    return apiRes.sendHandledErrorRes(err.message)
   }
 
-  res.status(500).json({
-    status: API_STATUS_CODES.ERROR,
-    messsage: "Oops, an unexpected error occurred",
-  })
+  return apiRes.sendExceptionErrorRes()
 }

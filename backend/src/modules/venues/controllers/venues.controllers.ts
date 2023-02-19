@@ -7,34 +7,29 @@ import {
 } from "@/modules/venues/services/venues.services"
 import { TReqBody } from "@/modules/common/types/common.types"
 import { IInsertVenueParams } from "@/modules/venues/queries/create-venues/create-venues.queries"
-import { API_STATUS_CODES } from "@/modules/common/constants/apis.constants"
+import { ApiRes } from "@/modules/common/utils/ApiResponse.utils"
 
-export const fetchVenuesCtrl = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const fetchVenuesCtrl = async (req: Request, res: Response) => {
   const venueList = await getVenueListService()
 
-  res.json(venueList)
+  const apiRes = new ApiRes(res)
+
+  return apiRes.sendSuccessRes({ venueList }, "Venue list fetched successfully")
 }
 
-export const fetchVenueByIdCtrl = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const fetchVenueByIdCtrl = async (req: Request, res: Response) => {
   const { venueId } = req.params
 
   const venue = await getVenueByIdService(parseInt(venueId))
 
-  res.json(venue)
+  const apiRes = new ApiRes(res)
+
+  return apiRes.sendSuccessRes({ venue }, "Venue fetched successfully")
 }
 
 export const createVenueCrl = async (
   req: TReqBody<IInsertVenueParams>,
-  res: Response,
-  next: NextFunction
+  res: Response
 ) => {
   const { socialMedia } = req.body
 
@@ -44,22 +39,25 @@ export const createVenueCrl = async (
 
   const createVenueServiceBody = { ...req.body, socialMedia: jsonSocialMedia }
 
-  const createdVenue = createVenueService(createVenueServiceBody)
+  const createdVenue = await createVenueService(createVenueServiceBody)
 
-  return res.json(createdVenue)
+  const apiRes = new ApiRes(res)
+
+  return apiRes.sendSuccessRes({ createdVenue }, "Venue created successfully")
 }
 
 export const createAmenityCtrl = async (
   req: TReqBody<{ amenityList: Array<{ name: string }> }>,
-  res: Response,
-  next: NextFunction
+  res: Response
 ) => {
   const { amenityList } = req.body
 
-  await createAmenitiesService(amenityList)
+  const createdAmenities = await createAmenitiesService(amenityList)
 
-  return res.json({
-    status: API_STATUS_CODES.SUCCESS,
-    message: "amenities successfully created",
-  })
+  const apiRes = new ApiRes(res)
+
+  return apiRes.sendSuccessRes(
+    { createdAmenities },
+    "Amenities created successfully"
+  )
 }

@@ -1,5 +1,4 @@
 import { TCtrlRouteList } from "@/modules/common/types/common.types"
-import { ApiError } from "@/utils/ApiError"
 import {
   Router,
   Request,
@@ -7,18 +6,12 @@ import {
   NextFunction,
   RequestHandler,
 } from "express"
-import { HandledError } from "@/modules/common/utils/ValidationError.utils"
+import { API_STATUS_CODES } from "@/modules/common/constants/apis.constants"
 
 const errorHandler =
   (fn: RequestHandler) => (req: Request, res: Response, next: NextFunction) =>
     Promise.resolve(fn(req, res, next)).catch((error) => {
-      let errMessage = "Oops, an unexpected error occurred"
-
-      if (error instanceof HandledError && error?.message) {
-        errMessage = error.message
-      }
-
-      return next(ApiError.internal(errMessage))
+      next(error)
     })
 
 export const mapRoutesInController = (
@@ -28,4 +21,15 @@ export const mapRoutesInController = (
   routeList.map((route) => {
     const [path, method, controller] = route
     router[method](path, errorHandler(controller))
+  })
+
+export const sendSuccessRes = <TData>(
+  data: TData,
+  message: string,
+  res: Response
+) =>
+  res.status(200).json({
+    status: API_STATUS_CODES.SUCCESS,
+    message: message ? message : "successful execution",
+    ...data,
   })
