@@ -7,13 +7,14 @@ import {
   NextFunction,
   RequestHandler,
 } from "express"
+import { HandledError } from "@/modules/common/utils/ValidationError.utils"
 
 const errorHandler =
   (fn: RequestHandler) => (req: Request, res: Response, next: NextFunction) =>
     Promise.resolve(fn(req, res, next)).catch((error) => {
       let errMessage = "Oops, an unexpected error occurred"
 
-      if (error instanceof Error && error?.message) {
+      if (error instanceof HandledError && error?.message) {
         errMessage = error.message
       }
 

@@ -3,7 +3,7 @@ import { fetchVenuesCtrl } from "@/modules/venues/controllers/fetch-venues"
 import { createVenueCrl } from "@/modules/venues/controllers/create-venue"
 import { createAmenityCtrl } from "@/modules/venues/controllers/create-amenities"
 import { fetchVenueByIdCtrl } from "@/modules/venues/controllers/fetch-venue-by-id"
-import { ROUTES } from "@/constants/routes.constants"
+import { ROUTES } from "@/modules/common/constants/routes.constants"
 import { TCtrlRouteList } from "@/modules/common/types/common.types"
 import { mapRoutesInController } from "@/modules/common/utils/controller.utils"
 
