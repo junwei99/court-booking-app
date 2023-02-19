@@ -1,6 +1,6 @@
 import { TCreateEventUnitsParam } from "../types/event-units.types"
 import { objectToSnake } from "ts-case-convert"
-import { insertEventUnits } from "@/modules/event-units/queries/create-event-units.queries"
+import { insertEventUnits } from "@/modules/event-units/queries/create-event-units/create-event-units.queries"
 import { client } from "@/index"
 
 export const eventUnitServices = {

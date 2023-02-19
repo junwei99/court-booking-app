@@ -1,4 +1,4 @@
-/** Types generated for queries found in "src/modules/event-units/queries/create-event-units.sql" */
+/** Types generated for queries found in "src/modules/event-units/queries/create-event-units/create-event-units.sql" */
 import { PreparedQuery } from '@pgtyped/runtime';
 
 /** 'InsertEventUnits' parameters type */
