@@ -7,6 +7,8 @@ import { Client } from "pg"
 import { venueRouter } from "@/modules/venues/venues.routes"
 import { apiErrorHandler } from "@/middlewares/api-error-handler.middlewares"
 import { eventUnitRouter } from "@/modules/event-units/event-units.routes"
+import { bookingsRouter } from "./modules/bookings/bookings.routes"
+import "@total-typescript/ts-reset"
 
 export const client = new Client({
   host: "localhost",
@@ -23,7 +25,7 @@ app.set("views", path.join(__dirname, "../src/views"))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-const routesList = [venueRouter, eventUnitRouter]
+const routesList = [venueRouter, eventUnitRouter, bookingsRouter]
 
 async function main() {
   try {

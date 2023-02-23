@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@pgtyped/cli": "^2.0.1",
+    "@total-typescript/ts-reset": "^0.3.7",
     "@types/cors": "^2.8.12",
     "@types/pg": "^8.6.6",
     "tsconfig-paths": "^4.1.0",
