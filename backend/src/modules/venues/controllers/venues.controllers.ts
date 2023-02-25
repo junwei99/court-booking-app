@@ -5,7 +5,6 @@ import {
   createVenueService,
   createAmenitiesService,
 } from "@/modules/venues/services/venues.services"
-import { TReqBody } from "@/modules/common/types/common.types"
 import { IInsertVenueParams } from "@/modules/venues/queries/create-venues/create-venues.queries"
 import { ApiRes } from "@/modules/common/utils/ApiResponse.utils"
 

@@ -2,14 +2,6 @@ import { ROUTES } from "@/modules/common/constants/routes.constants"
 import { RequestHandler } from "express"
 import { API_STATUS_CODES } from "@/modules/common/constants/apis.constants"
 
-export interface TReqBody<T> extends Express.Request {
-  body: T
-}
-
-export interface TReqQuery<T> extends Express.Request {
-  params: T
-}
-
 export type TRoute = typeof ROUTES[keyof typeof ROUTES]
 
 export type TReqMethod = "get" | "post" | "put" | "delete"

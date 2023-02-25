@@ -1,5 +1,4 @@
 import { Request, Response } from "express"
-import { TReqBody, TReqQuery } from "@/modules/common/types/common.types"
 import {
   createEventCategoriesService,
   createEventUnitsService,
