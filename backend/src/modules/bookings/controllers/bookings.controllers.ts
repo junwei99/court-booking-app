@@ -3,16 +3,17 @@ import { queryBookingsService } from "@/modules/bookings/services/bookings.servi
 import { Request, Response } from "express"
 import { HandledError } from "@/modules/common/utils/HandledError.utils"
 
-export const fetchAvailableTimeslots = async (req: Request, res: Response) => {
-  const { venueId, eventCategoryId, startDatetime } = req.query
+type TFetchAvailableTimeSlotsQuery = {
+  venueId?: string
+  eventCategoryId?: string
+  startDatetime?: string
+}
 
-  if (
-    typeof venueId !== "string" ||
-    typeof eventCategoryId !== "string" ||
-    typeof startDatetime !== "string"
-  ) {
-    throw new HandledError("Invalid query")
-  }
+export const fetchAvailableTimeslots = async (
+  req: Request<{}, {}, {}, TFetchAvailableTimeSlotsQuery>,
+  res: Response
+) => {
+  const { venueId, eventCategoryId, startDatetime } = req.query
 
   if (
     !venueId ||
@@ -22,8 +23,6 @@ export const fetchAvailableTimeslots = async (req: Request, res: Response) => {
   ) {
     throw new HandledError("Invalid venueId or eventCategoryId")
   }
-
-  console.log({ startDatetime })
 
   const bookingList = await queryBookingsService(
     parseInt(venueId),

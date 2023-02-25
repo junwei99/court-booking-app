@@ -1,4 +1,4 @@
-import { Response } from "express"
+import { Request, Response } from "express"
 import { TReqBody, TReqQuery } from "@/modules/common/types/common.types"
 import {
   createEventCategoriesService,
@@ -13,7 +13,7 @@ import { ApiRes } from "@/modules/common/utils/ApiResponse.utils"
 
 //TODO: wrong req type, it is using snake case, should use camel case
 export const createEventUnitsCtrl = async (
-  req: TReqBody<TCreateEventUnitsParam>,
+  req: Request<{}, {}, TCreateEventUnitsParam>,
   res: Response
 ) => {
   const createEventUnitsParam = req.body
@@ -36,7 +36,7 @@ export const createEventUnitsCtrl = async (
 }
 
 export const createEventCategoriesCtrl = async (
-  req: TReqBody<IInsertEventCategoriesParams>,
+  req: Request<{}, {}, IInsertEventCategoriesParams>,
   res: Response
 ) => {
   const createEventCategoriesParams = req.body
@@ -58,7 +58,7 @@ export const createEventCategoriesCtrl = async (
 }
 
 export const getEventCategoriesOfVenueCtrl = async (
-  req: TReqQuery<IQueryEventCategoriesOfVenueParams>,
+  req: Request<IQueryEventCategoriesOfVenueParams>,
   res: Response
 ) => {
   const { venueId } = req.params

@@ -17,7 +17,10 @@ export const fetchVenuesCtrl = async (req: Request, res: Response) => {
   return apiRes.sendSuccessRes({ venueList }, "Venue list fetched successfully")
 }
 
-export const fetchVenueByIdCtrl = async (req: Request, res: Response) => {
+export const fetchVenueByIdCtrl = async (
+  req: Request<{ venueId: string }>,
+  res: Response
+) => {
   const { venueId } = req.params
 
   const venue = await getVenueByIdService(parseInt(venueId))
@@ -28,7 +31,7 @@ export const fetchVenueByIdCtrl = async (req: Request, res: Response) => {
 }
 
 export const createVenueCrl = async (
-  req: TReqBody<IInsertVenueParams>,
+  req: Request<{}, {}, IInsertVenueParams>,
   res: Response
 ) => {
   const { socialMedia } = req.body
@@ -47,7 +50,7 @@ export const createVenueCrl = async (
 }
 
 export const createAmenityCtrl = async (
-  req: TReqBody<{ amenityList: Array<{ name: string }> }>,
+  req: Request<{}, {}, { amenityList: Array<{ name: string }> }>,
   res: Response
 ) => {
   const { amenityList } = req.body
