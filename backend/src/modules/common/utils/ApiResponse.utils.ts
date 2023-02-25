@@ -9,7 +9,7 @@ export class ApiRes {
     this.res = res
   }
 
-  public sendSuccessRes<TData>(data: TData, message: string) {
+  public sendSuccessRes<TData>(data: TData, message?: string) {
     return this.res.status(200).json({
       status: API_STATUS_CODES.SUCCESS,
       message: message ? message : "successful execution",

@@ -9,6 +9,7 @@ export interface IQueryBookingsParams {
 
 /** 'QueryBookings' return type */
 export interface IQueryBookingsResult {
+  booking_end_date: Date;
   booking_start_date: Date;
   event_category_id: number | null;
   event_unit_name: string;
@@ -24,12 +25,12 @@ export interface IQueryBookingsQuery {
   result: IQueryBookingsResult;
 }
 
-const queryBookingsIR: any = {"usedParamSet":{"venueId":true,"eventCategoryId":true},"params":[{"name":"venueId","required":false,"transform":{"type":"scalar"},"locs":[{"a":355,"b":362}]},{"name":"eventCategoryId","required":false,"transform":{"type":"scalar"},"locs":[{"a":401,"b":416}]}],"statement":"SELECT bookings.id, bookings.booking_start_date, \nevent_units.id as event_units_id, event_units.name as event_unit_name, event_units.price as event_unit_price, \nevent_units.venue_id as venue_id, event_units.event_category_id as event_category_id\nFROM bookings LEFT JOIN event_units ON event_units.id = bookings.event_unit_id \nWHERE event_units.venue_id = :venueId \nAND event_units.event_category_id = :eventCategoryId"};
+const queryBookingsIR: any = {"usedParamSet":{"venueId":true,"eventCategoryId":true},"params":[{"name":"venueId","required":false,"transform":{"type":"scalar"},"locs":[{"a":382,"b":389}]},{"name":"eventCategoryId","required":false,"transform":{"type":"scalar"},"locs":[{"a":428,"b":443}]}],"statement":"SELECT bookings.id, bookings.booking_start_date, bookings.booking_end_date, \nevent_units.id as event_units_id, event_units.name as event_unit_name, event_units.price as event_unit_price, \nevent_units.venue_id as venue_id, event_units.event_category_id as event_category_id\nFROM bookings LEFT JOIN event_units ON event_units.id = bookings.event_unit_id \nWHERE event_units.venue_id = :venueId \nAND event_units.event_category_id = :eventCategoryId"};
 
 /**
  * Query generated from SQL:
  * ```
- * SELECT bookings.id, bookings.booking_start_date, 
+ * SELECT bookings.id, bookings.booking_start_date, bookings.booking_end_date, 
  * event_units.id as event_units_id, event_units.name as event_unit_name, event_units.price as event_unit_price, 
  * event_units.venue_id as venue_id, event_units.event_category_id as event_category_id
  * FROM bookings LEFT JOIN event_units ON event_units.id = bookings.event_unit_id 
