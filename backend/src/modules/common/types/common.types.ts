@@ -6,7 +6,9 @@ export type TRoute = typeof ROUTES[keyof typeof ROUTES]
 
 export type TReqMethod = "get" | "post" | "put" | "delete"
 
-export type TCtrlRouteList = Array<[TRoute, TReqMethod, RequestHandler]>
+export type TCtrlRouteList = Array<
+  [TRoute, TReqMethod, RequestHandler | RequestHandler<any>]
+>
 
 export type TApiStatusCode =
   typeof API_STATUS_CODES[keyof typeof API_STATUS_CODES]

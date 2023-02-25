@@ -13,7 +13,7 @@ export const fetchAvailableTimeslots = async (
   req: Request<{}, {}, {}, TFetchAvailableTimeSlotsQuery>,
   res: Response
 ) => {
-  const { venueId, eventCategoryId, startDatetime } = req.query
+  const { venueId, eventCategoryId } = req.query
 
   if (
     !venueId ||
