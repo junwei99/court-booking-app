@@ -7,6 +7,10 @@ import {
   getIntervalDateList,
   getTransformedTimeslots,
 } from "@/modules/bookings/services/get-available-timeslots"
+import {
+  IInsertBookingsParams,
+  insertBookings,
+} from "@/modules/bookings/queries/insert-bookings/insert-bookings.queries"
 
 dayjs.extend(isBetween)
 
@@ -42,4 +46,12 @@ export const getAvailableTimeslotsService = async (
   )
 
   return transformedTimeslots
+}
+
+export const createBookingsService = async (
+  bookingList: IInsertBookingsParams["bookingList"]
+) => {
+  const createdBookingIds = await insertBookings.run({ bookingList }, client)
+
+  return createdBookingIds
 }

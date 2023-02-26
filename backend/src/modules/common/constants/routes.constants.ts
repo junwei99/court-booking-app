@@ -10,4 +10,5 @@ export const ROUTES = {
   EVENT_CATEGORIES_OF_VENUE: "/event-categories-of-venue/:venueId",
   //bookings
   GET_AVAILABLE_TIMESLOTS: "/get-available-timeslots",
+  BOOKINGS: "/bookings",
 } as const
