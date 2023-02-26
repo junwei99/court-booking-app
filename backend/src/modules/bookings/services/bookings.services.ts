@@ -8,7 +8,7 @@ import {
   getTransformedTimeslots,
 } from "@/modules/bookings/services/get-available-timeslots"
 import {
-  IInsertBookingsParams,
+  type IInsertBookingsParams,
   insertBookings,
 } from "@/modules/bookings/queries/insert-bookings/insert-bookings.queries"
 
