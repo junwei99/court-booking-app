@@ -13,6 +13,7 @@ export const getVenueByIdService = async (venueId: number) => {
 
   if (venue?.id) {
     return {
+      id: venue.id,
       title: venue.title,
       address: venue.address,
       description: venue.description,

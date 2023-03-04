@@ -34,13 +34,10 @@ const {
   isFetching: venueIsFetching,
   status: venueDataStatus,
   data: venueData,
-} = useQuery<IVenueRes>({
+} = useQuery<IVenueRes["venue"]>({
   queryKey: ["fetchVenue", venueId],
   queryFn: () => fetchVenue(venueId),
   staleTime: 60 * 1000,
-  onSuccess: (res) => {
-    console.log({ res })
-  },
 })
 
 const centreInfoModalState = reactive<{ modalId: ECentreInfoKey }>({
