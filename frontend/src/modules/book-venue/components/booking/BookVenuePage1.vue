@@ -3,7 +3,7 @@
 import type { TCategory } from "@/modules/book-venue/types/components/book-venue.types"
 import DateInput from "@/modules/common/components/shared-ui/atom/DateInput.vue"
 
-const props = defineProps<{
+defineProps<{
   categoryList: Array<TCategory>
   selectedDate: Date
   selectedCategory: number | null
@@ -39,8 +39,6 @@ const categorySelectOnChange = (e: Event) => {
 const dateSelectOnChange = (newDate: Date) => {
   emit("selectDate", newDate)
 }
-
-const disabledDateList: Array<Date> = []
 
 // const date = ref("")
 // const show = ref(false)

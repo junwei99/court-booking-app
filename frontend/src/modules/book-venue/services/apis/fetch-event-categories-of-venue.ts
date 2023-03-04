@@ -1,16 +1,26 @@
-import { EApiKeys } from "@/others/constants/api-keys.constants"
+import type {
+  IGetEventCategoriesOfVenueParams,
+  IGetEventCategoriesOfVenueRes,
+} from "@/modules/book-venue/types/api"
 import { Requestor } from "@/modules/common/services/requestor/Requestor"
-import type { IGetEventCategoriesOfVenueParams } from "@/modules/book-venue/types/api"
-import type { TCategory } from "@/modules/book-venue/types/components/book-venue.types"
+import { EApiKeys } from "@/others/constants/api-keys.constants"
 
 export const fetchEventCategoriesOfVenue = async (venueId: string) => {
   const params = {
     venueId,
   }
   const eventCategoryRes = await Requestor.get<
-    Array<TCategory>,
+    IGetEventCategoriesOfVenueRes,
     IGetEventCategoriesOfVenueParams
   >(EApiKeys.EVENT_CATEGORIES_OF_VENUE, params, venueId)
 
-  return eventCategoryRes
+  if (
+    !eventCategoryRes?.status ||
+    eventCategoryRes?.status !== "success" ||
+    !eventCategoryRes?.eventCategoryList?.length
+  ) {
+    throw new Error(eventCategoryRes.message)
+  }
+
+  return eventCategoryRes.eventCategoryList
 }

@@ -1,8 +1,8 @@
+import { useCartStore } from "@/modules/book-venue/stores/cart.store"
 import type { IVenueState } from "@/modules/book-venue/types/stores/book-venue-store.types"
 import { EFetchStatus } from "@/others/constants/enums"
 import { reactive } from "vue"
-import type { IEventUnitItem } from "@/modules/common/types/venue.types"
-import { useCartStore } from "@/modules/book-venue/stores/cart.store"
+import type { IFetchAvailableEventUnitsToBookRes } from "../../types/api"
 
 export const useAvailableVenueList = () => {
   const venueState = reactive<IVenueState>({
@@ -18,22 +18,25 @@ export const useAvailableVenueList = () => {
   }
 
   const setFetchedEventUnits = async (
-    fetchCallback: () => Promise<Array<IEventUnitItem>>,
+    fetchCallback: () => Promise<
+      IFetchAvailableEventUnitsToBookRes["availableEventUnitsToBook"]
+    >,
     bookingDuration: number,
     bookingDatetime: Date
   ) => {
     venueState.venueFetchStatus = EFetchStatus.LOADING
 
-    const availableEventUnitListRes = await fetchCallback()
+    const availableEventUnitsToBook = await fetchCallback()
 
-    venueState.availableVenueList = availableEventUnitListRes.filter(
-      (eventUnit) =>
-        !cartStore.hasItem(
-          eventUnit.eventUnitId,
-          bookingDuration,
-          bookingDatetime
-        )
-    )
+    venueState.availableVenueList =
+      availableEventUnitsToBook?.filter(
+        (eventUnit) =>
+          !cartStore.hasItem(
+            eventUnit.eventUnitId,
+            bookingDuration,
+            bookingDatetime
+          )
+      ) ?? []
 
     venueState.venueFetchStatus = EFetchStatus.LOADED
   }

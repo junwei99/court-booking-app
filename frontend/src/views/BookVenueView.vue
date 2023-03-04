@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { watchEffect } from "vue"
-import { useRoute } from "vue-router"
-import { useCartStore } from "@/modules/book-venue/stores/cart.store"
-import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
-import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import BookVenuePage1 from "@/modules/book-venue/components/booking/BookVenuePage1.vue"
 import BookVenuePage2 from "@/modules/book-venue/components/booking/BookVenuePage2.vue"
+import { fetchEventCategoriesOfVenue } from "@/modules/book-venue/services/apis/fetch-event-categories-of-venue"
+import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
+import { useCartStore } from "@/modules/book-venue/stores/cart.store"
+import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
 import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
+import { getStringQueryParam } from "@/modules/common/utils/general-utils"
 import { NavbarPageModeEnum } from "@/others/constants/enums"
 import router from "@/router"
 import { useQuery } from "@tanstack/vue-query"
-import { fetchEventCategoriesOfVenue } from "@/modules/book-venue/services/apis/fetch-event-categories-of-venue"
-import { getStringQueryParam } from "@/modules/common/utils/general-utils"
+import { watchEffect } from "vue"
+import { useRoute } from "vue-router"
 
 const cartStore = useCartStore()
 const bookVenueStore = useBookVenueStore()

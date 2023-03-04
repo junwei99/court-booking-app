@@ -1,6 +1,6 @@
-import { EApiKeys } from "@/others/constants/api-keys.constants"
+import type { IFetchAvailableEventUnitsToBookRes } from "@/modules/book-venue/types/api"
 import { Requestor } from "@/modules/common/services/requestor/Requestor"
-import type { IEventUnitItem } from "@/modules/common/types/venue.types"
+import { EApiKeys } from "@/others/constants/api-keys.constants"
 
 interface IFetchAvailableEventUnitsToBookParams {
   venueId: number | string
@@ -15,25 +15,24 @@ export const fetchVenuesToBook = async (
   startDatetime: Date,
   duration: number
 ) => {
-  // await new Promise(function (resolve) {
-  //   setTimeout(resolve, 500)
-  // })
-
-  const params = {
+  const body = {
     venueId,
     eventCategoryId,
     startDatetime,
     duration,
   }
 
-  console.log("fetching")
-
-  const venuesToBookRes = await Requestor.get<
-    Array<IEventUnitItem>,
+  const eventUnitsToBookRes = await Requestor.post<
+    IFetchAvailableEventUnitsToBookRes,
     IFetchAvailableEventUnitsToBookParams
-  >(EApiKeys.AVAILABLE_EVENT_UNITS_TO_BOOK, params)
+  >(EApiKeys.AVAILABLE_EVENT_UNITS_TO_BOOK, body)
 
-  console.log({ venuesToBookRes })
+  if (
+    !(eventUnitsToBookRes?.status === "success") ||
+    !eventUnitsToBookRes?.availableEventUnitsToBook?.length
+  ) {
+    throw new Error(eventUnitsToBookRes.message)
+  }
 
-  return venuesToBookRes
+  return eventUnitsToBookRes.availableEventUnitsToBook
 }

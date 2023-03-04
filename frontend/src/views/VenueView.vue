@@ -91,7 +91,7 @@ const handleBookButtonOnClick = () => {
     name: "book location",
     params: { venueId: venueId },
     query: {
-      name: venueData.value?.title ? venueData.value.title : "",
+      name: venueData.value?.title ?? "",
       eventUnitType: "court",
     },
   })
@@ -171,11 +171,7 @@ const handleOpenCentreInfoModal = (modalId: ECentreInfoKey) => {
           />
         </BaseLocationInfoSection>
       </div>
-      <!-- <div class="hidden sm:block">
-        <DesktopBookLocationCard />
-      </div> -->
     </div>
-    <!-- bottom action bar : hidden for desktop view -->
     <LocationMobileBottomBar
       :priceRange="venueData.priceRange"
       :handleBookButtonOnClick="handleBookButtonOnClick"
