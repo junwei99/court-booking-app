@@ -1,12 +1,12 @@
-import { computed } from "vue"
-import type { IDictionary } from "@/modules/common/types/utils.types"
 import type {
   IAmPmObj,
   IDuration,
   IOutputTime,
 } from "@/modules/book-venue/types/api/booking-res.types"
-import { useState } from "@/modules/common/hooks/useState"
 import { InitialPage2SelectState } from "@/modules/book-venue/types/stores"
+import { useState } from "@/modules/common/hooks/useState"
+import type { IDictionary } from "@/modules/common/types/utils.types"
+import { computed } from "vue"
 
 export const usePage2SelectState = () => {
   const [page2SelectState, setPage2SelectState] = useState<IDictionary<string>>(

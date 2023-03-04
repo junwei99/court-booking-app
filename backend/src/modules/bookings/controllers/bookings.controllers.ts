@@ -1,16 +1,24 @@
-import { ApiRes } from "@/modules/common/utils/ApiResponse.utils"
+import { IInsertBookingsParams } from "@/modules/bookings/queries/insert-bookings/insert-bookings.queries"
 import {
   createBookingsService,
+  getAvailableEventUnitsToBookService,
   getAvailableTimeslotsService,
 } from "@/modules/bookings/services/bookings.services"
-import type { Request, Response } from "express"
+import { ApiRes } from "@/modules/common/utils/ApiResponse.utils"
 import { HandledError } from "@/modules/common/utils/HandledError.utils"
-import { IInsertBookingsParams } from "@/modules/bookings/queries/insert-bookings/insert-bookings.queries"
+import type { Request, Response } from "express"
 
 type TFetchAvailableTimeSlotsQuery = {
   venueId?: string
   eventCategoryId?: string
   startDatetime?: string
+}
+
+type TFetchAvailableEventUnitsToBook = {
+  venueId: number
+  eventCategoryId: number
+  startDatetime: string
+  duration: number
 }
 
 export const fetchAvailableTimeslots = async (
@@ -65,4 +73,26 @@ export const createBookings = async (
     { createdBookingIds },
     "Bookings created succesfully"
   )
+}
+
+export const fetchAvailableEventUnitsToBook = async (
+  req: Request<{}, {}, TFetchAvailableEventUnitsToBook>,
+  res: Response
+) => {
+  const { venueId, eventCategoryId, startDatetime, duration } = req.body
+
+  if (![venueId, eventCategoryId, startDatetime, duration].every(Boolean)) {
+    throw new HandledError("Invalid parameters")
+  }
+
+  const availableEventUnitsToBook = await getAvailableEventUnitsToBookService(
+    venueId,
+    eventCategoryId,
+    new Date(startDatetime),
+    duration
+  )
+
+  const apiRes = new ApiRes(res)
+
+  return apiRes.sendSuccessRes({ availableEventUnitsToBook })
 }
