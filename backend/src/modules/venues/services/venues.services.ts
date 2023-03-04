@@ -1,12 +1,12 @@
 import { client } from "@/index"
-import { queryVenueById } from "@/modules/venues/queries/query-venue-by-id/get-venue-by-id.queries"
-import { queryVenues } from "@/modules/venues/queries/query-venues/get-venues.queries"
+import { HandledError } from "@/modules/common/utils/HandledError.utils"
+import { insertAmenityList } from "@/modules/venues/queries/create-amenities/create-amenity-list.queries"
 import {
   IInsertVenueParams,
   insertVenue,
 } from "@/modules/venues/queries/create-venues/create-venues.queries"
-import { insertAmenityList } from "@/modules/venues/queries/create-amenities/create-amenity-list.queries"
-import { HandledError } from "@/modules/common/utils/HandledError.utils"
+import { queryVenueById } from "@/modules/venues/queries/query-venue-by-id/get-venue-by-id.queries"
+import { queryVenues } from "@/modules/venues/queries/query-venues/get-venues.queries"
 
 export const getVenueByIdService = async (venueId: number) => {
   const [venue] = await queryVenueById.run({ venueId }, client)
@@ -41,7 +41,7 @@ export const getVenueListService = async () => {
     return venueList.map((venue) => ({
       id: venue.id,
       title: venue.title,
-      eventCategories: { name: venue.event_categories },
+      eventCategories: venue.event_categories,
       priceRange: {
         min: venue.min_price,
         max: venue.max_price,

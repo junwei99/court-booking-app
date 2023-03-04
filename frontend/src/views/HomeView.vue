@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router"
-import { Swiper, SwiperSlide } from "swiper/vue"
-import type { Swiper as SwiperClass } from "swiper/types"
-import "swiper/css"
 import badmintonJPG from "@/assets/images/badminton.jpeg"
 import basketballJPG from "@/assets/images/basketball.jpeg"
 import bowlingJPG from "@/assets/images/bowling.jpeg"
@@ -12,13 +8,18 @@ import dodgeballJPG from "@/assets/images/dodgeball.jpeg"
 import footballJPG from "@/assets/images/football.jpeg"
 import freeDivingJPG from "@/assets/images/free_diving.jpeg"
 import futsalJPG from "@/assets/images/futsal.jpeg"
+import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import ItemCard from "@/modules/common/components/shared-ui/organism/ItemCard.vue"
 import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
-import { NavbarPageModeEnum } from "@/others/constants/enums"
 import HomeSkeleton from "@/modules/home/components/HomeSkeleton.vue"
-import { useQuery } from "@tanstack/vue-query"
 import { fetchVenueList } from "@/modules/home/services/apis/fetch-venue-list.api"
-import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
+import type { IVenueListRes } from "@/modules/home/types/apis/home.types"
+import { NavbarPageModeEnum } from "@/others/constants/enums"
+import { useQuery } from "@tanstack/vue-query"
+import "swiper/css"
+import type { Swiper as SwiperClass } from "swiper/types"
+import { Swiper, SwiperSlide } from "swiper/vue"
+import { useRouter } from "vue-router"
 
 const router = useRouter()
 
@@ -26,11 +27,13 @@ const {
   status: venueListStatus,
   data: venueList,
   refetch: refetchVenueList,
-} = useQuery<any>({
+} = useQuery<IVenueListRes["venueList"]>({
   queryKey: ["fetchVenues"],
   queryFn: () => fetchVenueList(),
   staleTime: 60 * 1000,
-  onSuccess: (data) => console.log({ data }),
+  onSuccess: (res) => {
+    console.log({ res })
+  },
 })
 
 const navItemsList = [
@@ -52,7 +55,7 @@ const onSlideChange = (swiper: SwiperClass) => {
   console.log("slide change", swiper)
 }
 
-const itemCardOnClick = (venueId: string) => {
+const itemCardOnClick = (venueId: number) => {
   router.push({
     name: "location",
     params: { venueId: venueId },

@@ -8,4 +8,9 @@ declare global {
       [elem: string]: any
     }
   }
+
+  interface ISuccessRes {
+    status: "success" | "error"
+    message: string
+  }
 }

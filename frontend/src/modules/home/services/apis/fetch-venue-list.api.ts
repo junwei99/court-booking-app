@@ -1,16 +1,17 @@
-import { EApiKeys } from "@/others/constants/api-keys.constants"
 import { Requestor } from "@/modules/common/services/requestor/Requestor"
-interface IVenueRes {
-  id: number
-  title: string
-  eventCategories: Array<{ name: string }>
-  priceRange: { min: number; max: number }
-  location: string
-  image: string
-}
+import type { IVenueListRes } from "@/modules/home/types/apis/home.types"
+import { EApiKeys } from "@/others/constants/api-keys.constants"
 
 export const fetchVenueList = async () => {
-  const venueRes = Requestor.get<IVenueRes>(EApiKeys.VENUES)
+  const venueRes = await Requestor.get<IVenueListRes>(EApiKeys.VENUES)
 
-  return venueRes
+  if (
+    !venueRes?.status ||
+    venueRes?.status === "error" ||
+    !venueRes?.venueList?.length
+  ) {
+    throw new Error(venueRes.message)
+  }
+
+  return venueRes.venueList
 }

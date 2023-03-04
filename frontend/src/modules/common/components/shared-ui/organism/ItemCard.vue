@@ -2,9 +2,7 @@
 import SquareImage from "@/modules/common/components/shared-ui/atom/SquareImage.vue"
 
 defineProps<{
-  eventCategories: Array<{
-    name: string
-  }>
+  eventCategories: Array<string>
   title: string
   location: string
   imageSrc?: string
@@ -20,10 +18,10 @@ defineProps<{
     <div class="flex">
       <p
         v-for="eventCategory in eventCategories"
-        :key="eventCategory.name"
+        :key="eventCategory"
         class="text-sm text-primary-normal mr-2"
       >
-        {{ eventCategory.name }}
+        {{ eventCategory }}
       </p>
     </div>
     <p class="font-semibold mt-2">
