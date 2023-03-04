@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { DatePicker } from "v-calendar"
-import { defineEmits, computed } from "vue"
+import { computed } from "vue"
 
 const props = defineProps<{
   categoryList: Array<{ id: string; name: string }>

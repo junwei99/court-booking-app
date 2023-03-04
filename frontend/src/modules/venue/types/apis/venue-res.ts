@@ -19,9 +19,5 @@ export interface IVenueRes {
     id: number
     name: string
   }>
-  eventCategories: Array<{
-    id: number
-    name: string
-    type: string
-  }>
+  eventCategories: Array<string>
 }

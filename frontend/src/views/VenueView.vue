@@ -1,14 +1,4 @@
 <script setup lang="ts">
-import { reactive, computed } from "vue"
-import { useRoute, useRouter } from "vue-router"
-import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
-import {
-  LocationImageGallery,
-  BaseLocationInfoSection,
-  BaseLocationLoadingSkeleton,
-} from "@/modules/venue/components"
-// import DesktopBookLocationCard from "@/modules/book-venue/components/booking/DesktopBookLocationCard.vue"
-import LocationMobileBottomBar from "@/modules/venue/components/others/LocationMobileBottomBar.vue"
 import {
   bedSVG,
   beverageSVG,
@@ -17,21 +7,28 @@ import {
   shopSVG,
   showerSVG,
 } from "@/assets/images/icons"
-import LocationContactUsList from "@/modules/venue/components/contact-us/LocationContactUsList.vue"
-import LocationCentreInfoButton from "@/modules/venue/components/centre-info/LocationCentreInfoButton.vue"
-import type { IVenueRes } from "@/modules/venue/types/apis/venue-res"
-import { ECentreInfoKey } from "@/others/constants/enums"
-import LocationCentreInfoModal from "@/modules/venue/components/centre-info/LocationCentreInfoModal.vue"
-import { useQuery, useQueryClient } from "@tanstack/vue-query"
-import { fetchVenue } from "@/modules/venue/services/apis/fetch-venue.api"
+import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
+import {
+  BaseLocationInfoSection,
+  BaseLocationLoadingSkeleton,
+  LocationImageGallery,
+} from "@/modules/venue/components"
 import BaseEventCategoryIcons from "@/modules/venue/components/base-components/BaseEventCategoryIcons.vue"
-import { NavbarPageModeEnum } from "@/others/constants/enums"
+import LocationCentreInfoButton from "@/modules/venue/components/centre-info/LocationCentreInfoButton.vue"
+import LocationCentreInfoModal from "@/modules/venue/components/centre-info/LocationCentreInfoModal.vue"
+import LocationContactUsList from "@/modules/venue/components/contact-us/LocationContactUsList.vue"
+import LocationMobileBottomBar from "@/modules/venue/components/others/LocationMobileBottomBar.vue"
+import { fetchVenue } from "@/modules/venue/services/apis/fetch-venue.api"
+import type { IVenueRes } from "@/modules/venue/types/apis/venue-res"
+import { ECentreInfoKey, NavbarPageModeEnum } from "@/others/constants/enums"
+import { useQuery } from "@tanstack/vue-query"
+import { computed, reactive } from "vue"
+import { useRoute, useRouter } from "vue-router"
 
 const router = useRouter()
 const route = useRoute()
 
 const venueId = parseInt(route.params.venueId as string)
-const queryClient = useQueryClient()
 
 const {
   isFetching: venueIsFetching,
@@ -41,6 +38,9 @@ const {
   queryKey: ["fetchVenue", venueId],
   queryFn: () => fetchVenue(venueId),
   staleTime: 60 * 1000,
+  onSuccess: (res) => {
+    console.log({ res })
+  },
 })
 
 const centreInfoModalState = reactive<{ modalId: ECentreInfoKey }>({

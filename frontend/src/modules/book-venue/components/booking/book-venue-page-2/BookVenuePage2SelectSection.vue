@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineEmits } from "vue"
 import type { TSelectTimeMap } from "@/modules/book-venue/types/components"
 import type { TSelectKey } from "@/modules/book-venue/types/stores/book-venue-store.types"
 
