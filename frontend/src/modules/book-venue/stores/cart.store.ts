@@ -26,7 +26,7 @@ dayjs.extend(isBetween)
 //TODO: revisit logic for unique eventUnits based on booking duration and time
 
 export const useCartStore = defineStore("cart", () => {
-  const venueToBookLS = useLocalStorage("venueToBook", {
+  const venueToBookLS = useLocalStorage("venue-to-book", {
     id: 0,
     venueName: "",
     venueAddress: "",
