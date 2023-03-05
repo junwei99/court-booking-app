@@ -71,6 +71,8 @@ const router = createRouter({
       },
       props: (route) => {
         const venueId = parseInt((route.params?.venueId as string) ?? "")
+        const venueName = (route.query?.name as string) ?? ""
+        const eventUnitType = (route.query?.eventUnitType as string) ?? ""
 
         const navigateToCartPage = () => {
           router.push({
@@ -84,6 +86,8 @@ const router = createRouter({
 
         return {
           venueId,
+          venueName,
+          eventUnitType,
           navigateToCartPage,
           navigateBack,
         }

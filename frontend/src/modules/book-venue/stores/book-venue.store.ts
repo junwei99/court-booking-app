@@ -26,14 +26,14 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     isResettingOnNext.value = isResetting
   }
 
-  let venueToBook = {
+  const venueToBook = ref({
     id: 0,
     venueName: "",
     venueAddress: "",
     eventCategory: "",
     image: "",
     eventUnitType: "",
-  }
+  })
 
   const {
     selectedCategory,
@@ -77,7 +77,7 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     }
 
     const availableBookingTimeList = await fetchAvailableBookingTimeList(
-      venueToBook.id,
+      venueToBook.value.id,
       selectedCategory.value,
       dayjs(selectedDate.value).toJSON()
     )
@@ -94,17 +94,14 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     image: string
     eventUnitType: string
   }) => {
-    venueToBook = {
-      ...venueToBook,
+    venueToBook.value = {
+      ...venueToBook.value,
       ...venue,
     }
   }
 
   const setEventCategoryOfVenueToBook = (eventCategory: string) => {
-    venueToBook = {
-      ...venueToBook,
-      eventCategory,
-    }
+    venueToBook.value.eventCategory = eventCategory
   }
 
   const initLists = (
@@ -235,7 +232,7 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
 
     const fetchVenuesToBookCallback = async () =>
       await fetchVenuesToBook(
-        venueToBook.id,
+        venueToBook.value.id,
         selectedCategory.value as number,
         transformedBookingDateTime,
         bookingDuration

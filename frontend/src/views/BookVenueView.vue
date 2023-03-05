@@ -13,6 +13,8 @@ import { ref, watchEffect } from "vue"
 
 const props = defineProps<{
   venueId: number
+  venueName: string
+  eventUnitType: string
   navigateToCartPage: () => void
   navigateBack: () => void
 }>()
@@ -63,7 +65,7 @@ watchEffect(() => {
 <template>
   <Navbar
     :page-mode="NavbarPageModeEnum.CHECKOUT"
-    :page-title="bookVenueStore.venueToBook.venueName"
+    :page-title="venueName"
     :left-button-action="headerBackBtnOnClick"
   />
   <div class="pb-[5rem]">
@@ -80,7 +82,7 @@ watchEffect(() => {
     <BookVenuePage2
       v-else
       :select-items-map="bookVenueStore.selectTimeMap"
-      :type-of-location="bookVenueStore.venueToBook.eventUnitType"
+      :type-of-location="eventUnitType"
     />
   </div>
   <div
