@@ -7,30 +7,30 @@ import type { TTimeAndDurationKey } from "@/modules/book-venue/types/stores/book
 import { getObjectEntries } from "@/modules/common/utils/general-utils"
 import { computed, ref } from "vue"
 
-const INITIAL_STATE: Record<TTimeAndDurationKey, string> = {
-  selectedTime: "Select time",
-  selectedAmPm: "AM / PM",
-  selectedDuration: "Select duration",
-} as const
+export const INITIAL_TIME_DURATION_STATE: Record<TTimeAndDurationKey, string> =
+  {
+    selectedTime: "Select time",
+    selectedAmPm: "AM / PM",
+    selectedDuration: "Select duration",
+  } as const
 
 export const useBookVenueTimeAndDuration = () => {
   const bookVenueTimeAndDuration = ref<Record<TTimeAndDurationKey, string>>({
-    ...INITIAL_STATE,
+    ...INITIAL_TIME_DURATION_STATE,
   })
 
   const timeListRes = ref<Array<IOutputTime>>([])
 
   const isAll3ItemsSelected = computed(() =>
     getObjectEntries(bookVenueTimeAndDuration.value).every(
-      ([key, value]) => value !== INITIAL_STATE[key]
+      ([key, value]) => value !== INITIAL_TIME_DURATION_STATE[key]
     )
   )
 
   const setBookVenueTimeAndDuration = (
-    key: TTimeAndDurationKey,
-    value: string
+    state: Record<TTimeAndDurationKey, string>
   ) => {
-    bookVenueTimeAndDuration.value[key] = value
+    bookVenueTimeAndDuration.value = state
   }
 
   const setTimeListRes = (newTimeListRes: Array<IOutputTime>) => {
@@ -60,7 +60,8 @@ export const useBookVenueTimeAndDuration = () => {
     if (!timeObj) return
 
     if (getIsSelectedAmPmNotAvailable(timeObj)) {
-      bookVenueTimeAndDuration.value.selectedAmPm = INITIAL_STATE.selectedAmPm
+      bookVenueTimeAndDuration.value.selectedAmPm =
+        INITIAL_TIME_DURATION_STATE.selectedAmPm
     }
 
     initAmPmList(timeObj.amOrPm.am.isAvailable, timeObj.amOrPm.pm.isAvailable)
@@ -82,14 +83,14 @@ export const useBookVenueTimeAndDuration = () => {
 
     if (getIsSelectedDurationNotAvailable(amPmObj)) {
       bookVenueTimeAndDuration.value.selectedDuration =
-        INITIAL_STATE.selectedDuration
+        INITIAL_TIME_DURATION_STATE.selectedDuration
     }
 
     initDurationList(amPmObj.durations)
   }
 
   const resetTimeAndDuration = () => {
-    bookVenueTimeAndDuration.value = { ...INITIAL_STATE }
+    bookVenueTimeAndDuration.value = { ...INITIAL_TIME_DURATION_STATE }
   }
 
   const getters = {

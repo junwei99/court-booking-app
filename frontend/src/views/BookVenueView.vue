@@ -10,7 +10,7 @@ import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
 import { NavbarPageModeEnum } from "@/others/constants/enums"
 import router from "@/router"
 import { useQuery } from "@tanstack/vue-query"
-import { watchEffect } from "vue"
+import { ref, watchEffect } from "vue"
 
 const props = defineProps<{ venueId: number }>()
 
@@ -24,11 +24,24 @@ const { data: categoryList } = useQuery({
   enabled: !!props.venueId,
 })
 
+const page = ref<1 | 2>(1)
+
 const headerBackBtnOnClick = () => {
-  if (bookVenueStore.page === "1") {
+  if (page.value === 1) {
     router.go(-1)
   } else {
-    bookVenueStore.setPage("1")
+    page.value = 1
+  }
+}
+
+const nextButtonOnClick = () => {
+  if (page.value === 1) {
+    bookVenueStore.initAvailableBookingTimeAndDuration()
+    page.value = 2
+  } else {
+    router.push({
+      name: "cart",
+    })
   }
 }
 
@@ -49,7 +62,7 @@ watchEffect(() => {
   <div class="pb-[5rem]">
     <!-- first page -->
     <BookVenuePage1
-      v-if="bookVenueStore.page === '1'"
+      v-if="page === 1"
       :category-list="categoryList ?? []"
       :selected-category="bookVenueStore.selectedCategory"
       :selected-date="bookVenueStore.selectedDate"
@@ -64,10 +77,7 @@ watchEffect(() => {
     />
   </div>
   <div
-    v-if="
-      (bookVenueStore.page === '2' && cartStore.cartSize > 0) ||
-      bookVenueStore.page === '1'
-    "
+    v-if="(page === 2 && cartStore.cartSize > 0) || page === 1"
     :class="`bottom-action-bar ${cartStore.cartSize > 0 && 'grid grid-cols-2'}`"
   >
     <div v-if="cartStore.cartSize > 0">
@@ -76,8 +86,6 @@ watchEffect(() => {
         <PriceCurrency :price="cartStore.bookingTotalPriceInfo" />
       </p>
     </div>
-    <Button class="w-full" @click="bookVenueStore.nextButtonOnClick()">
-      Next
-    </Button>
+    <Button class="w-full" @click="nextButtonOnClick"> Next </Button>
   </div>
 </template>

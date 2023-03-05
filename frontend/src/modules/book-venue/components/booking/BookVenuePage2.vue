@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { useCartStore } from "@/modules/book-venue/stores/cart.store"
-import { EFetchStatus } from "@/others/constants/enums"
-import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
-import { storeToRefs } from "pinia"
 import {
   BookVenueBackButton,
   BookVenuePage2None,
@@ -10,9 +6,13 @@ import {
   BookVenuePage2Skeleton,
   BookVenuePage2VenueList,
 } from "@/modules/book-venue/components/booking/book-venue-page-2"
+import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
+import { useCartStore } from "@/modules/book-venue/stores/cart.store"
 import type { TSelectTimeMap } from "@/modules/book-venue/types/components"
-import BookVenuePage2EmptyList from "./book-venue-page-2/BookVenuePage2EmptyList.vue"
 import type { IEventUnitItem } from "@/modules/common/types/venue.types"
+import { EFetchStatus } from "@/others/constants/enums"
+import { storeToRefs } from "pinia"
+import BookVenuePage2EmptyList from "./book-venue-page-2/BookVenuePage2EmptyList.vue"
 
 const props = defineProps<{
   typeOfLocation: string
@@ -36,7 +36,7 @@ const handleDesktopBackToPage1 = () => {
 const handleMutateCartItems = (eventUnit: IEventUnitItem) =>
   cartStore.handleMutateCartItems(
     eventUnit,
-    parseInt(bookVenueStore.page2SelectState.selectedDuration),
+    parseInt(bookVenueStore.bookVenueTimeAndDuration.selectedDuration),
     bookVenueStore.bookingDateTime,
     bookVenueStore.venueToBook.id
   )
@@ -44,7 +44,7 @@ const handleMutateCartItems = (eventUnit: IEventUnitItem) =>
 const cartHasItem = (eventUnitId: number) => {
   return cartStore.hasItem(
     eventUnitId,
-    parseInt(bookVenueStore.page2SelectState.selectedDuration),
+    parseInt(bookVenueStore.bookVenueTimeAndDuration.selectedDuration),
     bookVenueStore.bookingDateTime
   )
 }
@@ -59,8 +59,10 @@ const cartHasItem = (eventUnitId: number) => {
     <h2 class="font-semibold mb-5">Select a start time and duration</h2>
     <BookVenuePage2SelectSection
       :select-items-map="selectItemsMap"
-      :get-select-value="bookVenueStore.getSelectValue"
-      @handle-select-item-on-change="bookVenueStore.handleSelectItemOnChange"
+      :get-select-value="bookVenueStore.getTimeAndDurationValueFromKey"
+      @handle-select-item-on-change="
+        bookVenueStore.handleSelectTimeAndDurationOnChange
+      "
     />
     <div>
       <div class="divider" />

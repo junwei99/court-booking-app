@@ -3,7 +3,10 @@ import {
   useSelectTimeMap,
 } from "@/modules/book-venue/hooks"
 import { useBookVenueCategoryAndDate } from "@/modules/book-venue/hooks/book-venue-store/useBookVenueCategoryAndDate"
-import { usePage2SelectState } from "@/modules/book-venue/hooks/book-venue-store/usePage2SelectState"
+import {
+  INITIAL_TIME_DURATION_STATE,
+  useBookVenueTimeAndDuration,
+} from "@/modules/book-venue/hooks/book-venue-store/useBookVenueTimeAndDuration"
 import { fetchAvailableBookingTimeList } from "@/modules/book-venue/services/apis/fetch-available-booking-time-list"
 import { fetchVenuesToBook } from "@/modules/book-venue/services/apis/fetch-venues-to-book"
 import {
@@ -11,40 +14,43 @@ import {
   getTransformedBookingDateTime,
 } from "@/modules/book-venue/services/business/book-venue.business"
 import type { IOutputTime } from "@/modules/book-venue/types/api"
-import { InitialPage2SelectState } from "@/modules/book-venue/types/stores"
-import type { TSelectKey } from "@/modules/book-venue/types/stores/book-venue-store.types"
-import { useState } from "@/modules/common/hooks/useState"
-import type { IDictionary } from "@/modules/common/types/utils.types"
-import appRouter from "@/router"
-import { useStorage } from "@vueuse/core"
+import type { TTimeAndDurationKey } from "@/modules/book-venue/types/stores/book-venue-store.types"
 import dayjs from "dayjs"
 import { defineStore } from "pinia"
 import { ref } from "vue"
 
-type TVenueToBook = {
-  id: number
-  image: string
-  eventCategory: string
-  venueName: string
-  venueAddress: string
-  eventUnitType: string
-}
+export const useBookVenueStore = defineStore("book-venue-test", () => {
+  const isResettingOnNext = ref(false)
 
-export const useBookVenueStore = defineStore("book-venue", () => {
-  const venueToBookLocalStorage = useStorage("venueToBook", {
+  const setIsResettingOnNext = (isResetting: boolean) => {
+    isResettingOnNext.value = isResetting
+  }
+
+  const venueToBook = ref({
     id: 0,
-    image: "",
-    eventCategory: "",
     venueName: "",
-    venueAddress: "",
     eventUnitType: "",
   })
 
-  const [page, setPage] = useState<"1" | "2">("1")
+  const {
+    selectedCategory,
+    selectedDate,
+    handleSelectCategory,
+    handleSelectDate,
+    resetCategoryAndDate,
+  } = useBookVenueCategoryAndDate(setIsResettingOnNext)
 
-  //used to populate venue list
-  const { venueState, clearVenues, setFetchedEventUnits } =
-    useAvailableVenueList()
+  const {
+    bookVenueTimeAndDuration,
+    isAll3ItemsSelected,
+    getIsSelectedDurationNotAvailable,
+    getIsSelectedAmPmNotAvailable,
+    resetTimeAndDuration,
+    setAmPmFromRes,
+    setDurationFromRes,
+    setTimeListRes,
+    setBookVenueTimeAndDuration,
+  } = useBookVenueTimeAndDuration()
 
   //used to populate select element for time, am/pm and duration
   const {
@@ -54,48 +60,38 @@ export const useBookVenueStore = defineStore("book-venue", () => {
     durationListOperations,
   } = useSelectTimeMap()
 
-  const [isResettingOnNext, setIsResettingOnNext] = useState(false)
-
-  const {
-    selectedCategory,
-    selectedDate,
-    handleSelectCategory,
-    handleSelectDate,
-    resetPage1SelectState,
-  } = useBookVenueCategoryAndDate(setIsResettingOnNext)
-
   //booking date time initialized with current date, will be set when user select date, time, am/pm and duration
   const bookingDateTime = ref<Date>(selectedDate.value)
 
-  const {
-    page2SelectState,
-    isAll3ItemsSelected,
-    setTimeListRes,
-    setPage2SelectState,
-    setAmPmFromRes,
-    setDurationFromRes,
-    resetPage2SelectState,
-  } = usePage2SelectState()
+  //used to populate venue list
+  const { venueState, clearVenues, setFetchedEventUnits } =
+    useAvailableVenueList()
 
-  const selectKeyMap: IDictionary<string> = {
-    time1: "selectedTime",
-    time2: "selectedAmPm",
-    duration: "selectedDuration",
-  }
-
-  //TODO :
-  //once date or sports is selected, only time is reset, the AM/PM and duration is not reset
+  const getTimeAndDurationValueFromKey = (selectKey: TTimeAndDurationKey) =>
+    bookVenueTimeAndDuration.value[selectKey]
 
   const fetchAndSetAvailableBookingTimeList = async () => {
+    if (!selectedCategory.value) {
+      throw new Error("category not selected")
+    }
+
     const availableBookingTimeList = await fetchAvailableBookingTimeList(
-      venueToBookLocalStorage.value.id,
-      selectedCategory.value as number,
+      venueToBook.value.id,
+      selectedCategory.value,
       dayjs(selectedDate.value).toJSON()
     )
 
     setTimeListRes(availableBookingTimeList.outputTimeList)
 
     return availableBookingTimeList.outputTimeList
+  }
+
+  const setVenueToBook = (venue: {
+    id: number
+    venueName: string
+    eventUnitType: string
+  }) => {
+    venueToBook.value = venue
   }
 
   const initLists = (
@@ -106,8 +102,8 @@ export const useBookVenueStore = defineStore("book-venue", () => {
     timeListOperations.init(timeListRes)
 
     if (
-      page2SelectState.value.selectedAmPM !==
-        InitialPage2SelectState.selectedAmPm &&
+      bookVenueTimeAndDuration.value.selectedAmPm !==
+        INITIAL_TIME_DURATION_STATE.selectedAmPm &&
       selectedTimeIndex &&
       selectedTimeIndex >= 0
     ) {
@@ -117,13 +113,13 @@ export const useBookVenueStore = defineStore("book-venue", () => {
       )
 
       if (
-        page2SelectState.value.selectedDuration !==
-          InitialPage2SelectState.selectedDuration &&
+        bookVenueTimeAndDuration.value.selectedDuration !==
+          INITIAL_TIME_DURATION_STATE.selectedDuration &&
         selectedTimeIndex &&
         selectedTimeIndex >= 0
       ) {
         const amPmKey =
-          page2SelectState.value.selectedAmPm === "AM" ? "am" : "pm"
+          bookVenueTimeAndDuration.value.selectedAmPm === "AM" ? "am" : "pm"
 
         durationListOperations.init(
           timeListRes[selectedTimeIndex].amOrPm[amPmKey].durations
@@ -132,28 +128,24 @@ export const useBookVenueStore = defineStore("book-venue", () => {
     }
   }
 
-  const nextButtonOnClick = async () => {
-    if (page.value === "2") {
-      appRouter.push({ name: "cart" })
-      return
-    }
-
-    //fetch and set available booking time list
-    const outputTimeListRes = await fetchAndSetAvailableBookingTimeList()
+  const initAvailableBookingTimeAndDuration = async () => {
+    const timeListRes = await fetchAndSetAvailableBookingTimeList()
 
     const selectedTimeIndex = selectTimeMap.value
-      .get("time1")
+      .get("selectedTime")
       ?.list.findIndex(
-        (listObj) => listObj.text === page2SelectState.value.selectedTime
+        (listObj) =>
+          listObj.text === bookVenueTimeAndDuration.value.selectedTime
       )
 
-    initLists(outputTimeListRes, selectedTimeIndex)
+    initLists(timeListRes, selectedTimeIndex)
 
     if (isResettingOnNext.value) {
-      setPage2SelectState({ ...InitialPage2SelectState })
+      setBookVenueTimeAndDuration({
+        ...INITIAL_TIME_DURATION_STATE,
+      })
       clearVenues()
       setIsResettingOnNext(false)
-      setPage("2")
       return
     }
 
@@ -163,127 +155,117 @@ export const useBookVenueStore = defineStore("book-venue", () => {
       getIsDurationNotAvailable,
     } = getPage2StateNotAvailableConditions(
       selectedTimeIndex,
-      page2SelectState.value.selectedAmPm,
-      page2SelectState.value.selectedDuration,
-      outputTimeListRes
+      bookVenueTimeAndDuration.value.selectedAmPm,
+      bookVenueTimeAndDuration.value.selectedDuration,
+      timeListRes
     )
 
     if (getIsTimeNotAvailable()) {
-      setPage2SelectState({
-        ...InitialPage2SelectState,
+      setBookVenueTimeAndDuration({
+        ...INITIAL_TIME_DURATION_STATE,
       })
       amPmListOperations.reset()
       durationListOperations.reset()
 
       clearVenues()
     } else if (getIsAmPmNotAvailable()) {
-      setPage2SelectState({
-        ...InitialPage2SelectState,
-        selectedTime: page2SelectState.value.selectedTime,
+      setBookVenueTimeAndDuration({
+        ...INITIAL_TIME_DURATION_STATE,
+        selectedTime: bookVenueTimeAndDuration.value.selectedTime,
       })
 
       clearVenues()
     } else if (getIsDurationNotAvailable()) {
-      setPage2SelectState({
-        ...page2SelectState.value,
-        selectedDuration: InitialPage2SelectState.selectedDuration,
+      setBookVenueTimeAndDuration({
+        ...bookVenueTimeAndDuration.value,
+        selectedDuration: INITIAL_TIME_DURATION_STATE.selectedDuration,
       })
       clearVenues()
     }
-
-    setPage("2")
   }
 
-  const handleSelectItemOnChange = (
-    selectKey: TSelectKey,
+  const handleSelectTimeAndDurationOnChange = async (
+    selectKey: TTimeAndDurationKey,
     selectValue: string
   ) => {
-    setPage2SelectState({
-      ...page2SelectState.value,
-      [selectKeyMap[selectKey]]: selectValue,
+    setBookVenueTimeAndDuration({
+      ...bookVenueTimeAndDuration.value,
+      [selectKey]: selectValue,
     })
 
-    if (selectKey === "time1") {
+    //populate list
+    if (selectKey === "selectedTime") {
       setAmPmFromRes(selectValue, amPmListOperations.init)
       setDurationFromRes(durationListOperations.init)
-    } else if (selectKey === "time2") {
+    } else if (selectKey === "selectedAmPm") {
       setDurationFromRes(durationListOperations.init)
+    }
+
+    if (!isAll3ItemsSelected.value) {
+      clearVenues()
+      return
     }
 
     //if all 3 select has a value,  fetch venue list
-    if (isAll3ItemsSelected.value) {
-      const transformedBookingDateTime = getTransformedBookingDateTime(
-        selectedDate.value,
-        page2SelectState.value.selectedTime,
-        page2SelectState.value.selectedAmPm
+    const transformedBookingDateTime = getTransformedBookingDateTime(
+      selectedDate.value,
+      bookVenueTimeAndDuration.value.selectedTime,
+      bookVenueTimeAndDuration.value.selectedAmPm
+    )
+
+    // bookingDateTime.value = transformedBookingDateTime
+    bookingDateTime.value = transformedBookingDateTime
+
+    const bookingDuration = parseInt(
+      bookVenueTimeAndDuration.value.selectedDuration
+    )
+
+    const fetchVenuesToBookCallback = async () =>
+      await fetchVenuesToBook(
+        venueToBook.value.id,
+        selectedCategory.value as number,
+        transformedBookingDateTime,
+        bookingDuration
       )
 
-      // bookingDateTime.value = transformedBookingDateTime
-      bookingDateTime.value = transformedBookingDateTime
-
-      const bookingDuration = parseInt(page2SelectState.value.selectedDuration)
-
-      const fetchVenuesToBookCallback = async () =>
-        await fetchVenuesToBook(
-          venueToBookLocalStorage.value.id,
-          selectedCategory.value as number,
-          transformedBookingDateTime,
-          bookingDuration
-        )
-
-      setFetchedEventUnits(
-        fetchVenuesToBookCallback,
-        bookingDuration,
-        transformedBookingDateTime
-      )
-    } else {
-      clearVenues()
-    }
-  }
-
-  const getSelectValue = (selectKey: string) =>
-    page2SelectState.value[selectKeyMap[selectKey]]
-
-  const setVenueToBook = (newVenueToBookLocalStorage: TVenueToBook) => {
-    venueToBookLocalStorage.value = newVenueToBookLocalStorage
+    setFetchedEventUnits(
+      fetchVenuesToBookCallback,
+      bookingDuration,
+      transformedBookingDateTime
+    )
   }
 
   const resetStore = () => {
-    //complete reset of the store
-    resetPage1SelectState()
-    resetPage2SelectState()
+    resetTimeAndDuration()
+    resetCategoryAndDate()
     timeListOperations.reset()
     amPmListOperations.reset()
     durationListOperations.reset()
     clearVenues()
-    setPage("1")
-    venueToBookLocalStorage.value = null
   }
 
   const getters = {
-    page,
     selectedCategory,
     selectedDate,
-    page2SelectState,
+    bookVenueTimeAndDuration,
     venueState,
     selectTimeMap,
     bookingDateTime,
-    venueToBook: venueToBookLocalStorage,
+    venueToBook,
   } as const
 
   const actions = {
     setVenueToBook,
     handleSelectCategory,
     handleSelectDate,
-    setPage,
-    nextButtonOnClick,
-    handleSelectItemOnChange,
-    getSelectValue,
+    handleSelectTimeAndDurationOnChange,
+    initAvailableBookingTimeAndDuration,
+    getTimeAndDurationValueFromKey,
     resetStore,
   } as const
 
   return {
-    ...actions,
     ...getters,
+    ...actions,
   }
 })

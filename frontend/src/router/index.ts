@@ -76,10 +76,7 @@ const router = createRouter({
         ) {
           bookVenueStore.setVenueToBook({
             id: venueId,
-            image: "",
-            eventCategory: "",
             venueName: getStringQueryParam(to.query.name),
-            venueAddress: "",
             eventUnitType: getStringQueryParam(to.query.eventUnitType),
           })
         }
