@@ -36,4 +36,4 @@ Upsides:
 Downsides:
 
 1. Less libraries options compared to React, a lot of Vue libraries are not compatible with Vue3 :(
-2. A lot of interesting meta frameworks or framework agnostics solutions often times have first class support with React, Vue feels like 2nd class citizen a lot of times.
+2. A lot of interesting meta frameworks or framework agnostic solutions often times have first class support with React, Vue feels like 2nd class citizen a lot of times.
