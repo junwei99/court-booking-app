@@ -7,24 +7,21 @@ import { useCartStore } from "@/modules/book-venue/stores/cart.store"
 import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
 import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
-import { getStringQueryParam } from "@/modules/common/utils/general-utils"
 import { NavbarPageModeEnum } from "@/others/constants/enums"
 import router from "@/router"
 import { useQuery } from "@tanstack/vue-query"
 import { watchEffect } from "vue"
-import { useRoute } from "vue-router"
+
+const props = defineProps<{ venueId: number }>()
 
 const cartStore = useCartStore()
 const bookVenueStore = useBookVenueStore()
-const route = useRoute()
-
-const venueId = getStringQueryParam(route.params.venueId)
 
 const { data: categoryList } = useQuery({
-  queryKey: ["fetchCategoriesOfVenue", venueId],
-  queryFn: () => fetchEventCategoriesOfVenue(venueId),
+  queryKey: ["fetchCategoriesOfVenue", props.venueId],
+  queryFn: () => fetchEventCategoriesOfVenue(props.venueId),
   staleTime: Infinity,
-  enabled: !!venueId,
+  enabled: !!props.venueId,
 })
 
 const headerBackBtnOnClick = () => {

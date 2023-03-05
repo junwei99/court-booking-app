@@ -5,7 +5,7 @@ import type {
 import { Requestor } from "@/modules/common/services/requestor/Requestor"
 import { EApiKeys } from "@/others/constants/api-keys.constants"
 
-export const fetchEventCategoriesOfVenue = async (venueId: string) => {
+export const fetchEventCategoriesOfVenue = async (venueId: number) => {
   const params = {
     venueId,
   }

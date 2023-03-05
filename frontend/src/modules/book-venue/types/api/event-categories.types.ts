@@ -1,7 +1,7 @@
 import type { TCategory } from "@/modules/book-venue/types/components/book-venue.types"
 
 export interface IGetEventCategoriesOfVenueParams {
-  venueId: string
+  venueId: number
 }
 
 export interface IGetEventCategoriesOfVenueRes extends ISuccessRes {

@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import CartBottomSkeleton from "@/modules/book-venue/components/cart/CartBottomSkeleton.vue"
+import CartTopSkeleton from "@/modules/book-venue/components/cart/CartTopSkeleton.vue"
 import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
 import SquareImage from "@/modules/common/components/shared-ui/atom/SquareImage.vue"
-import CartTopSkeleton from "@/modules/book-venue/components/cart/CartTopSkeleton.vue"
-import CartBottomSkeleton from "@/modules/book-venue/components/cart/CartBottomSkeleton.vue"
 import { EFetchStatus } from "@/others/constants/enums"
 
 interface ICartItemInfo {
@@ -10,20 +10,6 @@ interface ICartItemInfo {
   locationImageSrc: string
   category: string
   locationAddress: string
-  bookingDetailsList: Array<{
-    bookingDetailId: string
-    datetime: string
-    currentDateTimeBookingInfoList: Array<{
-      bookLocationId: string
-      timeslot: {
-        startTime: string
-        endTime: string
-      }
-      name: string
-      price: number
-    }>
-  }>
-  total: number
 }
 
 type TDisplayCartItem = {

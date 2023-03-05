@@ -79,6 +79,13 @@ const router = createRouter({
           })
         }
       },
+      props: (route) => {
+        const venueId = parseInt((route.params?.venueId as string) ?? "")
+
+        return {
+          venueId,
+        }
+      },
     },
     {
       path: "/cart",
