@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { DatePicker } from "v-calendar"
 import { computed } from "vue"
 
 const props = defineProps<{

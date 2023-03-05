@@ -1,6 +1,5 @@
 import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
 import { getStringQueryParam } from "@/modules/common/utils/general-utils"
-import { isString } from "lodash"
 import { createRouter, createWebHistory } from "vue-router"
 
 const BookVenuePage = () => import("@/views/BookVenueView.vue")
@@ -71,7 +70,10 @@ const router = createRouter({
           bookVenueStore.resetStore()
         }
 
-        if (isString(to.query.name) && isString(to.query.eventUnitType)) {
+        if (
+          typeof to.query.name === "string" &&
+          typeof to.query.eventUnitType === "string"
+        ) {
           bookVenueStore.setVenueToBook({
             id: venueId,
             name: getStringQueryParam(to.query.name),

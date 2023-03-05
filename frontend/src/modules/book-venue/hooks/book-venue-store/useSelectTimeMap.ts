@@ -1,12 +1,11 @@
-import { ref } from "vue"
-import type { IOutputTime } from "@/modules/book-venue/types/api"
-import { InitialPage2SelectState } from "@/modules/book-venue/types/stores"
-import type { IDuration } from "@/modules/book-venue/types/api/booking-res.types"
 import type {
-  TSelectTimeMap,
   ISelectTimeObj,
+  TSelectTimeMap,
 } from "@/book-venue/types/components"
-// import { cloneDeep } from "lodash"
+import type { IOutputTime } from "@/modules/book-venue/types/api"
+import type { IDuration } from "@/modules/book-venue/types/api/booking-res.types"
+import { InitialPage2SelectState } from "@/modules/book-venue/types/stores"
+import { ref } from "vue"
 
 const initialTimeList = [
   {

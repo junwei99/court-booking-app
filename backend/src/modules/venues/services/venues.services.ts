@@ -9,8 +9,6 @@ import { queryVenueById } from "@/modules/venues/queries/query-venue-by-id/get-v
 import { queryVenues } from "@/modules/venues/queries/query-venues/get-venues.queries"
 
 export const getVenueByIdService = async (venueId: number) => {
-  console.log({ venueId })
-
   const [venue] = await queryVenueById.run({ venueId }, client)
 
   console.log({ venue })

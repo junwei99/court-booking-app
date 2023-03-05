@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// import { DatePicker } from "v-calendar"
 import type { TCategory } from "@/modules/book-venue/types/components/book-venue.types"
 import DateInput from "@/modules/common/components/shared-ui/atom/DateInput.vue"
 
