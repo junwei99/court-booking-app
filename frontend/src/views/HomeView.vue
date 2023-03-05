@@ -19,9 +19,8 @@ import { useQuery } from "@tanstack/vue-query"
 import "swiper/css"
 import type { Swiper as SwiperClass } from "swiper/types"
 import { Swiper, SwiperSlide } from "swiper/vue"
-import { useRouter } from "vue-router"
 
-const router = useRouter()
+const props = defineProps<{ navigateToVenuePage: (venueId: number) => void }>()
 
 const {
   status: venueListStatus,
@@ -31,9 +30,6 @@ const {
   queryKey: ["fetchVenues"],
   queryFn: () => fetchVenueList(),
   staleTime: 60 * 1000,
-  onSuccess: (res) => {
-    console.log({ res })
-  },
 })
 
 const navItemsList = [
@@ -56,10 +52,7 @@ const onSlideChange = (swiper: SwiperClass) => {
 }
 
 const itemCardOnClick = (venueId: number) => {
-  router.push({
-    name: "location",
-    params: { venueId: venueId },
-  })
+  props.navigateToVenuePage(venueId)
 }
 </script>
 

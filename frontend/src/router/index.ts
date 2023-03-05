@@ -15,6 +15,18 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+      props: () => {
+        const navigateToVenuePage = (venueId: number) => {
+          router.push({
+            name: "location",
+            params: { venueId },
+          })
+        }
+
+        return {
+          navigateToVenuePage,
+        }
+      },
     },
     {
       path: "/location/:venueId",
