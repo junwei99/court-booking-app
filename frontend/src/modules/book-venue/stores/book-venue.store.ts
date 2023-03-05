@@ -1,29 +1,42 @@
-import { ref } from "vue"
-import { defineStore } from "pinia"
-import appRouter from "@/router"
-import dayjs from "dayjs"
-import { fetchAvailableBookingTimeList } from "@/modules/book-venue/services/apis/fetch-available-booking-time-list"
 import {
-  useSelectTimeMap,
   useAvailableVenueList,
+  useSelectTimeMap,
 } from "@/modules/book-venue/hooks"
-import { fetchVenuesToBook } from "@/modules/book-venue/services/apis/fetch-venues-to-book"
-import { InitialPage2SelectState } from "@/modules/book-venue/types/stores"
-import type { IDictionary } from "@/modules/common/types/utils.types"
-import type { TSelectKey } from "@/modules/book-venue/types/stores/book-venue-store.types"
 import { usePage1SelectState } from "@/modules/book-venue/hooks/book-venue-store/usePage1SelectState"
 import { usePage2SelectState } from "@/modules/book-venue/hooks/book-venue-store/usePage2SelectState"
-import { useState } from "@/modules/common/hooks/useState"
+import { fetchAvailableBookingTimeList } from "@/modules/book-venue/services/apis/fetch-available-booking-time-list"
+import { fetchVenuesToBook } from "@/modules/book-venue/services/apis/fetch-venues-to-book"
 import {
   getPage2StateNotAvailableConditions,
   getTransformedBookingDateTime,
 } from "@/modules/book-venue/services/business/book-venue.business"
 import type { IOutputTime } from "@/modules/book-venue/types/api"
+import { InitialPage2SelectState } from "@/modules/book-venue/types/stores"
+import type { TSelectKey } from "@/modules/book-venue/types/stores/book-venue-store.types"
+import { useState } from "@/modules/common/hooks/useState"
+import type { IDictionary } from "@/modules/common/types/utils.types"
+import appRouter from "@/router"
+import { useStorage } from "@vueuse/core"
+import dayjs from "dayjs"
+import { defineStore } from "pinia"
+import { ref } from "vue"
+
+type TVenueToBook = {
+  id: number
+  image: string
+  eventCategory: string
+  venueName: string
+  venueAddress: string
+  eventUnitType: string
+}
 
 export const useBookVenueStore = defineStore("book-venue", () => {
-  const [venueToBook, setVenueToBook] = useState({
-    id: "",
-    name: "",
+  const venueToBookLocalStorage = useStorage("venueToBook", {
+    id: 0,
+    image: "",
+    eventCategory: "",
+    venueName: "",
+    venueAddress: "",
     eventUnitType: "",
   })
 
@@ -74,7 +87,7 @@ export const useBookVenueStore = defineStore("book-venue", () => {
 
   const fetchAndSetAvailableBookingTimeList = async () => {
     const availableBookingTimeList = await fetchAvailableBookingTimeList(
-      parseInt(venueToBook.value.id),
+      venueToBookLocalStorage.value.id,
       page1SelectState.value.selectedCategory as number,
       dayjs(page1SelectState.value.selectedDate).toJSON()
     )
@@ -211,7 +224,7 @@ export const useBookVenueStore = defineStore("book-venue", () => {
 
       const fetchVenuesToBookCallback = async () =>
         await fetchVenuesToBook(
-          parseInt(venueToBook.value.id),
+          venueToBookLocalStorage.value.id,
           page1SelectState.value.selectedCategory as number,
           transformedBookingDateTime,
           bookingDuration
@@ -229,6 +242,10 @@ export const useBookVenueStore = defineStore("book-venue", () => {
 
   const getSelectValue = (selectKey: string) =>
     page2SelectState.value[selectKeyMap[selectKey]]
+
+  const setVenueToBook = (newVenueToBookLocalStorage: TVenueToBook) => {
+    venueToBookLocalStorage.value = newVenueToBookLocalStorage
+  }
 
   const resetStore = () => {
     //complete reset of the store
@@ -248,7 +265,7 @@ export const useBookVenueStore = defineStore("book-venue", () => {
     venueState,
     selectTimeMap,
     bookingDateTime,
-    venueToBook,
+    venueToBook: venueToBookLocalStorage,
   } as const
 
   const actions = {

@@ -1,13 +1,13 @@
-import { ref, computed } from "vue"
-import type { IEventUnitItem } from "@/modules/common/types/venue.types"
-import type { TCartItem } from "@/modules/book-venue/types/components/cart.types"
-import dayjs from "dayjs"
-import isBetween from "dayjs/plugin/isBetween"
-import { defineStore } from "pinia"
 import {
   getIsTimeslotInCart,
   getSortedCartDisplayList,
 } from "@/modules/book-venue/services/business/validate-timeslot.business"
+import type { TCartItem } from "@/modules/book-venue/types/components/cart.types"
+import type { IEventUnitItem } from "@/modules/common/types/venue.types"
+import dayjs from "dayjs"
+import isBetween from "dayjs/plugin/isBetween"
+import { defineStore } from "pinia"
+import { computed, ref } from "vue"
 
 type TCartItemMap = Map<number, Array<TCartItem>>
 
@@ -16,7 +16,7 @@ dayjs.extend(isBetween)
 //TODO: revisit logic for unique eventUnits based on booking duration and time
 
 export const useCartStore = defineStore("cart", () => {
-  const venueToBook = ref({ id: "", name: "" })
+  const venueToBook = ref({ id: 0, name: "" })
   const cartItemMap = ref<TCartItemMap>(new Map())
 
   //getters
@@ -115,7 +115,7 @@ export const useCartStore = defineStore("cart", () => {
     eventUnit: IEventUnitItem,
     duration: number,
     bookingDatetime: Date,
-    venueId: string
+    venueId: number
   ) => {
     // const timestamp = bookingDateTime.getTime()
     const timestamp = getTimestampKey(bookingDatetime)

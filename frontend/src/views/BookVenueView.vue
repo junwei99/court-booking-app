@@ -46,7 +46,7 @@ watchEffect(() => {
 <template>
   <Navbar
     :page-mode="NavbarPageModeEnum.CHECKOUT"
-    :page-title="bookVenueStore.venueToBook.name"
+    :page-title="bookVenueStore.venueToBook.venueName"
     :left-button-action="headerBackBtnOnClick"
   />
   <div class="pb-[5rem]">

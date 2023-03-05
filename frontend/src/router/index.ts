@@ -60,10 +60,10 @@ const router = createRouter({
       component: BookVenuePage,
       beforeEnter: (to) => {
         const bookVenueStore = useBookVenueStore()
-        const venueId = to.params.venueId as string
+        const venueId = parseInt(to.params.venueId as string)
 
         if (
-          bookVenueStore.venueToBook.id !== "" &&
+          bookVenueStore.venueToBook.id &&
           venueId !== bookVenueStore.venueToBook.id
         ) {
           console.log("store resetted")
@@ -75,8 +75,9 @@ const router = createRouter({
           typeof to.query.eventUnitType === "string"
         ) {
           bookVenueStore.setVenueToBook({
+            ...bookVenueStore.venueToBook,
             id: venueId,
-            name: getStringQueryParam(to.query.name),
+            venueName: getStringQueryParam(to.query.name),
             eventUnitType: getStringQueryParam(to.query.eventUnitType),
           })
         }
