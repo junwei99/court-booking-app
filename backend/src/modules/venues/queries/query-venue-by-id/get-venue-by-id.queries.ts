@@ -33,7 +33,7 @@ export interface IQueryVenueByIdQuery {
   result: IQueryVenueByIdResult;
 }
 
-const queryVenueByIdIR: any = {"usedParamSet":{"venueId":true},"params":[{"name":"venueId","required":false,"transform":{"type":"scalar"},"locs":[{"a":526,"b":533}]}],"statement":"WITH amenities AS (\n    SELECT venue_id, array_agg(name) AS names\n    FROM venue_amenities va\n    JOIN amenity a ON va.amenity_id = a.id\n    GROUP BY venue_id\n), event_categories AS (\n    SELECT venue_id, array_agg(name) AS names\n    FROM venue_event_categories vec\n    JOIN event_categories ec ON vec.event_category_id = ec.id\n    GROUP BY venue_id\n)\nSELECT v.*, a.names AS amenities, ec.names AS event_categories\nFROM venue v\nJOIN amenities a ON v.id = a.venue_id\nJOIN event_categories ec ON v.id = ec.venue_id\nWHERE v.id = :venueId"};
+const queryVenueByIdIR: any = {"usedParamSet":{"venueId":true},"params":[{"name":"venueId","required":false,"transform":{"type":"scalar"},"locs":[{"a":536,"b":543}]}],"statement":"WITH amenities AS (\n    SELECT venue_id, array_agg(name) AS names\n    FROM venue_amenities va\n    JOIN amenity a ON va.amenity_id = a.id\n    GROUP BY venue_id\n), event_categories AS (\n    SELECT venue_id, array_agg(name) AS names\n    FROM venue_event_categories vec\n    JOIN event_categories ec ON vec.event_category_id = ec.id\n    GROUP BY venue_id\n)\nSELECT v.*, a.names AS amenities, ec.names AS event_categories\nFROM venue v\nLEFT JOIN amenities a ON v.id = a.venue_id\nLEFT JOIN event_categories ec ON v.id = ec.venue_id\nWHERE v.id = :venueId"};
 
 /**
  * Query generated from SQL:
@@ -51,8 +51,8 @@ const queryVenueByIdIR: any = {"usedParamSet":{"venueId":true},"params":[{"name"
  * )
  * SELECT v.*, a.names AS amenities, ec.names AS event_categories
  * FROM venue v
- * JOIN amenities a ON v.id = a.venue_id
- * JOIN event_categories ec ON v.id = ec.venue_id
+ * LEFT JOIN amenities a ON v.id = a.venue_id
+ * LEFT JOIN event_categories ec ON v.id = ec.venue_id
  * WHERE v.id = :venueId
  * ```
  */

@@ -12,6 +12,6 @@ WITH amenities AS (
 )
 SELECT v.*, a.names AS amenities, ec.names AS event_categories
 FROM venue v
-JOIN amenities a ON v.id = a.venue_id
-JOIN event_categories ec ON v.id = ec.venue_id
+LEFT JOIN amenities a ON v.id = a.venue_id
+LEFT JOIN event_categories ec ON v.id = ec.venue_id
 WHERE v.id = :venueId;

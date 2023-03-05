@@ -128,7 +128,7 @@ const handleOpenCentreInfoModal = (modalId: ECentreInfoKey) => {
           </p>
         </BaseLocationInfoSection>
         <div class="divider" />
-        <template v-if="amenitiesToDisplay && amenitiesToDisplay.length > 0">
+        <template v-if="amenitiesToDisplay && amenitiesToDisplay?.length > 0">
           <BaseLocationInfoSection title="Amenities">
             <div class="grid grid-cols-3 gap-10">
               <div

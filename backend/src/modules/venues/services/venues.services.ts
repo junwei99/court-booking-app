@@ -9,7 +9,11 @@ import { queryVenueById } from "@/modules/venues/queries/query-venue-by-id/get-v
 import { queryVenues } from "@/modules/venues/queries/query-venues/get-venues.queries"
 
 export const getVenueByIdService = async (venueId: number) => {
+  console.log({ venueId })
+
   const [venue] = await queryVenueById.run({ venueId }, client)
+
+  console.log({ venue })
 
   if (venue?.id) {
     return {
@@ -27,7 +31,7 @@ export const getVenueByIdService = async (venueId: number) => {
         website: venue.website,
         socialMedia: venue.social_media,
       },
-      amenities: venue.amenities,
+      amenities: venue?.amenities ?? [],
       eventCategories: venue.event_categories,
     }
   }
