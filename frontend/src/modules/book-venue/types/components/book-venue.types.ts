@@ -1,4 +1,4 @@
-import type { TSelectKey } from "../stores/book-venue-store.types"
+import type { TTimeAndDurationKey } from "@/modules/book-venue/types/stores/book-venue-store.types"
 
 // export type TSelectTimeMap = Map<
 //   TSelectKey,
@@ -11,7 +11,10 @@ export interface ISelectTimeObj {
   disabled?: boolean
 }
 
-export type TSelectTimeMap = Map<TSelectKey, { list: Array<ISelectTimeObj> }>
+export type TSelectTimeMap = Map<
+  TTimeAndDurationKey,
+  { list: Array<ISelectTimeObj> }
+>
 
 export type TCategory = {
   id: number

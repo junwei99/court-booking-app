@@ -45,19 +45,19 @@ export const useSelectTimeMap = () => {
   const selectTimeMap = ref<TSelectTimeMap>(
     new Map([
       [
-        "time1",
+        "selectedTime",
         {
           list: initialTimeList,
         },
       ],
       [
-        "time2",
+        "selectedAmPm",
         {
           list: initialAmPmList,
         },
       ],
       [
-        "duration",
+        "selectedDuration",
         {
           list: initialDurationList,
         },
@@ -78,11 +78,11 @@ export const useSelectTimeMap = () => {
           time1List.push({ text: timeObj.time, value: timeObj.time })
         })
 
-      selectTimeMap.value.set("time1", { list: time1List })
+      selectTimeMap.value.set("selectedTime", { list: time1List })
     },
     reset() {
       let time1List: Array<ISelectTimeObj> = structuredClone(initialTimeList)
-      selectTimeMap.value.set("time1", { list: time1List })
+      selectTimeMap.value.set("selectedTime", { list: time1List })
     },
   }
 
@@ -92,11 +92,11 @@ export const useSelectTimeMap = () => {
       if (amIsAvailable) time2List[1].disabled = false
       if (pmIsAvailable) time2List[2].disabled = false
 
-      selectTimeMap.value.set("time2", { list: time2List })
+      selectTimeMap.value.set("selectedAmPm", { list: time2List })
     },
     reset() {
       let time2List: Array<ISelectTimeObj> = structuredClone(initialAmPmList)
-      selectTimeMap.value.set("time2", { list: time2List })
+      selectTimeMap.value.set("selectedAmPm", { list: time2List })
     },
   }
 
@@ -105,19 +105,19 @@ export const useSelectTimeMap = () => {
       let durationList: Array<ISelectTimeObj> =
         structuredClone(initialDurationList)
 
-      durations.forEach((duration) => {
+      durations.forEach((selectedDuration) => {
         durationList.push({
-          text: duration.key,
-          value: duration.value.toString(),
+          text: selectedDuration.key,
+          value: selectedDuration.value.toString(),
         })
       })
-      selectTimeMap.value.set("duration", { list: durationList })
+      selectTimeMap.value.set("selectedDuration", { list: durationList })
     },
     reset() {
       let durationList: Array<ISelectTimeObj> =
         structuredClone(initialDurationList)
 
-      selectTimeMap.value.set("duration", { list: durationList })
+      selectTimeMap.value.set("selectedDuration", { list: durationList })
     },
   }
 

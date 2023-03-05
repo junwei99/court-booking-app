@@ -8,11 +8,14 @@ import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
 import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
 import { NavbarPageModeEnum } from "@/others/constants/enums"
-import router from "@/router"
 import { useQuery } from "@tanstack/vue-query"
-import { watchEffect } from "vue"
+import { ref, watchEffect } from "vue"
 
-const props = defineProps<{ venueId: number }>()
+const props = defineProps<{
+  venueId: number
+  navigateToCartPage: () => void
+  navigateBack: () => void
+}>()
 
 const cartStore = useCartStore()
 const bookVenueStore = useBookVenueStore()
@@ -24,19 +27,33 @@ const { data: categoryList } = useQuery({
   enabled: !!props.venueId,
 })
 
+const page = ref<1 | 2>(1)
+
 const headerBackBtnOnClick = () => {
-  if (bookVenueStore.page === "1") {
-    router.go(-1)
+  if (page.value === 1) {
+    props.navigateBack()
   } else {
-    bookVenueStore.setPage("1")
+    page.value = 1
+  }
+}
+
+const nextButtonOnClick = () => {
+  if (page.value === 1) {
+    bookVenueStore.initAvailableBookingTimeAndDuration()
+    //to display in cart page
+    bookVenueStore.setEventCategoryOfVenueToBook(
+      categoryList?.value?.find(
+        (category) => category.id === (bookVenueStore?.selectedCategory ?? 0)
+      )?.name ?? ""
+    )
+    page.value = 2
+  } else {
+    props.navigateToCartPage()
   }
 }
 
 watchEffect(() => {
-  if (
-    bookVenueStore.page1SelectState.selectedCategory === null &&
-    categoryList.value
-  ) {
+  if (bookVenueStore.selectedCategory === null && categoryList.value) {
     //resets store if venueId is different from route venueId
     bookVenueStore.handleSelectCategory(categoryList.value[0].id)
   }
@@ -46,16 +63,16 @@ watchEffect(() => {
 <template>
   <Navbar
     :page-mode="NavbarPageModeEnum.CHECKOUT"
-    :page-title="bookVenueStore.venueToBook.venueName"
+    :page-title="bookVenueStore.venueToBookLocalStorage.venueName"
     :left-button-action="headerBackBtnOnClick"
   />
   <div class="pb-[5rem]">
     <!-- first page -->
     <BookVenuePage1
-      v-if="bookVenueStore.page === '1'"
+      v-if="page === 1"
       :category-list="categoryList ?? []"
-      :selected-category="bookVenueStore.page1SelectState?.selectedCategory"
-      :selected-date="bookVenueStore.page1SelectState?.selectedDate"
+      :selected-category="bookVenueStore.selectedCategory"
+      :selected-date="bookVenueStore.selectedDate"
       @select-category="bookVenueStore.handleSelectCategory"
       @select-date="bookVenueStore.handleSelectDate"
     />
@@ -63,14 +80,11 @@ watchEffect(() => {
     <BookVenuePage2
       v-else
       :select-items-map="bookVenueStore.selectTimeMap"
-      :type-of-location="bookVenueStore.venueToBook.eventUnitType"
+      :type-of-location="bookVenueStore.venueToBookLocalStorage.eventUnitType"
     />
   </div>
   <div
-    v-if="
-      (bookVenueStore.page === '2' && cartStore.cartSize > 0) ||
-      bookVenueStore.page === '1'
-    "
+    v-if="(page === 2 && cartStore.cartSize > 0) || page === 1"
     :class="`bottom-action-bar ${cartStore.cartSize > 0 && 'grid grid-cols-2'}`"
   >
     <div v-if="cartStore.cartSize > 0">
@@ -79,8 +93,6 @@ watchEffect(() => {
         <PriceCurrency :price="cartStore.bookingTotalPriceInfo" />
       </p>
     </div>
-    <Button class="w-full" @click="bookVenueStore.nextButtonOnClick()">
-      Next
-    </Button>
+    <Button class="w-full" @click="nextButtonOnClick"> Next </Button>
   </div>
 </template>

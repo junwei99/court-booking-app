@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import type { TSelectTimeMap } from "@/modules/book-venue/types/components"
-import type { TSelectKey } from "@/modules/book-venue/types/stores/book-venue-store.types"
+import type { TTimeAndDurationKey } from "@/modules/book-venue/types/stores/book-venue-store.types"
 
 defineProps<{
   selectItemsMap: TSelectTimeMap
-  getSelectValue: (selectKey: string) => string
+  getSelectValue: (selectKey: TTimeAndDurationKey) => string
 }>()
 
 const emit = defineEmits<{
   (
     e: "handleSelectItemOnChange",
-    selectKey: TSelectKey,
+    selectKey: TTimeAndDurationKey,
     selectValue: string
   ): Promise<void>
 }>()
@@ -22,7 +22,7 @@ const emit = defineEmits<{
       v-for="[selectKey, selectItemValue] in selectItemsMap"
       :key="selectKey"
       :class="`select select-bordered select-md ${
-        selectKey === 'duration' && 'col-start-1 col-end-3'
+        selectKey === 'selectedDuration' && 'col-start-1 col-end-3'
       } `"
       :value="getSelectValue(selectKey)"
       @change="(e: any) => emit('handleSelectItemOnChange', selectKey, e.target.value)"

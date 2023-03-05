@@ -23,3 +23,8 @@ export const InitialPage2SelectState: IDictionary<string> = {
 } as const
 
 export type TSelectKey = "time1" | "time2" | "duration"
+
+export type TTimeAndDurationKey =
+  | "selectedTime"
+  | "selectedAmPm"
+  | "selectedDuration"

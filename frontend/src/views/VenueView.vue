@@ -7,6 +7,7 @@ import {
   shopSVG,
   showerSVG,
 } from "@/assets/images/icons"
+import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
 import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
 import {
   BaseLocationInfoSection,
@@ -38,6 +39,8 @@ const {
   queryFn: () => fetchVenue(props.venueId),
   staleTime: 60 * 1000,
 })
+
+const bookVenueStore = useBookVenueStore()
 
 const centreInfoModalState = reactive<{ modalId: ECentreInfoKey }>({
   modalId: ECentreInfoKey.NONE,
@@ -86,6 +89,14 @@ const centreInfoItemMap = new Map<ECentreInfoKey, { title: string }>([
 ])
 
 const handleBookButtonOnClick = () => {
+  //to display in cart page
+  bookVenueStore.setVenueToBook({
+    id: props.venueId,
+    venueName: venueData?.value?.title ?? "",
+    venueAddress: venueData.value?.address ?? "",
+    eventUnitType: "court",
+    image: venueData.value?.images[0] ?? "",
+  })
   props.navigateToBookVenuePage(venueData.value?.title ?? "", "court")
 }
 
