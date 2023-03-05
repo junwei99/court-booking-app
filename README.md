@@ -16,7 +16,7 @@ A simple sports venue booking app inspired by Courtsite
 
 ## Reasoning
 
-#### Why don't you use an ORM?
+#### Why don't you use an ORM? (Prisma, TypeORM, MikroORM, etc..)
 
 Main purpose of this project is to learn all components of a backend application without all the abstractions, All SQL queries are wrote by hand. PgTyped is used to easily automate the process of making db data typesafe in the backend
 
