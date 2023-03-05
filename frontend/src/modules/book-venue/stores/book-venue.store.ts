@@ -2,7 +2,7 @@ import {
   useAvailableVenueList,
   useSelectTimeMap,
 } from "@/modules/book-venue/hooks"
-import { usePage1SelectState } from "@/modules/book-venue/hooks/book-venue-store/usePage1SelectState"
+import { useBookVenueCategoryAndDate } from "@/modules/book-venue/hooks/book-venue-store/useBookVenueCategoryAndDate"
 import { usePage2SelectState } from "@/modules/book-venue/hooks/book-venue-store/usePage2SelectState"
 import { fetchAvailableBookingTimeList } from "@/modules/book-venue/services/apis/fetch-available-booking-time-list"
 import { fetchVenuesToBook } from "@/modules/book-venue/services/apis/fetch-venues-to-book"
@@ -57,14 +57,15 @@ export const useBookVenueStore = defineStore("book-venue", () => {
   const [isResettingOnNext, setIsResettingOnNext] = useState(false)
 
   const {
-    page1SelectState,
+    selectedCategory,
+    selectedDate,
     handleSelectCategory,
     handleSelectDate,
     resetPage1SelectState,
-  } = usePage1SelectState(setIsResettingOnNext)
+  } = useBookVenueCategoryAndDate(setIsResettingOnNext)
 
   //booking date time initialized with current date, will be set when user select date, time, am/pm and duration
-  const bookingDateTime = ref<Date>(page1SelectState.value.selectedDate)
+  const bookingDateTime = ref<Date>(selectedDate.value)
 
   const {
     page2SelectState,
@@ -88,8 +89,8 @@ export const useBookVenueStore = defineStore("book-venue", () => {
   const fetchAndSetAvailableBookingTimeList = async () => {
     const availableBookingTimeList = await fetchAvailableBookingTimeList(
       venueToBookLocalStorage.value.id,
-      page1SelectState.value.selectedCategory as number,
-      dayjs(page1SelectState.value.selectedDate).toJSON()
+      selectedCategory.value as number,
+      dayjs(selectedDate.value).toJSON()
     )
 
     setTimeListRes(availableBookingTimeList.outputTimeList)
@@ -212,7 +213,7 @@ export const useBookVenueStore = defineStore("book-venue", () => {
     //if all 3 select has a value,  fetch venue list
     if (isAll3ItemsSelected.value) {
       const transformedBookingDateTime = getTransformedBookingDateTime(
-        page1SelectState.value.selectedDate,
+        selectedDate.value,
         page2SelectState.value.selectedTime,
         page2SelectState.value.selectedAmPm
       )
@@ -225,7 +226,7 @@ export const useBookVenueStore = defineStore("book-venue", () => {
       const fetchVenuesToBookCallback = async () =>
         await fetchVenuesToBook(
           venueToBookLocalStorage.value.id,
-          page1SelectState.value.selectedCategory as number,
+          selectedCategory.value as number,
           transformedBookingDateTime,
           bookingDuration
         )
@@ -261,7 +262,8 @@ export const useBookVenueStore = defineStore("book-venue", () => {
 
   const getters = {
     page,
-    page1SelectState,
+    selectedCategory,
+    selectedDate,
     page2SelectState,
     venueState,
     selectTimeMap,

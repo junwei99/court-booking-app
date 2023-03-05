@@ -16,6 +16,7 @@ export const usePage2SelectState = () => {
       selectedDuration: InitialPage2SelectState.selectedDuration,
     }
   )
+
   const [timeListRes, setTimeListRes] = useState<Array<IOutputTime>>([])
 
   const isAll3ItemsSelected = computed(() =>

@@ -33,10 +33,7 @@ const headerBackBtnOnClick = () => {
 }
 
 watchEffect(() => {
-  if (
-    bookVenueStore.page1SelectState.selectedCategory === null &&
-    categoryList.value
-  ) {
+  if (bookVenueStore.selectedCategory === null && categoryList.value) {
     //resets store if venueId is different from route venueId
     bookVenueStore.handleSelectCategory(categoryList.value[0].id)
   }
@@ -54,8 +51,8 @@ watchEffect(() => {
     <BookVenuePage1
       v-if="bookVenueStore.page === '1'"
       :category-list="categoryList ?? []"
-      :selected-category="bookVenueStore.page1SelectState?.selectedCategory"
-      :selected-date="bookVenueStore.page1SelectState?.selectedDate"
+      :selected-category="bookVenueStore.selectedCategory"
+      :selected-date="bookVenueStore.selectedDate"
       @select-category="bookVenueStore.handleSelectCategory"
       @select-date="bookVenueStore.handleSelectDate"
     />

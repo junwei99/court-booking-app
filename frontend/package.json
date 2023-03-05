@@ -25,6 +25,7 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
     "@tailwindcss/line-clamp": "^0.4.2",
+    "@total-typescript/ts-reset": "^0.3.7",
     "@types/node": "^16.11.47",
     "@vitejs/plugin-vue": "^3.0.1",
     "@vitejs/plugin-vue-jsx": "^2.0.0",
