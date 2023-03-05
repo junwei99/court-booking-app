@@ -32,6 +32,28 @@ const router = createRouter({
       path: "/location/:venueId",
       name: "location",
       component: VenueView,
+      props: (route) => {
+        const venueId = parseInt((route.params?.venueId as string) ?? "")
+
+        const navigateToBookVenuePage = (
+          venueName: string,
+          eventUnitType: string
+        ) => {
+          router.push({
+            name: "book location",
+            params: { venueId },
+            query: {
+              name: venueName,
+              eventUnitType,
+            },
+          })
+        }
+
+        return {
+          venueId,
+          navigateToBookVenuePage,
+        }
+      },
     },
     {
       path: "/location/:venueId/book",

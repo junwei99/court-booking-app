@@ -23,20 +23,19 @@ import type { IVenueRes } from "@/modules/venue/types/apis/venue-res"
 import { ECentreInfoKey, NavbarPageModeEnum } from "@/others/constants/enums"
 import { useQuery } from "@tanstack/vue-query"
 import { computed, reactive } from "vue"
-import { useRoute, useRouter } from "vue-router"
 
-const router = useRouter()
-const route = useRoute()
-
-const venueId = parseInt(route.params.venueId as string)
+const props = defineProps<{
+  navigateToBookVenuePage: (venueName: string, eventUnitType: string) => void
+  venueId: number
+}>()
 
 const {
   isFetching: venueIsFetching,
   status: venueDataStatus,
   data: venueData,
 } = useQuery<IVenueRes["venue"]>({
-  queryKey: ["fetchVenue", venueId],
-  queryFn: () => fetchVenue(venueId),
+  queryKey: ["fetchVenue", props.venueId],
+  queryFn: () => fetchVenue(props.venueId),
   staleTime: 60 * 1000,
 })
 
@@ -87,14 +86,7 @@ const centreInfoItemMap = new Map<ECentreInfoKey, { title: string }>([
 ])
 
 const handleBookButtonOnClick = () => {
-  router.push({
-    name: "book location",
-    params: { venueId: venueId },
-    query: {
-      name: venueData.value?.title ?? "",
-      eventUnitType: "court",
-    },
-  })
+  props.navigateToBookVenuePage(venueData.value?.title ?? "", "court")
 }
 
 const handleOpenCentreInfoModal = (modalId: ECentreInfoKey) => {
