@@ -4,6 +4,7 @@ import {
 } from "@/modules/book-venue/services/business/validate-timeslot.business"
 import type { TCartItem } from "@/modules/book-venue/types/components/cart.types"
 import type { IEventUnitItem } from "@/modules/common/types/venue.types"
+import { useLocalStorage } from "@vueuse/core"
 import dayjs from "dayjs"
 import isBetween from "dayjs/plugin/isBetween"
 import { defineStore } from "pinia"
@@ -11,12 +12,28 @@ import { computed, ref } from "vue"
 
 type TCartItemMap = Map<number, Array<TCartItem>>
 
+type TVenueToBook = {
+  id: number
+  venueName: string
+  venueAddress: string
+  eventCategory: string
+  image: string
+  eventUnitType: string
+}
+
 dayjs.extend(isBetween)
 
 //TODO: revisit logic for unique eventUnits based on booking duration and time
 
 export const useCartStore = defineStore("cart", () => {
-  const venueToBook = ref({ id: 0, name: "" })
+  const venueToBookLS = useLocalStorage("venueToBook", {
+    id: 0,
+    venueName: "",
+    venueAddress: "",
+    eventCategory: "",
+    image: "",
+    eventUnitType: "",
+  })
   const cartItemMap = ref<TCartItemMap>(new Map())
 
   //getters
@@ -115,17 +132,14 @@ export const useCartStore = defineStore("cart", () => {
     eventUnit: IEventUnitItem,
     duration: number,
     bookingDatetime: Date,
-    venueId: number
+    venueToBook: TVenueToBook
   ) => {
     // const timestamp = bookingDateTime.getTime()
     const timestamp = getTimestampKey(bookingDatetime)
 
     //resets state if the venueId is different
-    if (venueToBook.value.id !== venueId) {
-      venueToBook.value = {
-        id: venueId,
-        name: "",
-      }
+    if (venueToBookLS.value.id !== venueToBook.id) {
+      venueToBookLS.value = venueToBook
       cartItemMap.value = new Map()
     }
 
@@ -156,7 +170,7 @@ export const useCartStore = defineStore("cart", () => {
   }
 
   const getters = {
-    venueToBook,
+    venueToBookLS,
     mergedEventUnitsList,
     bookingTotalPriceInfo,
     cartSize,

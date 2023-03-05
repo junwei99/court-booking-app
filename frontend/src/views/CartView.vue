@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import CartSection from "@/modules/book-venue/components/cart/CartSection.vue"
-import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
 import { useCartStore } from "@/modules/book-venue/stores/cart.store"
 import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
@@ -11,7 +10,6 @@ import { onMounted, ref } from "vue"
 const pageFetchStatus = ref(EFetchStatus.NONE)
 
 const cartStore = useCartStore()
-const bookVenueStore = useBookVenueStore()
 
 onMounted(() => {
   pageFetchStatus.value = EFetchStatus.LOADING
@@ -29,10 +27,10 @@ onMounted(() => {
     <div class="pb-[5rem]">
       <CartSection
         :page-fetch-status="pageFetchStatus"
-        :venue-title="bookVenueStore.venueToBookLocalStorage.venueName"
-        :venue-address="bookVenueStore.venueToBookLocalStorage.venueAddress"
-        :venue-image="bookVenueStore.venueToBookLocalStorage.image"
-        :event-category="bookVenueStore.venueToBookLocalStorage.eventCategory"
+        :venue-title="cartStore.venueToBookLS.venueName"
+        :venue-address="cartStore.venueToBookLS.venueAddress"
+        :venue-image="cartStore.venueToBookLS.image"
+        :event-category="cartStore.venueToBookLS.eventCategory"
         :cart-item-display-list="cartStore.cartItemsDisplayList"
         :total-price="cartStore.bookingTotalPriceInfo"
       />

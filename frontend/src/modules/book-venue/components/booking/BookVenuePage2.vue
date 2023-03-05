@@ -38,7 +38,7 @@ const handleMutateCartItems = (eventUnit: IEventUnitItem) =>
     eventUnit,
     parseInt(bookVenueStore.bookVenueTimeAndDuration.selectedDuration),
     bookVenueStore.bookingDateTime,
-    bookVenueStore.venueToBookLocalStorage.id
+    bookVenueStore.venueToBook
   )
 
 const cartHasItem = (eventUnitId: number) => {

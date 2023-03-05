@@ -63,7 +63,7 @@ watchEffect(() => {
 <template>
   <Navbar
     :page-mode="NavbarPageModeEnum.CHECKOUT"
-    :page-title="bookVenueStore.venueToBookLocalStorage.venueName"
+    :page-title="bookVenueStore.venueToBook.venueName"
     :left-button-action="headerBackBtnOnClick"
   />
   <div class="pb-[5rem]">
@@ -80,7 +80,7 @@ watchEffect(() => {
     <BookVenuePage2
       v-else
       :select-items-map="bookVenueStore.selectTimeMap"
-      :type-of-location="bookVenueStore.venueToBookLocalStorage.eventUnitType"
+      :type-of-location="bookVenueStore.venueToBook.eventUnitType"
     />
   </div>
   <div

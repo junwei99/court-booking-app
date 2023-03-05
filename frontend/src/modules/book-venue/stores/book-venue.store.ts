@@ -15,7 +15,6 @@ import {
 } from "@/modules/book-venue/services/business/book-venue.business"
 import type { IOutputTime } from "@/modules/book-venue/types/api"
 import type { TTimeAndDurationKey } from "@/modules/book-venue/types/stores/book-venue-store.types"
-import { useLocalStorage } from "@vueuse/core"
 import dayjs from "dayjs"
 import { defineStore } from "pinia"
 import { ref } from "vue"
@@ -27,7 +26,7 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     isResettingOnNext.value = isResetting
   }
 
-  const venueToBookLocalStorage = useLocalStorage("venueToBook", {
+  const venueToBook = ref({
     id: 0,
     venueName: "",
     venueAddress: "",
@@ -78,7 +77,7 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     }
 
     const availableBookingTimeList = await fetchAvailableBookingTimeList(
-      venueToBookLocalStorage.value.id,
+      venueToBook.value.id,
       selectedCategory.value,
       dayjs(selectedDate.value).toJSON()
     )
@@ -95,15 +94,15 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     image: string
     eventUnitType: string
   }) => {
-    venueToBookLocalStorage.value = {
-      ...venueToBookLocalStorage.value,
+    venueToBook.value = {
+      ...venueToBook.value,
       ...venue,
     }
   }
 
   const setEventCategoryOfVenueToBook = (eventCategory: string) => {
-    venueToBookLocalStorage.value = {
-      ...venueToBookLocalStorage.value,
+    venueToBook.value = {
+      ...venueToBook.value,
       eventCategory,
     }
   }
@@ -236,7 +235,7 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
 
     const fetchVenuesToBookCallback = async () =>
       await fetchVenuesToBook(
-        venueToBookLocalStorage.value.id,
+        venueToBook.value.id,
         selectedCategory.value as number,
         transformedBookingDateTime,
         bookingDuration
@@ -265,7 +264,7 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     venueState,
     selectTimeMap,
     bookingDateTime,
-    venueToBookLocalStorage,
+    venueToBook,
   } as const
 
   const actions = {

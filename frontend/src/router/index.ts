@@ -62,23 +62,12 @@ const router = createRouter({
         const venueId = parseInt(to.params.venueId as string)
 
         if (
-          bookVenueStore.venueToBookLocalStorage.id &&
-          venueId !== bookVenueStore.venueToBookLocalStorage.id
+          bookVenueStore.venueToBook.id &&
+          venueId !== bookVenueStore.venueToBook.id
         ) {
           console.log("store resetted")
           bookVenueStore.resetStore()
         }
-
-        // if (
-        //   typeof to.query.name === "string" &&
-        //   typeof to.query.eventUnitType === "string"
-        // ) {
-        //   bookVenueStore.setVenueToBook({
-        //     id: venueId,
-        //     venueName: getStringQueryParam(to.query.name),
-        //     eventUnitType: getStringQueryParam(to.query.eventUnitType),
-        //   })
-        // }
       },
       props: (route) => {
         const venueId = parseInt((route.params?.venueId as string) ?? "")
