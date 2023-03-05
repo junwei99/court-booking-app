@@ -256,6 +256,7 @@ export const useBookVenueStore = defineStore("book-venue", () => {
     durationListOperations.reset()
     clearVenues()
     setPage("1")
+    venueToBookLocalStorage.value = null
   }
 
   const getters = {
