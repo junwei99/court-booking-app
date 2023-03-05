@@ -99,8 +99,6 @@ export const useBookVenueTimeAndDuration = () => {
   } as const
 
   const actions = {
-    getIsSelectedDurationNotAvailable,
-    getIsSelectedAmPmNotAvailable,
     resetTimeAndDuration,
     setAmPmFromRes,
     setDurationFromRes,

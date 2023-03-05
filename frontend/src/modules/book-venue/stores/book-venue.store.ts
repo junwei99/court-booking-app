@@ -15,6 +15,7 @@ import {
 } from "@/modules/book-venue/services/business/book-venue.business"
 import type { IOutputTime } from "@/modules/book-venue/types/api"
 import type { TTimeAndDurationKey } from "@/modules/book-venue/types/stores/book-venue-store.types"
+import { useLocalStorage } from "@vueuse/core"
 import dayjs from "dayjs"
 import { defineStore } from "pinia"
 import { ref } from "vue"
@@ -26,9 +27,12 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     isResettingOnNext.value = isResetting
   }
 
-  const venueToBook = ref({
+  const venueToBookLocalStorage = useLocalStorage("venueToBook", {
     id: 0,
     venueName: "",
+    venueAddress: "",
+    eventCategory: "",
+    image: "",
     eventUnitType: "",
   })
 
@@ -43,8 +47,6 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
   const {
     bookVenueTimeAndDuration,
     isAll3ItemsSelected,
-    getIsSelectedDurationNotAvailable,
-    getIsSelectedAmPmNotAvailable,
     resetTimeAndDuration,
     setAmPmFromRes,
     setDurationFromRes,
@@ -76,7 +78,7 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     }
 
     const availableBookingTimeList = await fetchAvailableBookingTimeList(
-      venueToBook.value.id,
+      venueToBookLocalStorage.value.id,
       selectedCategory.value,
       dayjs(selectedDate.value).toJSON()
     )
@@ -89,9 +91,21 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
   const setVenueToBook = (venue: {
     id: number
     venueName: string
+    venueAddress: string
+    image: string
     eventUnitType: string
   }) => {
-    venueToBook.value = venue
+    venueToBookLocalStorage.value = {
+      ...venueToBookLocalStorage.value,
+      ...venue,
+    }
+  }
+
+  const setEventCategoryOfVenueToBook = (eventCategory: string) => {
+    venueToBookLocalStorage.value = {
+      ...venueToBookLocalStorage.value,
+      eventCategory,
+    }
   }
 
   const initLists = (
@@ -222,7 +236,7 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
 
     const fetchVenuesToBookCallback = async () =>
       await fetchVenuesToBook(
-        venueToBook.value.id,
+        venueToBookLocalStorage.value.id,
         selectedCategory.value as number,
         transformedBookingDateTime,
         bookingDuration
@@ -251,11 +265,12 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     venueState,
     selectTimeMap,
     bookingDateTime,
-    venueToBook,
+    venueToBookLocalStorage,
   } as const
 
   const actions = {
     setVenueToBook,
+    setEventCategoryOfVenueToBook,
     handleSelectCategory,
     handleSelectDate,
     handleSelectTimeAndDurationOnChange,

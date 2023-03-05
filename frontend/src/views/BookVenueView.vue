@@ -8,11 +8,14 @@ import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
 import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
 import { NavbarPageModeEnum } from "@/others/constants/enums"
-import router from "@/router"
 import { useQuery } from "@tanstack/vue-query"
 import { ref, watchEffect } from "vue"
 
-const props = defineProps<{ venueId: number }>()
+const props = defineProps<{
+  venueId: number
+  navigateToCartPage: () => void
+  navigateBack: () => void
+}>()
 
 const cartStore = useCartStore()
 const bookVenueStore = useBookVenueStore()
@@ -28,7 +31,7 @@ const page = ref<1 | 2>(1)
 
 const headerBackBtnOnClick = () => {
   if (page.value === 1) {
-    router.go(-1)
+    props.navigateBack()
   } else {
     page.value = 1
   }
@@ -37,11 +40,15 @@ const headerBackBtnOnClick = () => {
 const nextButtonOnClick = () => {
   if (page.value === 1) {
     bookVenueStore.initAvailableBookingTimeAndDuration()
+    //to display in cart page
+    bookVenueStore.setEventCategoryOfVenueToBook(
+      categoryList?.value?.find(
+        (category) => category.id === (bookVenueStore?.selectedCategory ?? 0)
+      )?.name ?? ""
+    )
     page.value = 2
   } else {
-    router.push({
-      name: "cart",
-    })
+    props.navigateToCartPage()
   }
 }
 
@@ -56,7 +63,7 @@ watchEffect(() => {
 <template>
   <Navbar
     :page-mode="NavbarPageModeEnum.CHECKOUT"
-    :page-title="bookVenueStore.venueToBook.venueName"
+    :page-title="bookVenueStore.venueToBookLocalStorage.venueName"
     :left-button-action="headerBackBtnOnClick"
   />
   <div class="pb-[5rem]">
@@ -73,7 +80,7 @@ watchEffect(() => {
     <BookVenuePage2
       v-else
       :select-items-map="bookVenueStore.selectTimeMap"
-      :type-of-location="bookVenueStore.venueToBook.eventUnitType"
+      :type-of-location="bookVenueStore.venueToBookLocalStorage.eventUnitType"
     />
   </div>
   <div

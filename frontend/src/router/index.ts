@@ -1,5 +1,4 @@
 import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
-import { getStringQueryParam } from "@/modules/common/utils/general-utils"
 import { createRouter, createWebHistory } from "vue-router"
 
 const BookVenuePage = () => import("@/views/BookVenueView.vue")
@@ -39,7 +38,7 @@ const router = createRouter({
           eventUnitType: string
         ) => {
           router.push({
-            name: "book location",
+            name: "book venue",
             params: { venueId },
             query: {
               name: venueName,
@@ -56,36 +55,48 @@ const router = createRouter({
     },
     {
       path: "/location/:venueId/book",
-      name: "book location",
+      name: "book venue",
       component: BookVenuePage,
       beforeEnter: (to) => {
         const bookVenueStore = useBookVenueStore()
         const venueId = parseInt(to.params.venueId as string)
 
         if (
-          bookVenueStore.venueToBook.id &&
-          venueId !== bookVenueStore.venueToBook.id
+          bookVenueStore.venueToBookLocalStorage.id &&
+          venueId !== bookVenueStore.venueToBookLocalStorage.id
         ) {
           console.log("store resetted")
           bookVenueStore.resetStore()
         }
 
-        if (
-          typeof to.query.name === "string" &&
-          typeof to.query.eventUnitType === "string"
-        ) {
-          bookVenueStore.setVenueToBook({
-            id: venueId,
-            venueName: getStringQueryParam(to.query.name),
-            eventUnitType: getStringQueryParam(to.query.eventUnitType),
-          })
-        }
+        // if (
+        //   typeof to.query.name === "string" &&
+        //   typeof to.query.eventUnitType === "string"
+        // ) {
+        //   bookVenueStore.setVenueToBook({
+        //     id: venueId,
+        //     venueName: getStringQueryParam(to.query.name),
+        //     eventUnitType: getStringQueryParam(to.query.eventUnitType),
+        //   })
+        // }
       },
       props: (route) => {
         const venueId = parseInt((route.params?.venueId as string) ?? "")
 
+        const navigateToCartPage = () => {
+          router.push({
+            name: "cart",
+          })
+        }
+
+        const navigateBack = () => {
+          router.go(-1)
+        }
+
         return {
           venueId,
+          navigateToCartPage,
+          navigateBack,
         }
       },
     },

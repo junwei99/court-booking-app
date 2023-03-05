@@ -5,13 +5,6 @@ import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurre
 import SquareImage from "@/modules/common/components/shared-ui/atom/SquareImage.vue"
 import { EFetchStatus } from "@/others/constants/enums"
 
-interface ICartItemInfo {
-  locationTitle: string
-  locationImageSrc: string
-  category: string
-  locationAddress: string
-}
-
 type TDisplayCartItem = {
   bookingDate: string
   eventUnitList: Array<{
@@ -24,7 +17,10 @@ type TDisplayCartItem = {
 
 defineProps<{
   pageFetchStatus: EFetchStatus
-  cartItemInfo: ICartItemInfo
+  venueTitle: string
+  venueAddress: string
+  venueImage: string
+  eventCategory: string
   cartItemDisplayList: Array<TDisplayCartItem>
   totalPrice: number
 }>()
@@ -36,18 +32,18 @@ defineProps<{
       <template v-if="pageFetchStatus === EFetchStatus.LOADED"
         ><SquareImage
           containerClass="rounded-2xl"
-          :imageSrc="cartItemInfo.locationImageSrc"
-          :imageAlt="cartItemInfo.locationTitle"
+          :imageSrc="venueImage"
+          :imageAlt="venueTitle"
         />
         <div>
           <p class="font-semibold text-primary-normal">
-            {{ cartItemInfo.category.toUpperCase() }}
+            {{ eventCategory.toUpperCase() }}
           </p>
           <p class="mb-1">
-            {{ cartItemInfo.locationTitle }}
+            {{ venueTitle }}
           </p>
           <p class="text-xs">
-            {{ cartItemInfo.locationAddress }}
+            {{ venueAddress }}
           </p>
         </div></template
       >
