@@ -6,13 +6,13 @@ import {
   BookVenuePage2Skeleton,
   BookVenuePage2VenueList,
 } from "@/modules/book-venue/components/booking/book-venue-page-2"
+import BookVenuePage2EmptyList from "@/modules/book-venue/components/booking/book-venue-page-2/BookVenuePage2EmptyList.vue"
 import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
 import { useCartStore } from "@/modules/book-venue/stores/cart.store"
 import type { TSelectTimeMap } from "@/modules/book-venue/types/components"
 import type { IEventUnitItem } from "@/modules/common/types/venue.types"
 import { EFetchStatus } from "@/others/constants/enums"
 import { storeToRefs } from "pinia"
-import BookVenuePage2EmptyList from "./book-venue-page-2/BookVenuePage2EmptyList.vue"
 
 const props = defineProps<{
   typeOfLocation: string
