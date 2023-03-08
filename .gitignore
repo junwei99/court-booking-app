@@ -8,12 +8,14 @@ pnpm-debug.log*
 lerna-debug.log*
 
 **/node_modules/
+**/pgdata/
 .DS_Store
 **/dist
 **/dist-ssr
 **/coverage
 *.local
 .vscode/
+*.env
 
 /cypress/videos/
 /cypress/screenshots/

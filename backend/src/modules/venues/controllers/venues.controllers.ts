@@ -1,15 +1,17 @@
-import { Request, Response } from "express"
-import {
-  getVenueListService,
-  getVenueByIdService,
-  createVenueService,
-  createAmenitiesService,
-} from "@/modules/venues/services/venues.services"
-import { IInsertVenueParams } from "@/modules/venues/queries/create-venues/create-venues.queries"
 import { ApiRes } from "@/modules/common/utils/ApiResponse.utils"
+import { IInsertVenueParams } from "@/modules/venues/queries/create-venues/create-venues.queries"
+import {
+  createAmenitiesService,
+  createVenueService,
+  getVenueByIdService,
+  getVenueListService,
+} from "@/modules/venues/services/venues.services"
+import { Request, Response } from "express"
 
 export const fetchVenuesCtrl = async (req: Request, res: Response) => {
   const venueList = await getVenueListService()
+
+  console.log({ venueList })
 
   const apiRes = new ApiRes(res)
 
@@ -62,4 +64,15 @@ export const createAmenityCtrl = async (
     { createdAmenities },
     "Amenities created successfully"
   )
+}
+
+export const test = async (
+  req: Request<{}, {}, { test: string }>,
+  res: Response
+) => {
+  const { test } = req.body
+
+  const apiRes = new ApiRes(res)
+
+  return apiRes.sendSuccessRes({ test }, "Test fetched successfully")
 }
