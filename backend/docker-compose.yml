@@ -8,6 +8,7 @@ services:
       POSTGRES_DB: "court-booking-app"
     volumes:
       - ./pgdata:/var/lib/postgresql/data
+      - ./db_backup.sql:/src/scripts/db_backup.sql
     ports:
       - "5432:5432"
   web:
