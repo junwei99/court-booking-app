@@ -46,6 +46,7 @@ const bookVenueStore = useBookVenueStore()
 
 watchEffect(() => {
   globalLayoutStore.setNavbar({
+    pageMode: "checkout",
     pageTitle: venueData.value?.title ?? "",
   })
 })
@@ -114,7 +115,6 @@ const handleOpenCentreInfoModal = (modalId: ECentreInfoKey) => {
 </script>
 
 <template>
-  <!-- <Navbar pageMode="checkout" :pageTitle="venueData && venueData.title" /> -->
   <div
     v-if="
       venueIsFetching === false && venueDataStatus === 'success' && venueData

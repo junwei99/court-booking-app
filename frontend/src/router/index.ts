@@ -57,10 +57,6 @@ const router = createRouter({
           navigateToBookVenuePage,
         }
       },
-      beforeEnter: () => {
-        const globalLayoutStore = useGlobalLayoutStore()
-        globalLayoutStore.setNavbar({ pageMode: "checkout" })
-      },
     },
     {
       path: "/location/:venueId/book",
@@ -106,6 +102,14 @@ const router = createRouter({
       path: "/cart",
       name: "cart",
       component: CartView,
+      beforeEnter: () => {
+        const globalLayoutStore = useGlobalLayoutStore()
+        globalLayoutStore.setNavbar({
+          pageMode: "checkout",
+          pageTitle: "My Cart",
+          showRightButton: false,
+        })
+      },
     },
   ],
   scrollBehavior() {

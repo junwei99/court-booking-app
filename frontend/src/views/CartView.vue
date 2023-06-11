@@ -3,7 +3,6 @@ import CartSection from "@/modules/book-venue/components/cart/CartSection.vue"
 import { useCartStore } from "@/modules/book-venue/stores/cart.store"
 import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
-import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
 import { EFetchStatus } from "@/others/constants/enums"
 import { onMounted, ref } from "vue"
 
@@ -18,11 +17,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <Navbar
-    page-mode="checkout"
-    page-title="My Cart"
-    :show-right-button="false"
-  />
   <div>
     <div class="pb-[5rem]">
       <CartSection

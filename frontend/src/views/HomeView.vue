@@ -55,7 +55,6 @@ const itemCardOnClick = (venueId: number) => {
 </script>
 
 <template>
-  <!-- <Navbar pageMode="home" /> -->
   <div class="page-width">
     <Swiper
       class="mt-2 sm:mb-10"

@@ -6,9 +6,9 @@ import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
 import { useCartStore } from "@/modules/book-venue/stores/cart.store"
 import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
-import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
+import { useGlobalLayoutStore } from "@/modules/common/stores/global-layout.store"
 import { useQuery } from "@tanstack/vue-query"
-import { ref, watchEffect } from "vue"
+import { onMounted, ref, watchEffect } from "vue"
 
 const props = defineProps<{
   venueId: number
@@ -20,6 +20,7 @@ const props = defineProps<{
 
 const cartStore = useCartStore()
 const bookVenueStore = useBookVenueStore()
+const globalLayoutStore = useGlobalLayoutStore()
 
 const { data: categoryList } = useQuery({
   queryKey: ["fetchCategoriesOfVenue", props.venueId],
@@ -59,16 +60,18 @@ watchEffect(() => {
     bookVenueStore.handleSelectCategory(categoryList.value[0].id)
   }
 })
+
+onMounted(() => {
+  globalLayoutStore.setNavbar({
+    pageMode: "checkout",
+    pageTitle: props.venueName,
+    leftButtonAction: headerBackBtnOnClick,
+  })
+})
 </script>
 
 <template>
-  <Navbar
-    page-mode="checkout"
-    :page-title="venueName"
-    :left-button-action="headerBackBtnOnClick"
-  />
   <div class="pb-[5rem]">
-    <!-- first page -->
     <BookVenuePage1
       v-if="page === 1"
       :category-list="categoryList ?? []"
