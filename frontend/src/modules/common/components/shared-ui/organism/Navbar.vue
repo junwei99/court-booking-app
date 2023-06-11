@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from "vue"
-import { useRouter } from "vue-router"
 import { useCartStore } from "@/modules/book-venue/stores/cart.store"
-import { NavbarPageModeEnum } from "@/others/constants/enums"
+import type { TNavbarPageMode } from "@/others/constants/enums"
+import { computed, ref } from "vue"
+import { useRouter } from "vue-router"
 
 interface IPageNavbarProps {
   leftButtonAction: () => void
@@ -14,12 +14,12 @@ const cartStore = useCartStore()
 
 const props = withDefaults(
   defineProps<{
-    pageMode: NavbarPageModeEnum
+    pageMode: TNavbarPageMode
     leftButtonAction?: () => void
     pageTitle?: string
     showRightButton?: boolean
   }>(),
-  { pageMode: NavbarPageModeEnum.HOME, showRightButton: true }
+  { pageMode: "home", showRightButton: true }
 )
 
 const cartTooltip = ref("")
@@ -43,9 +43,9 @@ const cartTooltip = ref("")
 
 const NavbarModeMap = computed(
   () =>
-    new Map<NavbarPageModeEnum, IPageNavbarProps>([
+    new Map<TNavbarPageMode, IPageNavbarProps>([
       [
-        NavbarPageModeEnum.CHECKOUT,
+        "checkout",
         {
           leftButtonAction: props.leftButtonAction
             ? props.leftButtonAction
@@ -54,7 +54,7 @@ const NavbarModeMap = computed(
         },
       ],
       [
-        NavbarPageModeEnum.HOME,
+        "home",
         {
           leftButtonAction: () => console.log("haha"),
           pageTitle: "Courtsite",
@@ -95,7 +95,7 @@ const cartOnClickAway = () => {
   <div
     :class="`bg-base-100 sticky top-0 z-20 duration-300 grid grid-cols-[1fr_4fr_1fr] py-2 items-center min-h-[3.8rem]`"
   >
-    <div v-if="pageMode === NavbarPageModeEnum.HOME" class="dropdown pl-3">
+    <div v-if="pageMode === 'home'" class="dropdown pl-3">
       <label tabindex="0" class="btn btn-ghost btn-circle">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -122,10 +122,8 @@ const cartOnClickAway = () => {
       </ul>
     </div>
     <button
-      v-if="pageMode === NavbarPageModeEnum.CHECKOUT"
-      @click="
-        NavbarModeMap.get(NavbarPageModeEnum.CHECKOUT)?.leftButtonAction()
-      "
+      v-if="pageMode === 'checkout'"
+      @click="NavbarModeMap.get('checkout')?.leftButtonAction()"
       class="pl-5"
     >
       <svg
@@ -153,7 +151,7 @@ const cartOnClickAway = () => {
         </h3>
       </a>
     </div>
-    <div v-if="pageMode === NavbarPageModeEnum.HOME" class="pr-3">
+    <div v-if="pageMode === 'home'" class="pr-3">
       <button class="btn btn-ghost btn-circle">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -171,10 +169,7 @@ const cartOnClickAway = () => {
         </svg>
       </button>
     </div>
-    <div
-      v-if="pageMode === NavbarPageModeEnum.CHECKOUT"
-      class="flex justify-end pr-3"
-    >
+    <div v-if="pageMode === 'checkout'" class="flex justify-end pr-3">
       <div
         v-if="showRightButton"
         :class="`${

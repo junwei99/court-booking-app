@@ -4,7 +4,7 @@ import { useCartStore } from "@/modules/book-venue/stores/cart.store"
 import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
 import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
-import { EFetchStatus, NavbarPageModeEnum } from "@/others/constants/enums"
+import { EFetchStatus } from "@/others/constants/enums"
 import { onMounted, ref } from "vue"
 
 const pageFetchStatus = ref(EFetchStatus.NONE)
@@ -19,7 +19,7 @@ onMounted(() => {
 
 <template>
   <Navbar
-    :page-mode="NavbarPageModeEnum.CHECKOUT"
+    page-mode="checkout"
     page-title="My Cart"
     :show-right-button="false"
   />

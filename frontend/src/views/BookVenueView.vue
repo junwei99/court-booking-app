@@ -7,7 +7,6 @@ import { useCartStore } from "@/modules/book-venue/stores/cart.store"
 import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
 import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
-import { NavbarPageModeEnum } from "@/others/constants/enums"
 import { useQuery } from "@tanstack/vue-query"
 import { ref, watchEffect } from "vue"
 
@@ -64,7 +63,7 @@ watchEffect(() => {
 
 <template>
   <Navbar
-    :page-mode="NavbarPageModeEnum.CHECKOUT"
+    page-mode="checkout"
     :page-title="venueName"
     :left-button-action="headerBackBtnOnClick"
   />

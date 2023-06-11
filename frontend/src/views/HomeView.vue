@@ -14,7 +14,6 @@ import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
 import HomeSkeleton from "@/modules/home/components/HomeSkeleton.vue"
 import { fetchVenueList } from "@/modules/home/services/apis/fetch-venue-list.api"
 import type { IVenueListRes } from "@/modules/home/types/apis/home.types"
-import { NavbarPageModeEnum } from "@/others/constants/enums"
 import { useQuery } from "@tanstack/vue-query"
 import "swiper/css"
 import type { Swiper as SwiperClass } from "swiper/types"
@@ -57,7 +56,7 @@ const itemCardOnClick = (venueId: number) => {
 </script>
 
 <template>
-  <Navbar :pageMode="NavbarPageModeEnum.HOME" />
+  <Navbar pageMode="home" />
   <div class="page-width">
     <Swiper
       class="mt-2 sm:mb-10"
