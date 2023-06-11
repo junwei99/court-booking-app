@@ -1,24 +1,14 @@
 <script setup lang="ts">
-// import { RouterLink, RouterView } from "vue-router";
+import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
 import { Locale } from "vant"
 import enUS from "vant/es/locale/lang/en-US"
 Locale.use("en-US", enUS)
 </script>
 
 <template>
-  <header>
-    <!-- <div>
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div> -->
-    <!-- <GlobalNavbar /> -->
-    <!-- <div class="bg-black sticky h-20 w-full z-20 top-0 md:top-0"></div> -->
-  </header>
+  <header></header>
   <main>
-    <!-- <GlobalNavbar /> -->
-    <!-- <div class="bg-black sticky h-20 w-full z-20 top-0 md:top-0"></div> -->
+    <Navbar />
     <RouterView />
   </main>
 </template>

@@ -1,4 +1,5 @@
 import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
+import { useGlobalLayoutStore } from "@/modules/common/stores/global-layout.store"
 import { createRouter, createWebHistory } from "vue-router"
 
 const BookVenuePage = () => import("@/views/BookVenueView.vue")
@@ -24,6 +25,10 @@ const router = createRouter({
         return {
           navigateToVenuePage,
         }
+      },
+      beforeEnter: () => {
+        const globalLayoutStore = useGlobalLayoutStore()
+        globalLayoutStore.setNavbar({ pageMode: "home", pageTitle: "" })
       },
     },
     {
@@ -51,6 +56,10 @@ const router = createRouter({
           venueId,
           navigateToBookVenuePage,
         }
+      },
+      beforeEnter: () => {
+        const globalLayoutStore = useGlobalLayoutStore()
+        globalLayoutStore.setNavbar({ pageMode: "checkout" })
       },
     },
     {

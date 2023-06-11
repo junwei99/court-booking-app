@@ -10,7 +10,6 @@ import freeDivingJPG from "@/assets/images/free_diving.jpeg"
 import futsalJPG from "@/assets/images/futsal.jpeg"
 import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import ItemCard from "@/modules/common/components/shared-ui/organism/ItemCard.vue"
-import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
 import HomeSkeleton from "@/modules/home/components/HomeSkeleton.vue"
 import { fetchVenueList } from "@/modules/home/services/apis/fetch-venue-list.api"
 import type { IVenueListRes } from "@/modules/home/types/apis/home.types"
@@ -56,7 +55,7 @@ const itemCardOnClick = (venueId: number) => {
 </script>
 
 <template>
-  <Navbar pageMode="home" />
+  <!-- <Navbar pageMode="home" /> -->
   <div class="page-width">
     <Swiper
       class="mt-2 sm:mb-10"
