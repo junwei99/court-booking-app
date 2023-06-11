@@ -10,16 +10,20 @@ type TNavbarState = {
 }
 
 export const useGlobalLayoutStore = defineStore("global-layout", () => {
-  const navbar = ref<TNavbarState>({
+  const defaultNavbarState: TNavbarState = {
     pageMode: "home",
     leftButtonAction: undefined,
     pageTitle: "",
     showRightButton: true,
+  }
+
+  const navbar = ref<TNavbarState>({
+    ...defaultNavbarState,
   })
 
   const setNavbar = (globalLayoutState: Partial<TNavbarState>) => {
     navbar.value = {
-      ...navbar.value,
+      ...defaultNavbarState,
       ...globalLayoutState,
     }
   }
