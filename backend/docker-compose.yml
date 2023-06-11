@@ -12,7 +12,6 @@ services:
     ports:
       - "5432:5432"
   web:
-    platform: linux/amd64
     image: junwei99/court-booking-app-services
     depends_on:
       - db
