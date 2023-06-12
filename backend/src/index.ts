@@ -64,7 +64,7 @@ async function main() {
     routesList.map((route) => app.use("/api", route))
     app.use(apiErrorHandler)
     app.listen(8080, () => {
-      console.log("running on port 8081")
+      console.log("running on port 8080")
     })
   } catch (error) {
     console.log({ error })

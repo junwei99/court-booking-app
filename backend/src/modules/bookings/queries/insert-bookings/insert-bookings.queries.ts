@@ -6,7 +6,10 @@ export interface IInsertBookingsParams {
   bookingList: readonly ({
     bookingStartDate: Date | null | void,
     bookingEndDate: Date | null | void,
-    eventUnitId: number | null | void
+    eventUnitId: number | null | void,
+    guestFirstName: string | null | void,
+    guestLastName: string | null | void,
+    guestEmail: string | null | void
   })[];
 }
 
@@ -21,12 +24,12 @@ export interface IInsertBookingsQuery {
   result: IInsertBookingsResult;
 }
 
-const insertBookingsIR: any = {"usedParamSet":{"bookingList":true},"params":[{"name":"bookingList","required":false,"transform":{"type":"pick_array_spread","keys":[{"name":"bookingStartDate","required":false},{"name":"bookingEndDate","required":false},{"name":"eventUnitId","required":false}]},"locs":[{"a":82,"b":93}]}],"statement":"INSERT INTO bookings (booking_start_date, booking_end_date, event_unit_id) VALUES :bookingList RETURNING id"};
+const insertBookingsIR: any = {"usedParamSet":{"bookingList":true},"params":[{"name":"bookingList","required":false,"transform":{"type":"pick_array_spread","keys":[{"name":"bookingStartDate","required":false},{"name":"bookingEndDate","required":false},{"name":"eventUnitId","required":false},{"name":"guestFirstName","required":false},{"name":"guestLastName","required":false},{"name":"guestEmail","required":false}]},"locs":[{"a":130,"b":141}]}],"statement":"INSERT INTO bookings (booking_start_date, booking_end_date, event_unit_id, guest_first_name, guest_last_name, guest_email) VALUES :bookingList RETURNING id"};
 
 /**
  * Query generated from SQL:
  * ```
- * INSERT INTO bookings (booking_start_date, booking_end_date, event_unit_id) VALUES :bookingList RETURNING id
+ * INSERT INTO bookings (booking_start_date, booking_end_date, event_unit_id, guest_first_name, guest_last_name, guest_email) VALUES :bookingList RETURNING id
  * ```
  */
 export const insertBookings = new PreparedQuery<IInsertBookingsParams,IInsertBookingsResult>(insertBookingsIR);

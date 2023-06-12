@@ -1,8 +1,5 @@
 import { client } from "@/index"
-import {
-  insertBookings,
-  type IInsertBookingsParams,
-} from "@/modules/bookings/queries/insert-bookings/insert-bookings.queries"
+import { insertBookings } from "@/modules/bookings/queries/insert-bookings/insert-bookings.queries"
 import { queryAvailableEventUnitsToBook } from "@/modules/bookings/queries/query-available-event-units-to-book/query-available-event-units-to-book.queries"
 import { queryBookings } from "@/modules/bookings/queries/query-bookings/query-bookings.queries"
 import {
@@ -10,6 +7,10 @@ import {
   getIntervalDateList,
   getTransformedTimeslots,
 } from "@/modules/bookings/services/get-available-timeslots"
+import {
+  TBookingParam,
+  TGuestDetails,
+} from "@/modules/bookings/types/bookings-controllers.types"
 import { HandledError } from "@/modules/common/utils/HandledError.utils"
 import dayjs from "dayjs"
 import isBetween from "dayjs/plugin/isBetween"
@@ -51,9 +52,25 @@ export const getAvailableTimeslotsService = async (
 }
 
 export const createBookingsService = async (
-  bookingList: IInsertBookingsParams["bookingList"]
+  bookingList: Array<TBookingParam>,
+  guestDetails?: TGuestDetails
 ) => {
-  const createdBookingIds = await insertBookings.run({ bookingList }, client)
+  const processedBookingList = bookingList.map((booking) => {
+    const { bookingStartDate, duration, eventUnitId } = booking
+    return {
+      bookingStartDate,
+      bookingEndDate: dayjs(bookingStartDate).add(duration, "minute").toDate(),
+      eventUnitId,
+      guestFirstName: guestDetails?.guestFirstName ?? null,
+      guestLastName: guestDetails?.guestLastName ?? null,
+      guestEmail: guestDetails?.guestEmail ?? null,
+    }
+  })
+
+  const createdBookingIds = await insertBookings.run(
+    { bookingList: processedBookingList },
+    client
+  )
 
   return createdBookingIds
 }

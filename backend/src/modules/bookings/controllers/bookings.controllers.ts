@@ -1,9 +1,9 @@
-import { IInsertBookingsParams } from "@/modules/bookings/queries/insert-bookings/insert-bookings.queries"
 import {
   createBookingsService,
   getAvailableEventUnitsToBookService,
   getAvailableTimeslotsService,
 } from "@/modules/bookings/services/bookings.services"
+import { TCreateBookingsParams } from "@/modules/bookings/types/bookings-controllers.types"
 import { ApiRes } from "@/modules/common/utils/ApiResponse.utils"
 import { HandledError } from "@/modules/common/utils/HandledError.utils"
 import type { Request, Response } from "express"
@@ -52,20 +52,20 @@ export const fetchAvailableTimeslots = async (
 }
 
 export const createBookings = async (
-  req: Request<{}, {}, IInsertBookingsParams>,
+  req: Request<{}, {}, TCreateBookingsParams>,
   res: Response
 ) => {
-  const { bookingList } = req.body
+  const { bookingList, guestEmail, guestFirstName, guestLastName } = req.body
 
-  if (!bookingList || !bookingList?.length) {
-    throw new HandledError("Invalid bookingList")
+  if (!bookingList || !bookingList?.length || bookingList?.length < 1) {
+    throw new HandledError("Invalid or empty bookingList")
   }
 
-  if (bookingList?.length < 1) {
-    throw new HandledError("Empty bookingList")
-  }
-
-  const createdBookingIds = await createBookingsService(bookingList)
+  const createdBookingIds = await createBookingsService(bookingList, {
+    guestEmail,
+    guestFirstName,
+    guestLastName,
+  })
 
   const apiRes = new ApiRes(res)
 
