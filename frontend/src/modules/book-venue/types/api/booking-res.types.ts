@@ -29,3 +29,9 @@ export interface IFetchAvailableEventUnitsToBookRes extends ISuccessRes {
     eventCategoryName: string
   }>
 }
+
+export interface IBookingRes extends ISuccessRes {
+  createdBookingIds: Array<{
+    id: number
+  }>
+}

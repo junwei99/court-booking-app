@@ -6,6 +6,7 @@ const BookVenuePage = () => import("@/views/BookVenueView.vue")
 const CartView = () => import("@/views/CartView.vue")
 const VenueView = () => import("@/views/VenueView.vue")
 const HomeView = () => import("@/views/HomeView.vue")
+const CheckoutFormView = () => import("@/views/CheckoutFormView.vue")
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -107,6 +108,18 @@ const router = createRouter({
         globalLayoutStore.setNavbar({
           pageMode: "checkout",
           pageTitle: "My Cart",
+          showRightButton: false,
+        })
+      },
+    },
+    {
+      path: "/checkout",
+      name: "checkout",
+      component: CheckoutFormView,
+      beforeEnter: () => {
+        const globalLayoutStore = useGlobalLayoutStore()
+        globalLayoutStore.setNavbar({
+          pageMode: "checkout",
           showRightButton: false,
         })
       },

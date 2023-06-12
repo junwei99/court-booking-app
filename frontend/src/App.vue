@@ -6,7 +6,6 @@ Locale.use("en-US", enUS)
 </script>
 
 <template>
-  <header></header>
   <main>
     <Navbar />
     <RouterView />
