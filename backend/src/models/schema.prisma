@@ -1,36 +1,39 @@
-datasource db {
-    provider = "postgresql"
-    url      = "postgresql://junwei@localhost:5432/testing-db"
-}
-
 generator client {
     provider = "prisma-client-js"
 }
 
+datasource db {
+    provider = "postgresql"
+    url      = "postgresql://junwei@localhost:5432/court-booking-app"
+}
+
 model Amenity {
-    id    Int            @id @default(autoincrement())
-    name  String
+    id    Int            @id(map: "PK_f981de7b1a822823e5f31da10dc") @default(autoincrement())
+    name  String         @db.VarChar
     venue VenueAmenity[]
 
     @@map("amenity")
 }
 
 model Booking {
-    id                 Int       @id @default(autoincrement())
-    created_at         DateTime  @default(now())
-    updated_at         DateTime  @default(now())
-    event_unit_id      Int
-    booking_start_date DateTime
-    booking_end_date   DateTime
-    event_unit         EventUnit @relation(fields: [event_unit_id], references: [id])
+    id                 Int        @id(map: "PK_bee6805982cc1e248e94ce94957") @default(autoincrement())
+    created_at         DateTime   @default(now()) @db.Timestamp(6)
+    updated_at         DateTime   @default(now()) @db.Timestamp(6)
+    event_unit_id      Int?
+    booking_start_date DateTime   @db.Timestamptz(6)
+    booking_end_date   DateTime   @db.Timestamptz(6)
+    guest_first_name   String?    @db.VarChar
+    guest_last_name    String?    @db.VarChar
+    guest_email        String?    @db.VarChar
+    event_unit         EventUnit? @relation(fields: [event_unit_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_3e628ac28c72541c6678bf9598e")
 
     @@map("bookings")
 }
 
 model EventCategory {
-    id         Int                  @id @default(autoincrement())
-    name       String
-    type       String
+    id         Int                  @id(map: "PK_a6368447a61afbf9def09fd81af") @default(autoincrement())
+    name       String               @db.VarChar
+    type       String               @db.VarChar
     event_unit EventUnit[]
     venue      VenueEventCategory[]
 
@@ -38,43 +41,43 @@ model EventCategory {
 }
 
 model EventUnit {
-    id                Int           @id @default(autoincrement())
-    name              String
+    id                Int            @id(map: "PK_8cd68d0b514b52c1142548f5fea") @default(autoincrement())
+    name              String         @db.VarChar
     price             Int
-    created_at        DateTime      @default(now())
-    updated_at        DateTime      @default(now())
-    venue_id          Int
-    event_category_id Int
+    created_at        DateTime       @default(now()) @db.Timestamp(6)
+    updated_at        DateTime       @default(now()) @db.Timestamp(6)
+    venue_id          Int?
+    event_category_id Int?
     booking           Booking[]
-    venue             Venue         @relation(fields: [venue_id], references: [id])
-    event_category    EventCategory @relation(fields: [event_category_id], references: [id])
+    event_category    EventCategory? @relation(fields: [event_category_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_951f2415425313b016bef6b4ebb")
+    venue             Venue?         @relation(fields: [venue_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_c7f7bd764118dd45c88a8203665")
 
     @@map("event_units")
 }
 
 model Location {
-    id    Int     @id @default(autoincrement())
-    name  String
-    type  String
-    venue Venue[]
+    id            Int     @id(map: "PK_876d7bdba03c72251ec4c2dc827") @default(autoincrement())
+    name          String  @db.VarChar
+    location_type String  @db.VarChar
+    venue         Venue[]
 
     @@map("location")
 }
 
 model Venue {
-    id                   Int                  @id @default(autoincrement())
-    title                String
-    address              String
-    description          String
+    id                   Int                  @id(map: "PK_c53deb6d1bcb088f9d459e7dbc0") @default(autoincrement())
+    title                String               @db.VarChar
+    address              String               @db.VarChar
+    description          String               @db.VarChar
     min_price            Int
     max_price            Int
-    phone_num            String
-    website              String
-    images               String[]
-    social_media         Json
-    location_id          Int
-    location             Location             @relation(fields: [location_id], references: [id])
+    phone_num            String               @db.VarChar
+    website              String               @db.VarChar
+    images               String[]             @default([])
+    social_media         Json?                @default("[]")
+    location_id          Int?
     event_unit           EventUnit[]
+    location             Location?            @relation(fields: [location_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_0e415f584ec4eb5369dcd665a50")
     venue_amenity        VenueAmenity[]
     venue_event_category VenueEventCategory[]
 
@@ -84,19 +87,23 @@ model Venue {
 model VenueAmenity {
     amenity_id Int
     venue_id   Int
-    amenity    Amenity @relation(fields: [amenity_id], references: [id])
-    venue      Venue   @relation(fields: [venue_id], references: [id])
+    amenity    Amenity @relation(fields: [amenity_id], references: [id], onDelete: Cascade, map: "FK_12725c60b6e328ce52061f958c1")
+    venue      Venue   @relation(fields: [venue_id], references: [id], onDelete: Cascade, map: "FK_52aa3f633512f7a025e288ba8eb")
 
-    @@id([amenity_id, venue_id])
+    @@id([amenity_id, venue_id], map: "PK_0bce6c38a68d1b1c4062f4f1863")
+    @@index([amenity_id], map: "IDX_12725c60b6e328ce52061f958c")
+    @@index([venue_id], map: "IDX_52aa3f633512f7a025e288ba8e")
     @@map("venue_amenities")
 }
 
 model VenueEventCategory {
     venue_id          Int
     event_category_id Int
-    venue             Venue         @relation(fields: [venue_id], references: [id])
-    event_category    EventCategory @relation(fields: [event_category_id], references: [id])
+    venue             Venue         @relation(fields: [venue_id], references: [id], onDelete: Cascade, map: "FK_0f9fe236e0586d9693998864c8e")
+    event_category    EventCategory @relation(fields: [event_category_id], references: [id], onDelete: Cascade, map: "FK_d0712ae4a17f24c8ffa47f31a65")
 
-    @@id([venue_id, event_category_id])
+    @@id([venue_id, event_category_id], map: "PK_217dbb805556e107d04a6b804a1")
+    @@index([venue_id], map: "IDX_0f9fe236e0586d9693998864c8")
+    @@index([event_category_id], map: "IDX_d0712ae4a17f24c8ffa47f31a6")
     @@map("venue_event_categories")
 }
