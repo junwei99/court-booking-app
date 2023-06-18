@@ -4,8 +4,10 @@ import { useCartStore } from "@/modules/book-venue/stores/cart.store"
 import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import Input from "@/modules/common/components/shared-ui/atom/Input.vue"
 import { reactive, ref } from "vue"
+import { useRouter } from "vue-router"
 
 const cartStore = useCartStore()
+const router = useRouter()
 
 const personalDetailsInitialData = {
   guestFirstName: "",
@@ -18,6 +20,10 @@ type TPersonalDetailsKeys = keyof typeof personalDetailsInitialData
 const personalDetails = reactive<Record<TPersonalDetailsKeys, string>>({
   ...personalDetailsInitialData,
 })
+
+const createBookingStatus = ref<"none" | "loading" | "success" | "error">(
+  "none"
+)
 
 const paymentMethods = ref([
   {
@@ -65,15 +71,34 @@ const handleOnInputPersonalDetails = (
 
 const handleConfirmPayment = async () => {
   try {
+    createBookingStatus.value = "loading"
     const bookingList = cartStore.mergedEventUnitsList.map((booking) => ({
       bookingStartDate: booking.bookingDatetime,
       eventUnitId: booking.eventUnit.eventUnitId,
       duration: booking.duration,
     }))
 
-    await createBookingsService(bookingList, personalDetails)
+    const createBookingRes = await createBookingsService(
+      bookingList,
+      personalDetails
+    )
+
+    if (
+      createBookingRes.status !== "success" ||
+      !createBookingRes.createdBookingIds?.length ||
+      createBookingRes.createdBookingIds.length === 0
+    ) {
+      throw new Error("failed to create booking")
+    }
+
+    createBookingStatus.value = "success"
+    cartStore.clearCart()
+    router.push({
+      name: "booking-status",
+    })
   } catch (error) {
     console.log("failed to create booking", error)
+    createBookingStatus.value = "error"
   }
 }
 
@@ -125,8 +150,12 @@ const handleSelectPaymentMethod = (paymentMethodId: number) => {
     </p>
   </div>
   <div class="bottom-action-bar">
-    <Button class="w-full" @click="handleConfirmPayment"
-      >Confirm and pay</Button
+    <Button
+      class="w-full"
+      @click="handleConfirmPayment"
+      :state="createBookingStatus === 'loading' ? 'loading' : 'none'"
     >
+      Confirm and pay
+    </Button>
   </div>
 </template>

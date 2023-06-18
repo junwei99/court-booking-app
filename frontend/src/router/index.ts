@@ -7,6 +7,7 @@ const CartView = () => import("@/views/CartView.vue")
 const VenueView = () => import("@/views/VenueView.vue")
 const HomeView = () => import("@/views/HomeView.vue")
 const CheckoutFormView = () => import("@/views/CheckoutFormView.vue")
+const BookingStatusView = () => import("@/views/BookingStatusView.vue")
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -123,6 +124,11 @@ const router = createRouter({
           showRightButton: false,
         })
       },
+    },
+    {
+      path: "/booking-status",
+      name: "booking-status",
+      component: BookingStatusView,
     },
   ],
   scrollBehavior() {

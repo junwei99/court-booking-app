@@ -1,14 +1,14 @@
 /** @type {import('tailwindcss').Config} */
-const siteMaxWidth = "1150px";
-const siteXlMaxWidth = "1450px";
-const sitePadding = "1.5rem";
-const primaryNormal = "#1D4ED8";
-const primaryLight = "#4e72d4";
+const siteMaxWidth = "1150px"
+const siteXlMaxWidth = "1450px"
+const sitePadding = "1.5rem"
+const primaryNormal = "#1D4ED8"
+const primaryLight = "#4e72d4"
 
 module.exports = {
   darkMode: false,
   daisyui: {
-    themes: false,
+    themes: ["light"],
   },
   content: ["./src/**/*.{vue,js,ts}"],
   plugins: [require("daisyui"), require("@tailwindcss/line-clamp")],
@@ -30,4 +30,4 @@ module.exports = {
       },
     },
   },
-};
+}
