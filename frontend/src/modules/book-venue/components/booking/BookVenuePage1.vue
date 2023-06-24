@@ -53,7 +53,7 @@ const dateSelectOnChange = (newDate: Date) => {
   <div class="p-site-padding">
     <h2 class="font-semibold mb-5">Select your sport</h2>
     <select
-      class="select select-bordered select-md w-full"
+      class="select select-md w-full border-[1px] border-gray-300"
       :value="selectedCategory"
       @change="categorySelectOnChange"
     >

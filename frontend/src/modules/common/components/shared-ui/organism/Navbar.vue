@@ -172,7 +172,7 @@ const cartOnClickAway = () => {
             </svg>
             <span
               v-if="cartStore.cartSize > 0"
-              class="badge badge-sm indicator-item bg-primary-normal border-none"
+              class="badge badge-sm indicator-item bg-primary-normal border-none text-white"
               >{{ cartStore.cartSize }}</span
             >
           </div>

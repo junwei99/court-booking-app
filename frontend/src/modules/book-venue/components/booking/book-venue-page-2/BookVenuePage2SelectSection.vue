@@ -21,7 +21,7 @@ const emit = defineEmits<{
     <select
       v-for="[selectKey, selectItemValue] in selectItemsMap"
       :key="selectKey"
-      :class="`select select-bordered select-md ${
+      :class="`select border-[1px] border-gray-300 select-md ${
         selectKey === 'selectedDuration' && 'col-start-1 col-end-3'
       } `"
       :value="getSelectValue(selectKey)"
