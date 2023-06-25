@@ -83,6 +83,7 @@ const handleOnSubmitForm = async () => {
     !formValidator.value.getIsDirty()
   ) {
     showValidationError.value = true
+    return
   }
 
   await handleConfirmPayment()
