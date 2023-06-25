@@ -11,11 +11,15 @@ export type TBooking = {
 }
 
 export type TGuestDetails = {
-  guestFirstName?: string
-  guestLastName?: string
-  guestEmail?: string
+  guestFirstName: string
+  guestLastName: string
+  guestEmail: string
+}
+
+export type TCheckoutFormData = TGuestDetails & {
+  selectedPaymentMethod: string
 }
 
 export type TCreateBookingParams = {
   bookingList: TBooking[]
-} & TGuestDetails
+} & TCheckoutFormData

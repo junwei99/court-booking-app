@@ -1,161 +1,168 @@
 <script setup lang="ts">
-import { createBookingsService } from "@/modules/book-venue/services/apis/create-bookings"
+import {
+  guestFormZodSchema,
+  handleSubmitBooking,
+} from "@/modules/book-venue/business/checkout-form.business"
+import { checkoutFormInputsMetadataList } from "@/modules/book-venue/constants/checkout-form-inputs-metadata.constants"
 import { useCartStore } from "@/modules/book-venue/stores/cart.store"
+import type { TCheckoutFormData } from "@/modules/book-venue/types/api/booking-params.types"
 import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import Input from "@/modules/common/components/shared-ui/atom/Input.vue"
-import { reactive, ref } from "vue"
+import { useFormValidator } from "@/modules/common/hooks/useFormValidator"
+import { computed, ref } from "vue"
 import { useRouter } from "vue-router"
 
 const cartStore = useCartStore()
 const router = useRouter()
 
-const personalDetailsInitialData = {
+const checkoutFormData: TCheckoutFormData = {
   guestFirstName: "",
   guestLastName: "",
   guestEmail: "",
+  selectedPaymentMethod: "1",
 }
 
-type TPersonalDetailsKeys = keyof typeof personalDetailsInitialData
+type TCheckoutFormKeys = keyof typeof checkoutFormData
 
-const personalDetails = reactive<Record<TPersonalDetailsKeys, string>>({
-  ...personalDetailsInitialData,
+const checkoutForm = ref<TCheckoutFormData>({
+  ...checkoutFormData,
 })
 
 const createBookingStatus = ref<"none" | "loading" | "success" | "error">(
   "none"
 )
 
-const paymentMethods = ref([
+const showValidationError = ref(false)
+
+const paymentMethods = ref<
+  Array<{
+    id: string
+    name: string
+  }>
+>([
   {
-    id: 1,
+    id: "1",
     name: "TNG eWallet",
   },
   {
-    id: 2,
+    id: "2",
     name: "Credit/Debit Card",
   },
   {
-    id: 3,
+    id: "3",
     name: "Online Banking",
   },
 ])
 
-const selectedPaymentMethod = ref(1)
+const formValidator = useFormValidator(checkoutForm, guestFormZodSchema)
 
-const inputsMetadata: Record<
-  TPersonalDetailsKeys,
-  {
-    type: "text" | "email" | "password" | "number"
-    placeholder: string
-  }
-> = {
-  guestFirstName: {
-    type: "text",
-    placeholder: "First Name",
-  },
-  guestLastName: { type: "text", placeholder: "Last Name" },
-  guestEmail: {
-    type: "email",
-    placeholder: "Email",
-  },
-}
-
-const inputsMetadataList = Object.entries(inputsMetadata)
-
-const handleOnInputPersonalDetails = (
-  key: TPersonalDetailsKeys,
-  value: string
-) => {
-  personalDetails[key] = value
+const handleOnInputCheckoutForm = (key: TCheckoutFormKeys, value: string) => {
+  checkoutForm.value[key] = value
 }
 
 const handleConfirmPayment = async () => {
   try {
     createBookingStatus.value = "loading"
-    const bookingList = cartStore.mergedEventUnitsList.map((booking) => ({
-      bookingStartDate: booking.bookingDatetime,
-      eventUnitId: booking.eventUnit.eventUnitId,
-      duration: booking.duration,
-    }))
-
-    const createBookingRes = await createBookingsService(
-      bookingList,
-      personalDetails
+    await handleSubmitBooking(
+      cartStore.mergedEventUnitsList,
+      checkoutForm.value
     )
-
-    if (
-      createBookingRes.status !== "success" ||
-      !createBookingRes.createdBookingIds?.length ||
-      createBookingRes.createdBookingIds.length === 0
-    ) {
-      throw new Error("failed to create booking")
-    }
-
     createBookingStatus.value = "success"
     cartStore.clearCart()
     router.push({
       name: "booking-status",
     })
   } catch (error) {
-    console.log("failed to create booking", error)
     createBookingStatus.value = "error"
   }
 }
 
-const handleSelectPaymentMethod = (paymentMethodId: number) => {
-  selectedPaymentMethod.value = paymentMethodId
+const handleOnSubmitForm = async () => {
+  if (
+    formValidator.value.getIsFormInvalid() ||
+    !formValidator.value.getIsDirty()
+  ) {
+    showValidationError.value = true
+  }
+
+  await handleConfirmPayment()
 }
+
+const handleSelectPaymentMethod = (paymentMethodId: string) => {
+  checkoutForm.value.selectedPaymentMethod = paymentMethodId
+}
+
+const validationError = computed(() => {
+  return formValidator.value.getIsDirty() || showValidationError.value
+    ? formValidator.value.validateForm()
+    : {}
+})
+
+const isCTADisabled = computed(
+  () =>
+    !formValidator.value.getIsDirty() || formValidator.value.getIsFormInvalid()
+)
+
+const ctaState = computed(() => {
+  if (createBookingStatus.value === "loading") {
+    return "loading"
+  }
+  if (isCTADisabled.value) {
+    return "clickable-disabled"
+  }
+  return "none"
+})
 </script>
 
 <template>
   <div class="mx-site-padding pb-[6rem]">
     <h1 class="font-semibold mb-5">How do you want to pay?</h1>
     <p class="mb-2">Pay with</p>
-    <div class="mb-5">
-      <div
-        v-for="paymentMethod in paymentMethods"
-        :class="
-          'rounded-lg mb-2 p-3 ' +
-          (selectedPaymentMethod === paymentMethod.id
-            ? 'border-primary-light border-[2px]'
-            : 'border-gray-300 border-[1px]')
-        "
-        @click="handleSelectPaymentMethod(paymentMethod.id)"
-      >
-        {{ paymentMethod.name }}
+    <form @submit.prevent="handleOnSubmitForm">
+      <div class="mb-5">
+        <div
+          v-for="paymentMethod in paymentMethods"
+          :key="paymentMethod.id"
+          :class="
+            'rounded-lg mb-2 p-3 ' +
+            (checkoutForm.selectedPaymentMethod === paymentMethod.id
+              ? 'border-primary-light border-[2px]'
+              : 'border-gray-300 border-[1px]')
+          "
+          @click="handleSelectPaymentMethod(paymentMethod.id)"
+        >
+          {{ paymentMethod.name }}
+        </div>
       </div>
-    </div>
-    <p>Personal Details</p>
-    <p class="text-gray-500 mb-2">
-      Receipt for the booking will be sent to your email.
-    </p>
-    <div class="mb-5">
-      <Input
-        v-for="input in inputsMetadataList"
-        :value="personalDetails[input[0] as TPersonalDetailsKeys]"
-        @input="
-          handleOnInputPersonalDetails(
-            input[0] as TPersonalDetailsKeys,
-            $event.target.value
-          )
-        "
-        :placeholder="input[1].placeholder"
-        class="mb-2"
-      />
-    </div>
-    <p>Refund policy</p>
-    <p class="text-gray-500">
-      We here at Courtsite believe that folks should only pay for what they use.
-      Feel free to apply for refund whenever you want.
-    </p>
-  </div>
-  <div class="bottom-action-bar">
-    <Button
-      class="w-full"
-      @click="handleConfirmPayment"
-      :state="createBookingStatus === 'loading' ? 'loading' : 'none'"
-    >
-      Confirm and pay
-    </Button>
+      <p>Personal Details</p>
+      <p class="text-gray-500 mb-2">
+        Receipt for the booking will be sent to your email.
+      </p>
+      <div class="mb-5">
+        <Input
+          v-for="input in checkoutFormInputsMetadataList"
+          :value="checkoutForm[input[0] as TCheckoutFormKeys]"
+          @input="
+            handleOnInputCheckoutForm(
+              input[0] as TCheckoutFormKeys,
+              $event.target.value
+            )
+          "
+          :placeholder="input[1].placeholder"
+          class="mb-2"
+          :error-message="validationError?.[input[0]] ?? ''"
+        />
+      </div>
+      <p>Refund policy</p>
+      <p class="text-gray-500">
+        We here at Courtsite believe that folks should only pay for what they
+        use. Feel free to apply for refund whenever you want.
+      </p>
+      <div class="bottom-action-bar">
+        <Button class="w-full" type="submit" :state="ctaState">
+          Confirm and pay
+        </Button>
+      </div>
+    </form>
   </div>
 </template>

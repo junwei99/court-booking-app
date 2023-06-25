@@ -42,18 +42,17 @@ const headerBackBtnOnClick = () => {
 const nextButtonOnClick = () => {
   if (page.value === 1) {
     bookVenueStore.initAvailableBookingTimeAndDuration()
-    //to display in cart page
     bookVenueStore.setEventCategoryOfVenueToBook(
       categoryList?.value?.find(
         (category) => category.id === (bookVenueStore?.selectedCategory ?? 0)
       )?.name ?? ""
     )
+
     page.value = 2
   } else {
     props.navigateToCartPage()
   }
 }
-
 watchEffect(() => {
   if (bookVenueStore.selectedCategory === null && categoryList.value) {
     //resets store if venueId is different from route venueId

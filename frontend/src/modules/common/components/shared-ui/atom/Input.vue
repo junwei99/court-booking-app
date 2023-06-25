@@ -4,6 +4,7 @@ defineProps<{
   topRightLabel?: string
   bottomLeftLabel?: string
   bottomRightLabel?: string
+  errorMessage?: string
 }>()
 </script>
 
@@ -15,8 +16,13 @@ defineProps<{
         topRightLabel
       }}</span>
     </label>
-    <input class="input input-bordered w-full" v-bind="$attrs" />
-    <label v-if="bottomRightLabel || bottomRightLabel" class="label">
+    <input
+      :class="`input input-bordered ${
+        errorMessage ? 'input-error' : ''
+      } w-full mb-0`"
+      v-bind="$attrs"
+    />
+    <label v-if="bottomRightLabel || bottomLeftLabel" class="label">
       <span v-if="bottomLeftLabel" class="label-text-alt">{{
         bottomLeftLabel
       }}</span>
@@ -24,5 +30,8 @@ defineProps<{
         >{{ bottomRightLabel }}
       </span>
     </label>
+    <div>
+      <span v-if="errorMessage" class="text-red-500">{{ errorMessage }}</span>
+    </div>
   </div>
 </template>
