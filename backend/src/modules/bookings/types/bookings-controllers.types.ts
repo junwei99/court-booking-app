@@ -4,12 +4,14 @@ export type TBookingParam = {
   eventUnitId: number
 }
 
-export type TGuestDetails = Partial<{
-  guestFirstName: string
-  guestLastName: string
-  guestEmail: string
-}>
+export type TBookingDetails = {
+  totalAmount: number
+  guestFirstName?: string
+  guestLastName?: string
+  guestEmail?: string
+  venueId: number
+}
 
 export type TCreateBookingsParams = {
   bookingList: Array<TBookingParam>
-} & TGuestDetails
+} & TBookingDetails

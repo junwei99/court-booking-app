@@ -1,5 +1,5 @@
 import { client } from "@/index"
-import { insertBookings } from "@/modules/bookings/queries/insert-bookings/insert-bookings.queries"
+import { insertBookingItems } from "@/modules/bookings/queries/insert-bookings-items/insert-bookings-items.queries"
 import { queryAvailableEventUnitsToBook } from "@/modules/bookings/queries/query-available-event-units-to-book/query-available-event-units-to-book.queries"
 import { queryBookings } from "@/modules/bookings/queries/query-bookings/query-bookings.queries"
 import {
@@ -7,13 +7,12 @@ import {
   getIntervalDateList,
   getTransformedTimeslots,
 } from "@/modules/bookings/services/get-available-timeslots"
-import {
-  TBookingParam,
-  TGuestDetails,
-} from "@/modules/bookings/types/bookings-controllers.types"
+import { TBookingParam } from "@/modules/bookings/types/bookings-controllers.types"
+import { TBookingList } from "@/modules/bookings/types/bookings-services.types"
 import { HandledError } from "@/modules/common/utils/HandledError.utils"
 import dayjs from "dayjs"
 import isBetween from "dayjs/plugin/isBetween"
+import { insertBookings } from "../queries/insert-booking/insert-booking.queries"
 
 dayjs.extend(isBetween)
 
@@ -51,9 +50,14 @@ export const getAvailableTimeslotsService = async (
   return transformedTimeslots
 }
 
-export const createBookingsService = async (
+export const createBookingService = async (bookingList: TBookingList) => {
+  const createdBookingIds = await insertBookings.run({ bookingList }, client)
+  return createdBookingIds
+}
+
+export const createBookingItemsService = async (
   bookingList: Array<TBookingParam>,
-  guestDetails?: TGuestDetails
+  bookingId: string
 ) => {
   const processedBookingList = bookingList.map((booking) => {
     const { bookingStartDate, duration, eventUnitId } = booking
@@ -61,14 +65,12 @@ export const createBookingsService = async (
       bookingStartDate,
       bookingEndDate: dayjs(bookingStartDate).add(duration, "minute").toDate(),
       eventUnitId,
-      guestFirstName: guestDetails?.guestFirstName ?? null,
-      guestLastName: guestDetails?.guestLastName ?? null,
-      guestEmail: guestDetails?.guestEmail ?? null,
+      bookingId,
     }
   })
 
-  const createdBookingIds = await insertBookings.run(
-    { bookingList: processedBookingList },
+  const createdBookingIds = await insertBookingItems.run(
+    { bookingItemList: processedBookingList },
     client
   )
 

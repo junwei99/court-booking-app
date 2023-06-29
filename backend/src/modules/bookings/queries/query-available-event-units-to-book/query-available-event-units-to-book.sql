@@ -6,7 +6,7 @@ FROM event_units eu
 LEFT JOIN event_categories as ec ON eu.event_category_id = ec.id
 WHERE NOT EXISTS (
     SELECT b.event_unit_id
-    FROM bookings b
+    FROM booking_items b
     WHERE eu.id = b.event_unit_id
         AND (
             (b.booking_start_date <= :bookingStartDatetime AND b.booking_end_date >= :bookingStartDatetime)

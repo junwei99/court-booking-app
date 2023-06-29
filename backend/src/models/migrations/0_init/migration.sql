@@ -7,18 +7,6 @@ CREATE TABLE "amenity" (
 );
 
 -- CreateTable
-CREATE TABLE "bookings" (
-    "id" SERIAL NOT NULL,
-    "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "event_unit_id" INTEGER,
-    "booking_start_date" TIMESTAMPTZ(6) NOT NULL,
-    "booking_end_date" TIMESTAMPTZ(6) NOT NULL,
-
-    CONSTRAINT "PK_bee6805982cc1e248e94ce94957" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "event_categories" (
     "id" SERIAL NOT NULL,
     "name" VARCHAR NOT NULL,
@@ -82,6 +70,18 @@ CREATE TABLE "venue_event_categories" (
     CONSTRAINT "PK_217dbb805556e107d04a6b804a1" PRIMARY KEY ("venue_id","event_category_id")
 );
 
+-- CreateTable
+CREATE TABLE "booking_items" (
+    "id" SERIAL NOT NULL,
+    "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "event_unit_id" INTEGER,
+    "booking_start_date" TIMESTAMPTZ(6) NOT NULL,
+    "booking_end_date" TIMESTAMPTZ(6) NOT NULL,
+
+    CONSTRAINT "PK_bee6805982cc1e248e94ce94957" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE INDEX "IDX_12725c60b6e328ce52061f958c" ON "venue_amenities"("amenity_id");
 
@@ -93,9 +93,6 @@ CREATE INDEX "IDX_0f9fe236e0586d9693998864c8" ON "venue_event_categories"("venue
 
 -- CreateIndex
 CREATE INDEX "IDX_d0712ae4a17f24c8ffa47f31a6" ON "venue_event_categories"("event_category_id");
-
--- AddForeignKey
-ALTER TABLE "bookings" ADD CONSTRAINT "FK_3e628ac28c72541c6678bf9598e" FOREIGN KEY ("event_unit_id") REFERENCES "event_units"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "event_units" ADD CONSTRAINT "FK_951f2415425313b016bef6b4ebb" FOREIGN KEY ("event_category_id") REFERENCES "event_categories"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
@@ -117,4 +114,7 @@ ALTER TABLE "venue_event_categories" ADD CONSTRAINT "FK_0f9fe236e0586d9693998864
 
 -- AddForeignKey
 ALTER TABLE "venue_event_categories" ADD CONSTRAINT "FK_d0712ae4a17f24c8ffa47f31a65" FOREIGN KEY ("event_category_id") REFERENCES "event_categories"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "booking_items" ADD CONSTRAINT "FK_3e628ac28c72541c6678bf9598e" FOREIGN KEY ("event_unit_id") REFERENCES "event_units"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 

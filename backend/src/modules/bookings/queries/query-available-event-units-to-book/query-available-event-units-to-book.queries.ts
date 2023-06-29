@@ -25,7 +25,7 @@ export interface IQueryAvailableEventUnitsToBookQuery {
   result: IQueryAvailableEventUnitsToBookResult;
 }
 
-const queryAvailableEventUnitsToBookIR: any = {"usedParamSet":{"bookingStartDatetime":true,"bookingEndDatetime":true,"eventCategoryId":true,"venueId":true},"params":[{"name":"bookingStartDatetime","required":false,"transform":{"type":"scalar"},"locs":[{"a":335,"b":355},{"a":383,"b":403},{"a":446,"b":466}]},{"name":"bookingEndDatetime","required":false,"transform":{"type":"scalar"},"locs":[{"a":496,"b":514}]},{"name":"eventCategoryId","required":false,"transform":{"type":"scalar"},"locs":[{"a":557,"b":572}]},{"name":"venueId","required":false,"transform":{"type":"scalar"},"locs":[{"a":592,"b":599}]}],"statement":"SELECT eu.id, eu.name, eu.price, eu.venue_id, eu.event_category_id, ec.name as event_category_name\nFROM event_units eu\nLEFT JOIN event_categories as ec ON eu.event_category_id = ec.id\nWHERE NOT EXISTS (\n    SELECT b.event_unit_id\n    FROM bookings b\n    WHERE eu.id = b.event_unit_id\n        AND (\n            (b.booking_start_date <= :bookingStartDatetime AND b.booking_end_date >= :bookingStartDatetime)\n            OR (b.booking_start_date >= :bookingStartDatetime AND b.booking_start_date <= :bookingEndDatetime)\n        )\n) AND (eu.event_category_id = :eventCategoryId AND eu.venue_id = :venueId)"};
+const queryAvailableEventUnitsToBookIR: any = {"usedParamSet":{"bookingStartDatetime":true,"bookingEndDatetime":true,"eventCategoryId":true,"venueId":true},"params":[{"name":"bookingStartDatetime","required":false,"transform":{"type":"scalar"},"locs":[{"a":340,"b":360},{"a":388,"b":408},{"a":451,"b":471}]},{"name":"bookingEndDatetime","required":false,"transform":{"type":"scalar"},"locs":[{"a":501,"b":519}]},{"name":"eventCategoryId","required":false,"transform":{"type":"scalar"},"locs":[{"a":562,"b":577}]},{"name":"venueId","required":false,"transform":{"type":"scalar"},"locs":[{"a":597,"b":604}]}],"statement":"SELECT eu.id, eu.name, eu.price, eu.venue_id, eu.event_category_id, ec.name as event_category_name\nFROM event_units eu\nLEFT JOIN event_categories as ec ON eu.event_category_id = ec.id\nWHERE NOT EXISTS (\n    SELECT b.event_unit_id\n    FROM booking_items b\n    WHERE eu.id = b.event_unit_id\n        AND (\n            (b.booking_start_date <= :bookingStartDatetime AND b.booking_end_date >= :bookingStartDatetime)\n            OR (b.booking_start_date >= :bookingStartDatetime AND b.booking_start_date <= :bookingEndDatetime)\n        )\n) AND (eu.event_category_id = :eventCategoryId AND eu.venue_id = :venueId)"};
 
 /**
  * Query generated from SQL:
@@ -35,7 +35,7 @@ const queryAvailableEventUnitsToBookIR: any = {"usedParamSet":{"bookingStartDate
  * LEFT JOIN event_categories as ec ON eu.event_category_id = ec.id
  * WHERE NOT EXISTS (
  *     SELECT b.event_unit_id
- *     FROM bookings b
+ *     FROM booking_items b
  *     WHERE eu.id = b.event_unit_id
  *         AND (
  *             (b.booking_start_date <= :bookingStartDatetime AND b.booking_end_date >= :bookingStartDatetime)
