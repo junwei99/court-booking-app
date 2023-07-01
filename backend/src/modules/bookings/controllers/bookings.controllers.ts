@@ -3,6 +3,7 @@ import {
   createBookingService,
   getAvailableEventUnitsToBookService,
   getAvailableTimeslotsService,
+  getBookingService,
 } from "@/modules/bookings/services/bookings.services"
 import { TCreateBookingsParams } from "@/modules/bookings/types/bookings-controllers.types"
 import { ApiRes } from "@/modules/common/utils/ApiResponse.utils"
@@ -103,7 +104,16 @@ export const createBookings = async (
   const apiRes = new ApiRes(res)
 
   return apiRes.sendSuccessRes(
-    { createdBookingIds },
+    {
+      bookingInfo: {
+        bookingId: createdBookingIds[0].id,
+        guestEmail,
+        guestFirstName,
+        guestLastName,
+        venueId,
+        totalAmount,
+      },
+    },
     "Bookings created succesfully"
   )
 }
@@ -128,4 +138,20 @@ export const fetchAvailableEventUnitsToBook = async (
   const apiRes = new ApiRes(res)
 
   return apiRes.sendSuccessRes({ availableEventUnitsToBook })
+}
+
+export const fetchBooking = async (
+  req: Request<{}, {}, {}, { bookingId?: string }>,
+  res: Response
+) => {
+  const { bookingId } = req.query
+
+  if (!bookingId) {
+    throw new HandledError("No bookingId provided")
+  }
+
+  const booking = await getBookingService(bookingId)
+
+  const apiRes = new ApiRes(res)
+  apiRes.sendSuccessRes({ booking })
 }

@@ -6,4 +6,5 @@ export enum EApiKeys {
   VENUE = "venue",
   AVAILABLE_EVENT_UNITS_TO_BOOK = "available-event-units-to-book",
   BOOKINGS = "bookings",
+  BOOKING = "booking",
 }

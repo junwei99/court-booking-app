@@ -13,4 +13,9 @@ declare global {
     status: "success" | "error"
     message: string
   }
+
+  type TBaseResponse<T> = {
+    status: "success" | "error"
+    message: string
+  } & T
 }

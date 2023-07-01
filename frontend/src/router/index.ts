@@ -129,6 +129,12 @@ const router = createRouter({
       path: "/booking-status",
       name: "booking-status",
       component: BookingStatusView,
+      props: (route) => {
+        const { bookingId } = route.query as { bookingId: string }
+        return {
+          bookingId,
+        }
+      },
     },
   ],
   scrollBehavior() {

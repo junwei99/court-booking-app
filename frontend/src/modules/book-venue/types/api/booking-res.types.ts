@@ -1,3 +1,5 @@
+import type { TGuestDetails } from "./booking-params.types"
+
 export type TDurations =
   | "30 minutes"
   | "1 hour"
@@ -34,4 +36,10 @@ export interface IBookingRes extends ISuccessRes {
   createdBookingIds: Array<{
     id: number
   }>
+}
+
+export type TBookingRes = TGuestDetails & {
+  id: string
+  totalAmount: string
+  venueId: number
 }

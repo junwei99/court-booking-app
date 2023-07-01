@@ -1,4 +1,5 @@
 import { client } from "@/index"
+import { insertBookings } from "@/modules/bookings/queries/insert-booking/insert-booking.queries"
 import { insertBookingItems } from "@/modules/bookings/queries/insert-bookings-items/insert-bookings-items.queries"
 import { queryAvailableEventUnitsToBook } from "@/modules/bookings/queries/query-available-event-units-to-book/query-available-event-units-to-book.queries"
 import { queryBookings } from "@/modules/bookings/queries/query-bookings/query-bookings.queries"
@@ -12,7 +13,7 @@ import { TBookingList } from "@/modules/bookings/types/bookings-services.types"
 import { HandledError } from "@/modules/common/utils/HandledError.utils"
 import dayjs from "dayjs"
 import isBetween from "dayjs/plugin/isBetween"
-import { insertBookings } from "../queries/insert-booking/insert-booking.queries"
+import { queryBooking } from "../queries/query-booking/query-booking.queries"
 
 dayjs.extend(isBetween)
 
@@ -21,7 +22,7 @@ export const getAvailableTimeslotsService = async (
   eventCategoryId: number,
   startDatetime: Date
 ) => {
-  const bookingList = await queryBookings.run(
+  const bookingItemList = await queryBookings.run(
     { venueId, eventCategoryId },
     client
   )
@@ -37,7 +38,7 @@ export const getAvailableTimeslotsService = async (
   //filter out dates that are unbookable
   const bookableIntervalDateList = getFilteredIntervalDateList(
     intervalDateList,
-    bookingList
+    bookingItemList
   )
 
   //transform timeslots to { time: string, amOrPm: { am: boolean, pm: boolean } } structure
@@ -56,10 +57,10 @@ export const createBookingService = async (bookingList: TBookingList) => {
 }
 
 export const createBookingItemsService = async (
-  bookingList: Array<TBookingParam>,
+  bookingItemList: Array<TBookingParam>,
   bookingId: string
 ) => {
-  const processedBookingList = bookingList.map((booking) => {
+  const processedBookingList = bookingItemList.map((booking) => {
     const { bookingStartDate, duration, eventUnitId } = booking
     return {
       bookingStartDate,
@@ -117,4 +118,25 @@ export const getAvailableEventUnitsToBookService = async (
   })
 
   return bookableEventUnitsOutput
+}
+
+export const getBookingService = async (bookingId: string) => {
+  const [booking] = await queryBooking.run({ bookingId }, client)
+
+  if (!booking || !booking.id) {
+    throw new HandledError("Booking not found")
+  }
+
+  if (!booking.total_amount || !booking.venue_id) {
+    throw new HandledError("Invalid booking found")
+  }
+
+  return {
+    id: booking.id,
+    guestFirstName: booking.guest_first_name,
+    guestLastName: booking.guest_last_name,
+    guestEmail: booking.guest_email,
+    totalAmount: booking.total_amount,
+    venueId: booking.venue_id,
+  }
 }
