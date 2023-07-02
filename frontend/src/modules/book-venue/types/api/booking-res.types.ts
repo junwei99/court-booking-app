@@ -39,7 +39,9 @@ export interface IBookingRes extends ISuccessRes {
 }
 
 export type TBookingRes = TGuestDetails & {
-  id: string
-  totalAmount: string
+  bookingId: string
   venueId: number
+  venueName: string
+  eventUnitName: string
+  totalAmount: number
 }

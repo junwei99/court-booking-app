@@ -54,37 +54,28 @@ export const fetchAvailableTimeslots = async (
   return apiRes.sendSuccessRes({ outputTimeList: availableTimeslots })
 }
 
+//TODO: get venueId and totalAmount from db
 export const createBookings = async (
   req: Request<{}, {}, TCreateBookingsParams>,
   res: Response
 ) => {
   const {
     bookingList,
-    totalAmount,
     guestFirstName = "",
     guestLastName = "",
     guestEmail = "",
-    venueId,
   } = req.body
 
-  if (
-    !bookingList ||
-    !bookingList?.length ||
-    bookingList?.length < 1 ||
-    !totalAmount ||
-    !venueId
-  ) {
+  if (!bookingList || !bookingList?.length || bookingList?.length < 1) {
     throw new HandledError("Invalid parameters")
   }
 
   const createdBookingIds = await createBookingService([
     {
       id: uuidv4(),
-      totalAmount: totalAmount.toString(),
       guestFirstName,
       guestLastName,
       guestEmail,
-      venueId,
     },
   ])
 
@@ -105,14 +96,7 @@ export const createBookings = async (
 
   return apiRes.sendSuccessRes(
     {
-      bookingInfo: {
-        bookingId: createdBookingIds[0].id,
-        guestEmail,
-        guestFirstName,
-        guestLastName,
-        venueId,
-        totalAmount,
-      },
+      createdBookingIds,
     },
     "Bookings created succesfully"
   )

@@ -27,10 +27,7 @@ export const fetchVenuesToBook = async (
     IFetchAvailableEventUnitsToBookParams
   >(EApiKeys.AVAILABLE_EVENT_UNITS_TO_BOOK, body)
 
-  if (
-    !(eventUnitsToBookRes?.status === "success") ||
-    !eventUnitsToBookRes?.availableEventUnitsToBook?.length
-  ) {
+  if (eventUnitsToBookRes?.status !== "success") {
     throw new Error(eventUnitsToBookRes.message)
   }
 

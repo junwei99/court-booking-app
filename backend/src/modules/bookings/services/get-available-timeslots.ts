@@ -1,6 +1,6 @@
-import dayjs from "dayjs"
 import { IQueryBookingsResult } from "@/modules/bookings/queries/query-bookings/query-bookings.queries"
 import { ITwelveHourOutputTime } from "@/modules/bookings/types/bookings.types"
+import dayjs from "dayjs"
 
 export const getIntervalDateList = (
   startDateTime: Date,
@@ -28,7 +28,7 @@ export const getFilteredIntervalDateList = (
   intervalDateList: Array<Date>,
   bookings: Array<IQueryBookingsResult>
 ) => {
-  let filteredIntervalDateList: Array<Date> = []
+  let filteredIntervalDateList: Array<Date> = intervalDateList
 
   if (bookings && bookings.length > 0) {
     filteredIntervalDateList = intervalDateList.filter(

@@ -30,9 +30,9 @@ const hydrateBookingInfo = async () => {
 
     const bookingMap = {
       "Booking no": props.bookingId,
-      Email: bookingInfo.booking.guestEmail,
-      "Court name": bookingInfo.booking.venueId,
-      "Total amount": Number(bookingInfo.booking.totalAmount),
+      Email: bookingInfo.booking.guestEmail ?? "",
+      "Court name": `${bookingInfo.booking.venueName}`,
+      "Total amount": bookingInfo.booking.totalAmount,
     }
     const bookingDetailsList = Object.entries(bookingMap)
 

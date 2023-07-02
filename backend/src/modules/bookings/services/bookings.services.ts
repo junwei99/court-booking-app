@@ -121,22 +121,25 @@ export const getAvailableEventUnitsToBookService = async (
 }
 
 export const getBookingService = async (bookingId: string) => {
-  const [booking] = await queryBooking.run({ bookingId }, client)
+  const bookings = await queryBooking.run({ bookingId }, client)
 
-  if (!booking || !booking.id) {
+  if (!bookings || bookings.length <= 0) {
     throw new HandledError("Booking not found")
   }
 
-  if (!booking.total_amount || !booking.venue_id) {
-    throw new HandledError("Invalid booking found")
-  }
+  const totalAmount = bookings.reduce((accumulator, currentValue) => {
+    return accumulator + currentValue.price
+  }, 0)
+
+  const [booking] = bookings
 
   return {
-    id: booking.id,
+    bookingId,
     guestFirstName: booking.guest_first_name,
     guestLastName: booking.guest_last_name,
     guestEmail: booking.guest_email,
-    totalAmount: booking.total_amount,
     venueId: booking.venue_id,
+    venueName: booking.venue_name,
+    totalAmount,
   }
 }

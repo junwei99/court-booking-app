@@ -10,10 +10,10 @@ export const guestFormZodSchema = z.object({
 })
 
 export const handleSubmitBooking = async (
-  eventUnitsList: Array<TCartItem>,
+  bookingItemList: Array<TCartItem>,
   checkoutForm: TCheckoutFormData
 ) => {
-  const bookingList = eventUnitsList.map((booking) => ({
+  const bookingList = bookingItemList.map((booking) => ({
     bookingStartDate: booking.bookingDatetime,
     eventUnitId: booking.eventUnit.eventUnitId,
     duration: booking.duration,

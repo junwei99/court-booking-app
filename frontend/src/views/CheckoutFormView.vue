@@ -63,16 +63,20 @@ const handleOnInputCheckoutForm = (key: TCheckoutFormKeys, value: string) => {
 const handleConfirmPayment = async () => {
   try {
     createBookingStatus.value = "loading"
-    await handleSubmitBooking(
+    const submitBookingRes = await handleSubmitBooking(
       cartStore.mergedEventUnitsList,
       checkoutForm.value
     )
     createBookingStatus.value = "success"
     cartStore.clearCart()
-    router.push({
+    router.replace({
       name: "booking-status",
+      query: {
+        bookingId: submitBookingRes.createdBookingIds[0].id,
+      },
     })
   } catch (error) {
+    console.log({ error })
     createBookingStatus.value = "error"
   }
 }
