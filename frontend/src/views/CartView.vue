@@ -12,7 +12,7 @@ const pageFetchStatus = ref(EFetchStatus.NONE)
 const cartStore = useCartStore()
 
 const handleCheckoutCart = () => {
-  router.push({
+  router.replace({
     name: "checkout",
   })
 }

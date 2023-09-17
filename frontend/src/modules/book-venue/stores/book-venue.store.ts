@@ -194,28 +194,7 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     }
   }
 
-  const handleSelectTimeAndDurationOnChange = async (
-    selectKey: TTimeAndDurationKey,
-    selectValue: string
-  ) => {
-    setBookVenueTimeAndDuration({
-      ...bookVenueTimeAndDuration.value,
-      [selectKey]: selectValue,
-    })
-
-    //populate list
-    if (selectKey === "selectedTime") {
-      setAmPmFromRes(selectValue, amPmListOperations.init)
-      setDurationFromRes(durationListOperations.init)
-    } else if (selectKey === "selectedAmPm") {
-      setDurationFromRes(durationListOperations.init)
-    }
-
-    if (!isAll3ItemsSelected.value) {
-      clearVenues()
-      return
-    }
-
+  const hydrateAvailableEventUnits = () => {
     //if all 3 select has a value,  fetch venue list
     const transformedBookingDateTime = getTransformedBookingDateTime(
       selectedDate.value,
@@ -243,6 +222,31 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
       bookingDuration,
       transformedBookingDateTime
     )
+  }
+
+  const handleSelectTimeAndDurationOnChange = async (
+    selectKey: TTimeAndDurationKey,
+    selectValue: string
+  ) => {
+    setBookVenueTimeAndDuration({
+      ...bookVenueTimeAndDuration.value,
+      [selectKey]: selectValue,
+    })
+
+    //populate list
+    if (selectKey === "selectedTime") {
+      setAmPmFromRes(selectValue, amPmListOperations.init)
+      setDurationFromRes(durationListOperations.init)
+    } else if (selectKey === "selectedAmPm") {
+      setDurationFromRes(durationListOperations.init)
+    }
+
+    if (!isAll3ItemsSelected.value) {
+      clearVenues()
+      return
+    }
+
+    hydrateAvailableEventUnits()
   }
 
   const resetStore = () => {
@@ -273,6 +277,7 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     initAvailableBookingTimeAndDuration,
     getTimeAndDurationValueFromKey,
     resetStore,
+    hydrateAvailableEventUnits,
   } as const
 
   return {
