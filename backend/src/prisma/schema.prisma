@@ -6,6 +6,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = "postgresql://junwei@localhost:5432/court-booking-app"
+  // url      = "postgresql://junwei:password@db:5432/court-booking-app"
 }
 
 model Amenity {

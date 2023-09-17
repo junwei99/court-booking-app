@@ -4,6 +4,7 @@ export const ROUTES = {
   VENUE: "/venue",
   VENUE_BY_VENUEID: "/venue/:venueId",
   AMENITY: "/amenity",
+  LOCATION: "/location",
   //event-units
   EVENT_UNITS: "/event-units",
   EVENT_CATEGORIES: "/event-categories",

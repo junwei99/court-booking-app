@@ -14,6 +14,9 @@ RUN npm install --production
 
 COPY --from=builder /usr/app/dist ./dist
 
+# Ensure schema.prisma is in the dist folder
+COPY src/prisma/schema.prisma dist/src/prisma/
+
 COPY .env .
 
 EXPOSE 8080

@@ -1,4 +1,3 @@
-import type { DeepPartial } from "@/modules/common/types/utils.types"
 import Vue, { VNode } from "vue"
 
 declare global {
@@ -15,9 +14,15 @@ declare global {
     message: string
   }
 
-  type TBaseResponse<T> = DeepPartial<{
+  //TODO: use zod validation
+  // type TBaseResponse<T> = DeepPartial<{
+  //   status: "success" | "error"
+  //   message: string
+  // }> &
+  //   DeepPartial<T>
+
+  type TBaseResponse<T> = {
     status: "success" | "error"
     message: string
-  }> &
-    DeepPartial<T>
+  } & T
 }

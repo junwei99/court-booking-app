@@ -23,6 +23,7 @@ const createConnection = async () => {
 
   while (retries) {
     const client = new Client({
+      // host: "db",
       host: "localhost",
       port: 5432,
       user: process.env.POSTGRES_USER,
