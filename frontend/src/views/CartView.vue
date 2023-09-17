@@ -3,26 +3,29 @@ import CartSection from "@/modules/book-venue/components/cart/CartSection.vue"
 import { useCartStore } from "@/modules/book-venue/stores/cart.store"
 import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
-import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
-import { EFetchStatus, NavbarPageModeEnum } from "@/others/constants/enums"
+import { EFetchStatus } from "@/others/constants/enums"
+import router from "@/router"
 import { onMounted, ref } from "vue"
 
 const pageFetchStatus = ref(EFetchStatus.NONE)
 
 const cartStore = useCartStore()
 
+const handleCheckoutCart = () => {
+  router.replace({
+    name: "checkout",
+  })
+}
+
 onMounted(() => {
   pageFetchStatus.value = EFetchStatus.LOADING
   setTimeout(() => (pageFetchStatus.value = EFetchStatus.LOADED), 50)
+
+  console.log({ cartStore })
 })
 </script>
 
 <template>
-  <Navbar
-    :page-mode="NavbarPageModeEnum.CHECKOUT"
-    page-title="My Cart"
-    :show-right-button="false"
-  />
   <div>
     <div class="pb-[5rem]">
       <CartSection
@@ -36,7 +39,10 @@ onMounted(() => {
       />
     </div>
     <div class="bottom-action-bar">
-      <Button v-if="pageFetchStatus === EFetchStatus.LOADED" class="w-full"
+      <Button
+        v-if="pageFetchStatus === EFetchStatus.LOADED"
+        class="w-full"
+        @click="handleCheckoutCart"
         >Checkout Cart -
         <PriceCurrency :price="cartStore.bookingTotalPriceInfo"
       /></Button>

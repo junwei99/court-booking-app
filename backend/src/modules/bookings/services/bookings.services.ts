@@ -1,8 +1,6 @@
 import { client } from "@/index"
-import {
-  insertBookings,
-  type IInsertBookingsParams,
-} from "@/modules/bookings/queries/insert-bookings/insert-bookings.queries"
+import { insertBookings } from "@/modules/bookings/queries/insert-booking/insert-booking.queries"
+import { insertBookingItems } from "@/modules/bookings/queries/insert-bookings-items/insert-bookings-items.queries"
 import { queryAvailableEventUnitsToBook } from "@/modules/bookings/queries/query-available-event-units-to-book/query-available-event-units-to-book.queries"
 import { queryBookings } from "@/modules/bookings/queries/query-bookings/query-bookings.queries"
 import {
@@ -10,9 +8,12 @@ import {
   getIntervalDateList,
   getTransformedTimeslots,
 } from "@/modules/bookings/services/get-available-timeslots"
+import { TBookingParam } from "@/modules/bookings/types/bookings-controllers.types"
+import { TBookingList } from "@/modules/bookings/types/bookings-services.types"
 import { HandledError } from "@/modules/common/utils/HandledError.utils"
 import dayjs from "dayjs"
 import isBetween from "dayjs/plugin/isBetween"
+import { queryBooking } from "../queries/query-booking/query-booking.queries"
 
 dayjs.extend(isBetween)
 
@@ -21,7 +22,7 @@ export const getAvailableTimeslotsService = async (
   eventCategoryId: number,
   startDatetime: Date
 ) => {
-  const bookingList = await queryBookings.run(
+  const bookingItemList = await queryBookings.run(
     { venueId, eventCategoryId },
     client
   )
@@ -37,7 +38,7 @@ export const getAvailableTimeslotsService = async (
   //filter out dates that are unbookable
   const bookableIntervalDateList = getFilteredIntervalDateList(
     intervalDateList,
-    bookingList
+    bookingItemList
   )
 
   //transform timeslots to { time: string, amOrPm: { am: boolean, pm: boolean } } structure
@@ -50,10 +51,29 @@ export const getAvailableTimeslotsService = async (
   return transformedTimeslots
 }
 
-export const createBookingsService = async (
-  bookingList: IInsertBookingsParams["bookingList"]
-) => {
+export const createBookingService = async (bookingList: TBookingList) => {
   const createdBookingIds = await insertBookings.run({ bookingList }, client)
+  return createdBookingIds
+}
+
+export const createBookingItemsService = async (
+  bookingItemList: Array<TBookingParam>,
+  bookingId: string
+) => {
+  const processedBookingList = bookingItemList.map((booking) => {
+    const { bookingStartDate, duration, eventUnitId } = booking
+    return {
+      bookingStartDate,
+      bookingEndDate: dayjs(bookingStartDate).add(duration, "minute").toDate(),
+      eventUnitId,
+      bookingId,
+    }
+  })
+
+  const createdBookingIds = await insertBookingItems.run(
+    { bookingItemList: processedBookingList },
+    client
+  )
 
   return createdBookingIds
 }
@@ -98,4 +118,28 @@ export const getAvailableEventUnitsToBookService = async (
   })
 
   return bookableEventUnitsOutput
+}
+
+export const getBookingService = async (bookingId: string) => {
+  const bookings = await queryBooking.run({ bookingId }, client)
+
+  if (!bookings || bookings.length <= 0) {
+    throw new HandledError("Booking not found")
+  }
+
+  const totalAmount = bookings.reduce((accumulator, currentValue) => {
+    return accumulator + currentValue.price
+  }, 0)
+
+  const [booking] = bookings
+
+  return {
+    bookingId,
+    guestFirstName: booking.guest_first_name,
+    guestLastName: booking.guest_last_name,
+    guestEmail: booking.guest_email,
+    venueId: booking.venue_id,
+    venueName: booking.venue_name,
+    totalAmount,
+  }
 }

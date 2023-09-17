@@ -8,7 +8,7 @@ import {
   showerSVG,
 } from "@/assets/images/icons"
 import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
-import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
+import { useGlobalLayoutStore } from "@/modules/common/stores/global-layout.store"
 import {
   BaseLocationInfoSection,
   BaseLocationLoadingSkeleton,
@@ -21,14 +21,16 @@ import LocationContactUsList from "@/modules/venue/components/contact-us/Locatio
 import LocationMobileBottomBar from "@/modules/venue/components/others/LocationMobileBottomBar.vue"
 import { fetchVenue } from "@/modules/venue/services/apis/fetch-venue.api"
 import type { IVenueRes } from "@/modules/venue/types/apis/venue-res"
-import { ECentreInfoKey, NavbarPageModeEnum } from "@/others/constants/enums"
+import { ECentreInfoKey } from "@/others/constants/enums"
 import { useQuery } from "@tanstack/vue-query"
-import { computed, reactive } from "vue"
+import { computed, reactive, watchEffect } from "vue"
 
 const props = defineProps<{
   navigateToBookVenuePage: (venueName: string, eventUnitType: string) => void
   venueId: number
 }>()
+
+const globalLayoutStore = useGlobalLayoutStore()
 
 const {
   isFetching: venueIsFetching,
@@ -41,6 +43,13 @@ const {
 })
 
 const bookVenueStore = useBookVenueStore()
+
+watchEffect(() => {
+  globalLayoutStore.setNavbar({
+    pageMode: "checkout",
+    pageTitle: venueData.value?.title ?? "",
+  })
+})
 
 const centreInfoModalState = reactive<{ modalId: ECentreInfoKey }>({
   modalId: ECentreInfoKey.NONE,
@@ -106,10 +115,6 @@ const handleOpenCentreInfoModal = (modalId: ECentreInfoKey) => {
 </script>
 
 <template>
-  <Navbar
-    :pageMode="NavbarPageModeEnum.CHECKOUT"
-    :pageTitle="venueData && venueData.title"
-  />
   <div
     v-if="
       venueIsFetching === false && venueDataStatus === 'success' && venueData

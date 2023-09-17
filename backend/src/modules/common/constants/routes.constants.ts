@@ -12,5 +12,6 @@ export const ROUTES = {
   GET_AVAILABLE_TIMESLOTS: "/get-available-timeslots",
   AVAILABLE_EVENT_UNITS_TO_BOOK: "/available-event-units-to-book",
   BOOKINGS: "/bookings",
+  BOOKING: "/booking",
   TEST: "/test",
 } as const

@@ -11,6 +11,8 @@ export enum NavbarPageModeEnum {
   HOME = "home",
 } // <= sizes can be accessed in setup scope
 
+export type TNavbarPageMode = "checkout" | "home"
+
 export enum ECentreInfoKey {
   NONE = "",
   OPENING_HOURS = "opening-hours",

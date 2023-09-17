@@ -23,11 +23,11 @@ const createConnection = async () => {
 
   while (retries) {
     const client = new Client({
-      host: "db",
+      host: "localhost",
       port: 5432,
       user: process.env.POSTGRES_USER,
       database: process.env.POSTGRES_DB,
-      password: process.env.POSTGRES_PASSWORD,
+      // password: process.env.POSTGRES_PASSWORD,
     }) // Create a new client object for each connection attempt
 
     try {
@@ -64,7 +64,7 @@ async function main() {
     routesList.map((route) => app.use("/api", route))
     app.use(apiErrorHandler)
     app.listen(8080, () => {
-      console.log("running on port 8081")
+      console.log("running on port 8080")
     })
   } catch (error) {
     console.log({ error })

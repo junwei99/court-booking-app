@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, computed } from "vue"
-import { useRouter } from "vue-router"
 import { useCartStore } from "@/modules/book-venue/stores/cart.store"
-import { NavbarPageModeEnum } from "@/others/constants/enums"
+import { useGlobalLayoutStore } from "@/modules/common/stores/global-layout.store"
+import type { TNavbarPageMode } from "@/others/constants/enums"
+import { computed, ref } from "vue"
+import { useRouter } from "vue-router"
 
 interface IPageNavbarProps {
   leftButtonAction: () => void
@@ -11,50 +12,27 @@ interface IPageNavbarProps {
 
 const router = useRouter()
 const cartStore = useCartStore()
-
-const props = withDefaults(
-  defineProps<{
-    pageMode: NavbarPageModeEnum
-    leftButtonAction?: () => void
-    pageTitle?: string
-    showRightButton?: boolean
-  }>(),
-  { pageMode: NavbarPageModeEnum.HOME, showRightButton: true }
-)
+const globalLayoutStore = useGlobalLayoutStore()
 
 const cartTooltip = ref("")
 
-// const showNavbar = ref(true)
-// let lastScrollPosition = 0
-
-// const onScroll = (): void => {
-//   // Get the current scroll position
-//   const currentScrollPosition =
-//     window.pageYOffset || document.documentElement.scrollTop
-//   // Because of momentum scrolling on mobiles, we shouldn't continue if it is less than zero
-//   if (currentScrollPosition < 0) {
-//     return
-//   }
-//   // Here we determine whether we need to show or hide the navbar
-//   showNavbar.value = currentScrollPosition < lastScrollPosition
-//   // Set the current scroll position as the last scroll position
-//   lastScrollPosition = currentScrollPosition
-// }
-
 const NavbarModeMap = computed(
   () =>
-    new Map<NavbarPageModeEnum, IPageNavbarProps>([
+    new Map<TNavbarPageMode, IPageNavbarProps>([
       [
-        NavbarPageModeEnum.CHECKOUT,
+        "checkout",
         {
-          leftButtonAction: props.leftButtonAction
-            ? props.leftButtonAction
+          leftButtonAction: globalLayoutStore.navbar.leftButtonAction
+            ? globalLayoutStore.navbar.leftButtonAction
             : () => router.go(-1),
-          pageTitle: props.pageTitle ? props.pageTitle : "",
+          pageTitle:
+            globalLayoutStore.navbar.pageTitle ?? ""
+              ? globalLayoutStore.navbar.pageTitle
+              : "",
         },
       ],
       [
-        NavbarPageModeEnum.HOME,
+        "home",
         {
           leftButtonAction: () => console.log("haha"),
           pageTitle: "Courtsite",
@@ -80,22 +58,16 @@ const cartOnClick = () => {
 const cartOnClickAway = () => {
   cartTooltip.value = ""
 }
-
-// onMounted(() => window.addEventListener("scroll", onScroll));
-
-// onUnmounted(() => window.removeEventListener("scroll", onScroll));
 </script>
 
 <template>
-  <!-- <div
-    :class="`navbar bg-base-100 sticky top-0 z-20 duration-300 ${
-      !showNavbar && '-translate-y-full'
-    }`"
-  > -->
   <div
     :class="`bg-base-100 sticky top-0 z-20 duration-300 grid grid-cols-[1fr_4fr_1fr] py-2 items-center min-h-[3.8rem]`"
   >
-    <div v-if="pageMode === NavbarPageModeEnum.HOME" class="dropdown pl-3">
+    <div
+      v-if="globalLayoutStore.navbar.pageMode === 'home'"
+      class="dropdown pl-3"
+    >
       <label tabindex="0" class="btn btn-ghost btn-circle">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -122,10 +94,8 @@ const cartOnClickAway = () => {
       </ul>
     </div>
     <button
-      v-if="pageMode === NavbarPageModeEnum.CHECKOUT"
-      @click="
-        NavbarModeMap.get(NavbarPageModeEnum.CHECKOUT)?.leftButtonAction()
-      "
+      v-if="globalLayoutStore.navbar.pageMode === 'checkout'"
+      @click="NavbarModeMap.get('checkout')?.leftButtonAction()"
       class="pl-5"
     >
       <svg
@@ -149,11 +119,11 @@ const cartOnClickAway = () => {
         @click="logoOnClick"
       >
         <h3 class="line-clamp-1 items-center">
-          {{ NavbarModeMap.get(pageMode)?.pageTitle }}
+          {{ NavbarModeMap.get(globalLayoutStore.navbar.pageMode)?.pageTitle }}
         </h3>
       </a>
     </div>
-    <div v-if="pageMode === NavbarPageModeEnum.HOME" class="pr-3">
+    <div v-if="globalLayoutStore.navbar.pageMode === 'home'" class="pr-3">
       <button class="btn btn-ghost btn-circle">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -172,11 +142,11 @@ const cartOnClickAway = () => {
       </button>
     </div>
     <div
-      v-if="pageMode === NavbarPageModeEnum.CHECKOUT"
+      v-if="globalLayoutStore.navbar.pageMode === 'checkout'"
       class="flex justify-end pr-3"
     >
       <div
-        v-if="showRightButton"
+        v-if="globalLayoutStore.navbar.showRightButton"
         :class="`${
           cartTooltip && 'tooltip tooltip-open'
         } tooltip-left transition-all`"
@@ -202,7 +172,7 @@ const cartOnClickAway = () => {
             </svg>
             <span
               v-if="cartStore.cartSize > 0"
-              class="badge badge-sm indicator-item bg-primary-normal border-none"
+              class="badge badge-sm indicator-item bg-primary-normal border-none text-white"
               >{{ cartStore.cartSize }}</span
             >
           </div>

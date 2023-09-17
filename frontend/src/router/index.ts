@@ -1,10 +1,13 @@
 import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
+import { useGlobalLayoutStore } from "@/modules/common/stores/global-layout.store"
 import { createRouter, createWebHistory } from "vue-router"
 
 const BookVenuePage = () => import("@/views/BookVenueView.vue")
 const CartView = () => import("@/views/CartView.vue")
 const VenueView = () => import("@/views/VenueView.vue")
 const HomeView = () => import("@/views/HomeView.vue")
+const CheckoutFormView = () => import("@/views/CheckoutFormView.vue")
+const BookingStatusView = () => import("@/views/BookingStatusView.vue")
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,6 +27,10 @@ const router = createRouter({
         return {
           navigateToVenuePage,
         }
+      },
+      beforeEnter: () => {
+        const globalLayoutStore = useGlobalLayoutStore()
+        globalLayoutStore.setNavbar({ pageMode: "home", pageTitle: "" })
       },
     },
     {
@@ -97,6 +104,37 @@ const router = createRouter({
       path: "/cart",
       name: "cart",
       component: CartView,
+      beforeEnter: () => {
+        const globalLayoutStore = useGlobalLayoutStore()
+        globalLayoutStore.setNavbar({
+          pageMode: "checkout",
+          pageTitle: "My Cart",
+          showRightButton: false,
+        })
+      },
+    },
+    {
+      path: "/checkout",
+      name: "checkout",
+      component: CheckoutFormView,
+      beforeEnter: () => {
+        const globalLayoutStore = useGlobalLayoutStore()
+        globalLayoutStore.setNavbar({
+          pageMode: "checkout",
+          showRightButton: false,
+        })
+      },
+    },
+    {
+      path: "/booking-status",
+      name: "booking-status",
+      component: BookingStatusView,
+      props: (route) => {
+        const { bookingId } = route.query as { bookingId: string }
+        return {
+          bookingId,
+        }
+      },
     },
   ],
   scrollBehavior() {

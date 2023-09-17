@@ -26,14 +26,19 @@ dayjs.extend(isBetween)
 //TODO: revisit logic for unique eventUnits based on booking duration and time
 
 export const useCartStore = defineStore("cart", () => {
-  const venueToBookLS = useLocalStorage("venue-to-book", {
+  const initialVenueToBook = {
     id: 0,
     venueName: "",
     venueAddress: "",
     eventCategory: "",
     image: "",
     eventUnitType: "",
+  }
+
+  const venueToBookLS = useLocalStorage("venue-to-book", {
+    ...initialVenueToBook,
   })
+
   const cartItemMap = ref<TCartItemMap>(new Map())
 
   //getters
@@ -169,6 +174,11 @@ export const useCartStore = defineStore("cart", () => {
     }
   }
 
+  const clearCart = () => {
+    cartItemMap.value = new Map()
+    venueToBookLS.value = { ...initialVenueToBook }
+  }
+
   const getters = {
     venueToBookLS,
     mergedEventUnitsList,
@@ -180,6 +190,7 @@ export const useCartStore = defineStore("cart", () => {
 
   const actions = {
     hasItem,
+    clearCart,
     handleMutateCartItems,
   }
 

@@ -6,10 +6,9 @@ import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
 import { useCartStore } from "@/modules/book-venue/stores/cart.store"
 import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
-import Navbar from "@/modules/common/components/shared-ui/organism/Navbar.vue"
-import { NavbarPageModeEnum } from "@/others/constants/enums"
+import { useGlobalLayoutStore } from "@/modules/common/stores/global-layout.store"
 import { useQuery } from "@tanstack/vue-query"
-import { ref, watchEffect } from "vue"
+import { onMounted, ref, watchEffect } from "vue"
 
 const props = defineProps<{
   venueId: number
@@ -21,6 +20,7 @@ const props = defineProps<{
 
 const cartStore = useCartStore()
 const bookVenueStore = useBookVenueStore()
+const globalLayoutStore = useGlobalLayoutStore()
 
 const { data: categoryList } = useQuery({
   queryKey: ["fetchCategoriesOfVenue", props.venueId],
@@ -42,34 +42,35 @@ const headerBackBtnOnClick = () => {
 const nextButtonOnClick = () => {
   if (page.value === 1) {
     bookVenueStore.initAvailableBookingTimeAndDuration()
-    //to display in cart page
     bookVenueStore.setEventCategoryOfVenueToBook(
       categoryList?.value?.find(
         (category) => category.id === (bookVenueStore?.selectedCategory ?? 0)
       )?.name ?? ""
     )
+
     page.value = 2
   } else {
     props.navigateToCartPage()
   }
 }
-
 watchEffect(() => {
   if (bookVenueStore.selectedCategory === null && categoryList.value) {
     //resets store if venueId is different from route venueId
     bookVenueStore.handleSelectCategory(categoryList.value[0].id)
   }
 })
+
+onMounted(() => {
+  globalLayoutStore.setNavbar({
+    pageMode: "checkout",
+    pageTitle: props.venueName,
+    leftButtonAction: headerBackBtnOnClick,
+  })
+})
 </script>
 
 <template>
-  <Navbar
-    :page-mode="NavbarPageModeEnum.CHECKOUT"
-    :page-title="venueName"
-    :left-button-action="headerBackBtnOnClick"
-  />
   <div class="pb-[5rem]">
-    <!-- first page -->
     <BookVenuePage1
       v-if="page === 1"
       :category-list="categoryList ?? []"

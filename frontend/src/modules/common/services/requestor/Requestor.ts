@@ -23,7 +23,7 @@ export class Requestor {
         params: params,
       }
 
-      const res = await axios<TRes>(config)
+      const res = await axios<TBaseResponse<TRes>>(config)
 
       return res.data
     } catch (error) {

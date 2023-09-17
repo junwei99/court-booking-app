@@ -1,3 +1,5 @@
+import type { TGuestDetails } from "./booking-params.types"
+
 export type TDurations =
   | "30 minutes"
   | "1 hour"
@@ -28,4 +30,18 @@ export interface IFetchAvailableEventUnitsToBookRes extends ISuccessRes {
     price: number
     eventCategoryName: string
   }>
+}
+
+export interface IBookingRes extends ISuccessRes {
+  createdBookingIds: Array<{
+    id: number
+  }>
+}
+
+export type TBookingRes = TGuestDetails & {
+  bookingId: string
+  venueId: number
+  venueName: string
+  eventUnitName: string
+  totalAmount: number
 }
