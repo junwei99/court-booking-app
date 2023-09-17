@@ -8,7 +8,8 @@
     "dev": "nodemon -e ts,js --exec ts-node -T -r tsconfig-paths/register ./src/index.ts",
     "watch": "npx pgtyped -w -c config.json",
     "build": "rimraf ./dist && tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
-    "migrate": "npx prisma migrate dev --schema='./src/models/schema.prisma' --name"
+    "migrate-dev": "npx prisma migrate dev --schema='./src/prisma/schema.prisma' --name",
+    "migrate": "npx prisma migrate deploy --schema='./dist/src/prisma/schema.prisma'"
   },
   "keywords": [],
   "author": "",
