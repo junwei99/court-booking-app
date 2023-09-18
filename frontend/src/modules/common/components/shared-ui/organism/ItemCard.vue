@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Badge from "@/modules/common/components/shared-ui/atom/Badge.vue"
 import SquareImage from "@/modules/common/components/shared-ui/atom/SquareImage.vue"
 
 defineProps<{
@@ -13,16 +14,13 @@ defineProps<{
 <template>
   <div>
     <SquareImage containerClass="rounded-2xl" :imageSrc="imageSrc" />
-    <h4 class="font-semibold mt-3">{{ title }}</h4>
-    <p class="text-gray-500">{{ location }}</p>
-    <div class="flex">
-      <p
-        v-for="eventCategory in eventCategories"
-        :key="eventCategory"
-        class="text-sm text-primary-normal mr-2"
-      >
+    <h2 class="font-semibold mt-3 text-xl">{{ title }}</h2>
+    <h3>{{ location }}</h3>
+    <div class="flex flex-wrap gap-1 pt-2">
+      <!-- <p :key="eventCategory" class="text-sm text-primary-normal mr-2">
         {{ eventCategory }}
-      </p>
+      </p> -->
+      <Badge v-for="eventCategory in eventCategories" :text="eventCategory" />
     </div>
     <p class="font-semibold mt-2">
       RM{{ priceRange.min }} - {{ priceRange.max }} / <span>hour</span>

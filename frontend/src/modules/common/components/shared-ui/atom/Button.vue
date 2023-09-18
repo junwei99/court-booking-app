@@ -3,7 +3,7 @@ const props = withDefaults(
   defineProps<{
     selected?: boolean
     variant?: "contained" | "outlined"
-    state: "loading" | "none" | "clickable-disabled"
+    state?: "loading" | "none" | "clickable-disabled"
   }>(),
   {
     selected: false,

@@ -42,12 +42,9 @@ const navItemsList = [
   { id: "9", title: "Futsal", icon: futsalJPG },
 ]
 
-const onSwiper = (swiper: SwiperClass) => {
-  console.log(swiper)
-}
-const onSlideChange = (swiper: SwiperClass) => {
-  console.log("slide change", swiper)
-}
+const onSwiper = (swiper: SwiperClass) => {}
+
+const onSlideChange = (swiper: SwiperClass) => {}
 
 const itemCardOnClick = (venueId: number) => {
   props.navigateToVenuePage(venueId)
