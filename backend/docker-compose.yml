@@ -1,17 +1,17 @@
 version: "3.9"
 services:
   db:
-    image: postgres
+    image: postgres:16
     environment:
       POSTGRES_USER: "junwei"
       POSTGRES_PASSWORD: "password"
       POSTGRES_DB: "court-booking-app"
     volumes:
       - ./pgdata:/var/lib/postgresql/data
-      - ./db_backup.sql:/src/scripts/db_backup.sql
     ports:
       - "5432:5432"
   web:
+    platform: linux/amd64
     build: .
     image: junwei99/court-booking-app-services
     depends_on:

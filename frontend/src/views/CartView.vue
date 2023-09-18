@@ -20,8 +20,6 @@ const handleCheckoutCart = () => {
 onMounted(() => {
   pageFetchStatus.value = EFetchStatus.LOADING
   setTimeout(() => (pageFetchStatus.value = EFetchStatus.LOADED), 50)
-
-  console.log({ cartStore })
 })
 </script>
 

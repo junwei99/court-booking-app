@@ -33,7 +33,7 @@ const createConnection = async () => {
 
     try {
       await client.connect()
-      console.log("Connected to the database successfully")
+      console.log("Connected to the database successfully hehe")
       return client
     } catch (error) {
       retries -= 1

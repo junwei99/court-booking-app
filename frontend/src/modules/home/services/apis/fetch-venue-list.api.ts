@@ -8,7 +8,7 @@ export const fetchVenueList = async () => {
   if (
     !venueRes?.status ||
     venueRes?.status === "error" ||
-    !venueRes?.venueList?.length
+    typeof venueRes?.venueList?.length !== "number"
   ) {
     throw new Error(venueRes.message)
   }
