@@ -21,6 +21,11 @@ export const useGlobalLayoutStore = defineStore("global-layout", () => {
     ...defaultNavbarState,
   })
 
+  const modal = ref({
+    show: false,
+    title: "",
+  })
+
   const setNavbar = (globalLayoutState: Partial<TNavbarState>) => {
     navbar.value = {
       ...defaultNavbarState,
@@ -28,8 +33,17 @@ export const useGlobalLayoutStore = defineStore("global-layout", () => {
     }
   }
 
+  const setModalState = (show: boolean, title?: string) => {
+    modal.value = {
+      show,
+      title: title ?? "",
+    }
+  }
+
   return {
     navbar,
+    modal,
     setNavbar,
+    setModalState,
   }
 })

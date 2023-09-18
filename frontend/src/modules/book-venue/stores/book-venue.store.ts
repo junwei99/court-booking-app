@@ -194,7 +194,7 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     }
   }
 
-  const hydrateAvailableEventUnits = () => {
+  const hydrateAvailableEventUnits = async () => {
     //if all 3 select has a value,  fetch venue list
     const transformedBookingDateTime = getTransformedBookingDateTime(
       selectedDate.value,
@@ -217,7 +217,7 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
         bookingDuration
       )
 
-    setFetchedEventUnits(
+    await setFetchedEventUnits(
       fetchVenuesToBookCallback,
       bookingDuration,
       transformedBookingDateTime
@@ -266,7 +266,7 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     selectTimeMap,
     bookingDateTime,
     venueToBook,
-  } as const
+  }
 
   const actions = {
     setVenueToBook,
@@ -278,7 +278,7 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     getTimeAndDurationValueFromKey,
     resetStore,
     hydrateAvailableEventUnits,
-  } as const
+  }
 
   return {
     ...getters,

@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import OutlinedButton from "./OutlinedButton.vue";
-defineProps<{ show: boolean; title: string }>();
+import OutlinedButton from "./OutlinedButton.vue"
+
+defineProps<{ show: boolean; title: string }>()
 
 const emit = defineEmits<{
-  (e: "closeModal"): void;
-}>();
+  (e: "closeModal"): void
+}>()
 
 const handleCloseModal = () => {
-  emit("closeModal");
-};
+  emit("closeModal")
+}
 </script>
 
 <template>

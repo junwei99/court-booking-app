@@ -13,7 +13,6 @@ import type { TSelectTimeMap } from "@/modules/book-venue/types/components"
 import type { IEventUnitItem } from "@/modules/common/types/venue.types"
 import { EFetchStatus } from "@/others/constants/enums"
 import { storeToRefs } from "pinia"
-import { onMounted } from "vue"
 
 defineProps<{
   typeOfLocation: string
@@ -49,10 +48,6 @@ const cartHasItem = (eventUnitId: number) => {
     bookVenueStore.bookingDateTime
   )
 }
-
-onMounted(() => {
-  bookVenueStore.hydrateAvailableEventUnits()
-})
 </script>
 
 <template>

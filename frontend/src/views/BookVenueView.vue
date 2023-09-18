@@ -21,6 +21,7 @@ const props = defineProps<{
 const cartStore = useCartStore()
 const bookVenueStore = useBookVenueStore()
 const globalLayoutStore = useGlobalLayoutStore()
+const pageIsLoading = ref(false)
 
 const { data: categoryList } = useQuery({
   queryKey: ["fetchCategoriesOfVenue", props.venueId],
@@ -39,16 +40,31 @@ const headerBackBtnOnClick = () => {
   }
 }
 
-const nextButtonOnClick = () => {
-  if (page.value === 1) {
-    bookVenueStore.initAvailableBookingTimeAndDuration()
+const navigateToPage2 = async () => {
+  try {
+    pageIsLoading.value = true
+    await bookVenueStore.initAvailableBookingTimeAndDuration()
     bookVenueStore.setEventCategoryOfVenueToBook(
       categoryList?.value?.find(
         (category) => category.id === (bookVenueStore?.selectedCategory ?? 0)
       )?.name ?? ""
     )
+    await bookVenueStore.hydrateAvailableEventUnits()
 
     page.value = 2
+  } catch (error) {
+    globalLayoutStore.setModalState(
+      true,
+      "An error occured when fetching for bookings! Please retry later."
+    )
+  } finally {
+    pageIsLoading.value = false
+  }
+}
+
+const nextButtonOnClick = () => {
+  if (page.value === 1) {
+    navigateToPage2()
   } else {
     props.navigateToCartPage()
   }
@@ -97,6 +113,12 @@ onMounted(() => {
         <PriceCurrency :price="cartStore.bookingTotalPriceInfo" />
       </p>
     </div>
-    <Button class="w-full" @click="nextButtonOnClick"> Next </Button>
+    <Button
+      class="w-full"
+      @click="nextButtonOnClick"
+      :state="pageIsLoading ? 'loading' : 'none'"
+    >
+      Next
+    </Button>
   </div>
 </template>
