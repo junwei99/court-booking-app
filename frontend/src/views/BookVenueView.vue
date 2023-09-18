@@ -53,6 +53,7 @@ const nextButtonOnClick = () => {
     props.navigateToCartPage()
   }
 }
+
 watchEffect(() => {
   if (bookVenueStore.selectedCategory === null && categoryList.value) {
     //resets store if venueId is different from route venueId

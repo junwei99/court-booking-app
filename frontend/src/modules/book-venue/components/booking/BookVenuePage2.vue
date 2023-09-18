@@ -15,7 +15,7 @@ import { EFetchStatus } from "@/others/constants/enums"
 import { storeToRefs } from "pinia"
 import { onMounted } from "vue"
 
-const props = defineProps<{
+defineProps<{
   typeOfLocation: string
   selectItemsMap: TSelectTimeMap
   showBackButton?: boolean
