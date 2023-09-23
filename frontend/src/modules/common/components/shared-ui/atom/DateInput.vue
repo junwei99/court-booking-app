@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from "vue"
-import { Calendar } from "vant"
-import dayjs from "dayjs"
 import { calendarIconSVG } from "@/assets/images/icons"
+import dayjs from "dayjs"
+import { Calendar } from "vant"
+import { computed, ref } from "vue"
 
 const props = defineProps<{
   selectedDate: Date
@@ -13,6 +13,10 @@ const emit = defineEmits<{
 }>()
 
 const show = ref(false)
+
+const showDateSelectorPopup = () => {
+  show.value = true
+}
 
 const formatDate = (date: Date) => {
   const displayDate = dayjs(date).format("D MMM YYYY, dddd")
@@ -38,20 +42,20 @@ const maxDate = computed(() =>
   <div class="form-control">
     <button
       class="input-group h-[3.5rem] border-[1px] border-gray-300 my-2 items-center text-center rounded-lg"
-      @click="show = true"
+      @click="showDateSelectorPopup"
     >
       <input
         type="text"
         placeholder="Type here"
         :value="displayDate"
         disabled
-        class="input input-bordered w-full h-full text-[1rem] bg-white border-none disabled:bg-white font-medium"
+        class="input input-bordered w-full h-full text-[1rem] bg-white border-none disabled:bg-white font-medium pointer-events-none"
       />
-      <button
+      <div
         class="btn btn-square h-full border-none text-black bg-white pointer-events-none"
       >
         <img alt="calendar icon" :src="calendarIconSVG" className="w-6 h-6" />
-      </button>
+      </div>
     </button>
   </div>
   <Calendar
