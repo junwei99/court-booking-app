@@ -11,13 +11,24 @@ const props = withDefaults(
   }
 )
 
-const bgColorClass = computed(() => `bg-${props.color}-100`)
-const textColorClass = computed(() => `text-${props.color}-700`)
+const twClasses = computed(() => {
+  if (props.color === "gray") {
+    return {
+      bg: "bg-gray-100",
+      text: "text-gray-700",
+    }
+  }
+
+  return {
+    bg: "bg-blue-100",
+    text: "text-blue-700",
+  }
+})
 </script>
 
 <template>
-  <div :class="`${bgColorClass} rounded-2xl px-3 py-[1px] text-sm`">
-    <p :class="`${textColorClass} font-semibold`">
+  <div :class="`${twClasses.bg} rounded-2xl px-3 py-[1px] text-sm`">
+    <p :class="`${twClasses.text} font-semibold`">
       {{ text }}
     </p>
   </div>

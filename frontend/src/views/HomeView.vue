@@ -79,7 +79,7 @@ const itemCardOnClick = (venueId: number) => {
           v-for="venue in venueList"
           :key="venue.id"
           class="mt-site-padding hover:cursor-pointer"
-          @click="() => itemCardOnClick(venue.id)"
+          @click="itemCardOnClick(venue.id)"
           :event-categories="venue.eventCategories"
           :title="venue.title"
           :location="venue.location"
