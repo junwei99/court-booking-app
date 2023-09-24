@@ -1,10 +1,13 @@
+import type {
+  TEventUnitsToBookList,
+  TVenueFromEventUnitsToBookRes,
+} from "@/modules/book-venue/services/apis/fetch-event-units-to-book"
 import {
   getIsTimeslotInCart,
   getSortedCartDisplayList,
 } from "@/modules/book-venue/services/business/validate-timeslot.business"
 import type { TCartItem } from "@/modules/book-venue/types/components/cart.types"
 import type { IEventUnitItem } from "@/modules/common/types/venue.types"
-import { useLocalStorage } from "@vueuse/core"
 import dayjs from "dayjs"
 import isBetween from "dayjs/plugin/isBetween"
 import { defineStore } from "pinia"
@@ -12,34 +15,30 @@ import { computed, ref } from "vue"
 
 type TCartItemMap = Map<number, Array<TCartItem>>
 
-type TVenueToBook = {
-  id: number
-  venueName: string
-  venueAddress: string
-  eventCategory: string
-  image: string
-  eventUnitType: string
-}
-
 dayjs.extend(isBetween)
+
+const INITIAL_VENUE_TO_BOOK = {
+  venueId: 0,
+  title: "",
+  location: "",
+  description: "",
+  address: "",
+  images: [],
+}
 
 //TODO: revisit logic for unique eventUnits based on booking duration and time
 
-export const useCartStore = defineStore("cart", () => {
-  const initialVenueToBook = {
-    id: 0,
-    venueName: "",
-    venueAddress: "",
-    eventCategory: "",
-    image: "",
-    eventUnitType: "",
-  }
+//TODO: add local storage implementation
 
-  const venueToBookLS = useLocalStorage("venue-to-book", {
-    ...initialVenueToBook,
+export const useCartStore = defineStore("cart", () => {
+  const venueToBook = ref<TVenueFromEventUnitsToBookRes>({
+    ...INITIAL_VENUE_TO_BOOK,
   })
+  const eventCategoryToBook = ref<TEventUnitsToBookList[number] | null>(null)
 
   const cartItemMap = ref<TCartItemMap>(new Map())
+
+  console.log({ cartItemMap })
 
   //getters
   const mergedEventUnitsList = computed(() =>
@@ -137,14 +136,17 @@ export const useCartStore = defineStore("cart", () => {
     eventUnit: IEventUnitItem,
     duration: number,
     bookingDatetime: Date,
-    venueToBook: TVenueToBook
+    venueToBookInput: TVenueFromEventUnitsToBookRes
   ) => {
+    console.log("entreed", venueToBookInput, venueToBook.value)
     // const timestamp = bookingDateTime.getTime()
     const timestamp = getTimestampKey(bookingDatetime)
 
     //resets state if the venueId is different
-    if (venueToBookLS.value.id !== venueToBook.id) {
-      venueToBookLS.value = venueToBook
+    if (venueToBook.value.venueId !== venueToBookInput.venueId) {
+      console.log({ venueToBookInput, eventUnit })
+      venueToBook.value = venueToBookInput
+      eventCategoryToBook.value = eventUnit
       cartItemMap.value = new Map()
     }
 
@@ -176,16 +178,17 @@ export const useCartStore = defineStore("cart", () => {
 
   const clearCart = () => {
     cartItemMap.value = new Map()
-    venueToBookLS.value = { ...initialVenueToBook }
+    venueToBook.value = { ...INITIAL_VENUE_TO_BOOK }
   }
 
   const getters = {
-    venueToBookLS,
+    venueToBook,
     mergedEventUnitsList,
     bookingTotalPriceInfo,
     cartSize,
     cartItemsDisplayList,
     cartItemMap,
+    eventCategoryToBook,
   } as const
 
   const actions = {

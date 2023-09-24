@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import type { EFetchStatus } from "@/others/constants/enums"
+import type { TEventUnitsToBookList } from "@/modules/book-venue/services/apis/fetch-venues-to-book"
 import OutlinedButton from "@/modules/common/components/shared-ui/atom/OutlinedButton.vue"
 import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
 import type { IEventUnitItem } from "@/modules/common/types/venue.types"
 
 defineProps<{
-  venueFetchStatus: EFetchStatus
-  availableEventUnitList: Array<IEventUnitItem>
-  bookingDatetime: Date
+  availableEventUnitList: TEventUnitsToBookList
   handleMutateCartItems: (eventUnit: IEventUnitItem) => void
   hasItem: (eventUnitId: number) => boolean
 }>()
@@ -35,3 +33,4 @@ defineProps<{
     </div>
   </div>
 </template>
+@/modules/book-venue/services/apis/fetch-event-units-to-book

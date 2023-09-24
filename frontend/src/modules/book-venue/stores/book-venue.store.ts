@@ -8,7 +8,7 @@ import {
   useBookVenueTimeAndDuration,
 } from "@/modules/book-venue/hooks/book-venue-store/useBookVenueTimeAndDuration"
 import { fetchAvailableBookingTimeList } from "@/modules/book-venue/services/apis/fetch-available-booking-time-list"
-import { fetchVenuesToBook } from "@/modules/book-venue/services/apis/fetch-venues-to-book"
+import { fetchVenuesToBook } from "@/modules/book-venue/services/apis/fetch-event-units-to-book"
 import {
   getPage2StateNotAvailableConditions,
   getTransformedBookingDateTime,
@@ -75,6 +75,8 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     if (!selectedCategory.value) {
       throw new Error("category not selected")
     }
+
+    console.log({ selectedDate: selectedDate.value.toJSON() })
 
     const availableBookingTimeList = await fetchAvailableBookingTimeList(
       venueToBook.value.id,
@@ -208,6 +210,11 @@ export const useBookVenueStore = defineStore("book-venue-test", () => {
     const bookingDuration = parseInt(
       bookVenueTimeAndDuration.value.selectedDuration
     )
+
+    console.log({
+      transformedBookingDateTime,
+      bookingDuration: bookVenueTimeAndDuration.value,
+    })
 
     const fetchVenuesToBookCallback = async () =>
       await fetchVenuesToBook(

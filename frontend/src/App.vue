@@ -9,6 +9,14 @@ Locale.use("en-US", enUS)
 
 const globalLayoutStore = useGlobalLayoutStore()
 const { modal } = storeToRefs(globalLayoutStore)
+
+const handleCTAAction = () => {
+  if (modal.value.ctaCallback) {
+    modal.value.ctaCallback()
+  }
+
+  globalLayoutStore.resetModalState()
+}
 </script>
 
 <template>
@@ -18,7 +26,8 @@ const { modal } = storeToRefs(globalLayoutStore)
     <Modal
       :show="modal.show"
       :title="modal.title"
-      @close-modal="globalLayoutStore.setModalState(false)"
+      :button-text="modal.buttonText"
+      @cta-action="handleCTAAction"
     />
   </main>
 </template>

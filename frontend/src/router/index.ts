@@ -1,4 +1,3 @@
-import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
 import { useGlobalLayoutStore } from "@/modules/common/stores/global-layout.store"
 import { createRouter, createWebHistory } from "vue-router"
 
@@ -11,6 +10,9 @@ const BookingStatusView = () => import("@/views/BookingStatusView.vue")
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(_to, _from, savedPosition) {
+    return savedPosition ?? { top: 0 }
+  },
   routes: [
     {
       path: "/",
@@ -65,16 +67,15 @@ const router = createRouter({
       name: "book venue",
       component: BookVenuePage,
       beforeEnter: (to) => {
-        const bookVenueStore = useBookVenueStore()
-        const venueId = parseInt(to.params.venueId as string)
-
-        if (
-          bookVenueStore.venueToBook.id &&
-          venueId !== bookVenueStore.venueToBook.id
-        ) {
-          console.log("store resetted")
-          bookVenueStore.resetStore()
-        }
+        // const bookVenueStore = useBookVenueStore()
+        // const venueId = parseInt(to.params.venueId as string)
+        // if (
+        //   bookVenueStore.venueToBook.id &&
+        //   venueId !== bookVenueStore.venueToBook.id
+        // ) {
+        //   console.log("store resetted")
+        //   bookVenueStore.resetStore()
+        // }
       },
       props: (route) => {
         const venueId = parseInt((route.params?.venueId as string) ?? "")
@@ -137,9 +138,6 @@ const router = createRouter({
       },
     },
   ],
-  scrollBehavior() {
-    return { top: 0 }
-  },
 })
 
 export default router

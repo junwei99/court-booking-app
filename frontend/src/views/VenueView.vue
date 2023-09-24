@@ -7,7 +7,6 @@ import {
   shopSVG,
   showerSVG,
 } from "@/assets/images/icons"
-import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
 import { useGlobalLayoutStore } from "@/modules/common/stores/global-layout.store"
 import {
   BaseLocationInfoSection,
@@ -42,7 +41,7 @@ const {
   staleTime: 60 * 1000,
 })
 
-const bookVenueStore = useBookVenueStore()
+// const bookVenueStore = useBookVenueStore()
 
 watchEffect(() => {
   globalLayoutStore.setNavbar({
@@ -99,13 +98,13 @@ const centreInfoItemMap = new Map<ECentreInfoKey, { title: string }>([
 
 const handleBookButtonOnClick = () => {
   //to display in cart page
-  bookVenueStore.setVenueToBook({
-    id: props.venueId,
-    venueName: venueData?.value?.title ?? "",
-    venueAddress: venueData.value?.address ?? "",
-    eventUnitType: "court",
-    image: venueData.value?.images[0] ?? "",
-  })
+  // bookVenueStore.setVenueToBook({
+  //   id: props.venueId,
+  //   venueName: venueData?.value?.title ?? "",
+  //   venueAddress: venueData.value?.address ?? "",
+  //   eventUnitType: "court",
+  //   image: venueData.value?.images[0] ?? "",
+  // })
   props.navigateToBookVenuePage(venueData.value?.title ?? "", "court")
 }
 

@@ -23,7 +23,7 @@ export interface IAmPmObj {
   durations: Array<IDuration>
 }
 
-export interface IFetchAvailableEventUnitsToBookRes extends ISuccessRes {
+export interface IFetchAvailableEventUnitsToBookRes {
   availableEventUnitsToBook: Array<{
     eventUnitId: number
     venueName: string
@@ -32,7 +32,7 @@ export interface IFetchAvailableEventUnitsToBookRes extends ISuccessRes {
   }>
 }
 
-export interface IBookingRes extends ISuccessRes {
+export interface IBookingRes {
   createdBookingIds: Array<{
     id: number
   }>

@@ -1,22 +1,20 @@
 <script setup lang="ts">
 import {
   BookVenueBackButton,
+  BookVenuePage2EmptyList,
   BookVenuePage2None,
   BookVenuePage2SelectSection,
   BookVenuePage2Skeleton,
   BookVenuePage2VenueList,
 } from "@/modules/book-venue/components/booking/book-venue-page-2"
-import BookVenuePage2EmptyList from "@/modules/book-venue/components/booking/book-venue-page-2/BookVenuePage2EmptyList.vue"
-import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
 import { useCartStore } from "@/modules/book-venue/stores/cart.store"
-import type { TSelectTimeMap } from "@/modules/book-venue/types/components"
+import { useNewBookVenueStore } from "@/modules/book-venue/stores/new-book-venue.store"
+import type { TBookingTimeSelectItemType } from "@/modules/book-venue/types/stores/book-venue-store.types"
 import type { IEventUnitItem } from "@/modules/common/types/venue.types"
-import { EFetchStatus } from "@/others/constants/enums"
 import { storeToRefs } from "pinia"
 
 defineProps<{
   typeOfLocation: string
-  selectItemsMap: TSelectTimeMap
   showBackButton?: boolean
 }>()
 
@@ -25,28 +23,73 @@ const emit = defineEmits<{
 }>()
 
 const cartStore = useCartStore()
-const bookVenueStore = useBookVenueStore()
+// const bookVenueStore = useBookVenueStore()
+const bookVenueStore = useNewBookVenueStore()
+const {
+  formData,
+  availableBookingTimeList,
+  fetchEventUnitsToBookStatus,
+  eventsUnitToBookList,
+  venueIdToBook,
+  bookingDateTime,
+  venueInfo,
+} = storeToRefs(bookVenueStore)
 
-const { venueState } = storeToRefs(bookVenueStore)
+// const { venueState } = storeToRefs(bookVenueStore)
 
 const handleDesktopBackToPage1 = () => {
   emit("desktopBackToPage1")
 }
 
-const handleMutateCartItems = (eventUnit: IEventUnitItem) =>
+//TODO: should we use server or local implementation? if server, need to write auth too
+const handleMutateCartItems = (eventUnit: IEventUnitItem) => {
+  console.log({ id: venueIdToBook.value })
+  if (!venueIdToBook.value) {
+    return
+  }
+
   cartStore.handleMutateCartItems(
     eventUnit,
-    parseInt(bookVenueStore.bookVenueTimeAndDuration.selectedDuration),
-    bookVenueStore.bookingDateTime,
-    bookVenueStore.venueToBook
+    formData.value.selectedDuration,
+    bookingDateTime.value,
+    venueInfo.value
+  )
+}
+
+const cartHasItem = (eventUnitId: number) =>
+  cartStore.hasItem(
+    eventUnitId,
+    formData.value.selectedDuration,
+    bookingDateTime.value
   )
 
-const cartHasItem = (eventUnitId: number) => {
-  return cartStore.hasItem(
-    eventUnitId,
-    parseInt(bookVenueStore.bookVenueTimeAndDuration.selectedDuration),
-    bookVenueStore.bookingDateTime
-  )
+const selectBookingTimeItem = ({
+  type,
+  payload,
+}: {
+  type: TBookingTimeSelectItemType
+  payload: string
+}) => {
+  if (type === "duration") {
+    return bookVenueStore.dispatchSelectItemEvent({
+      type,
+      payload: parseInt(payload),
+    })
+  }
+
+  if (type === "amPm" && (payload === "AM" || payload === "PM")) {
+    return bookVenueStore.dispatchSelectItemEvent({
+      type,
+      payload,
+    })
+  }
+
+  if (type === "time") {
+    return bookVenueStore.dispatchSelectItemEvent({
+      type,
+      payload,
+    })
+  }
 }
 </script>
 
@@ -58,37 +101,30 @@ const cartHasItem = (eventUnitId: number) => {
     />
     <h2 class="font-semibold mb-5">Select a start time and duration</h2>
     <BookVenuePage2SelectSection
-      :select-items-map="selectItemsMap"
-      :get-select-value="bookVenueStore.getTimeAndDurationValueFromKey"
-      @handle-select-item-on-change="
-        bookVenueStore.handleSelectTimeAndDurationOnChange
-      "
+      :available-booking-time-list="availableBookingTimeList"
+      :form-data="formData"
+      @select-item="selectBookingTimeItem"
     />
     <div>
       <div class="divider" />
       <h2 class="font-semibold mb-5">Select your {{ typeOfLocation }}</h2>
       <BookVenuePage2None
-        v-if="venueState.venueFetchStatus === EFetchStatus.NONE"
+        v-if="fetchEventUnitsToBookStatus === 'none'"
         :type-of-location="typeOfLocation"
       />
       <!-- loading skeleton -->
       <BookVenuePage2Skeleton
-        v-if="venueState.venueFetchStatus === EFetchStatus.LOADING"
+        v-if="fetchEventUnitsToBookStatus === 'loading'"
       />
       <!-- locations list when item is finished loading -->
-      <template v-if="venueState.venueFetchStatus === EFetchStatus.LOADED">
+      <template v-if="fetchEventUnitsToBookStatus === 'fetched'">
         <BookVenuePage2VenueList
-          v-if="venueState.availableVenueList.length > 0"
-          :venue-fetch-status="EFetchStatus.LOADED"
-          :available-event-unit-list="venueState.availableVenueList"
-          :booking-datetime="new Date()"
+          v-if="eventsUnitToBookList.length > 0"
+          :available-event-unit-list="eventsUnitToBookList"
           :handle-mutate-cart-items="handleMutateCartItems"
           :has-item="cartHasItem"
         />
-        <BookVenuePage2EmptyList
-          v-else-if="venueState.availableVenueList.length === 0"
-          :type-of-location="typeOfLocation"
-        />
+        <BookVenuePage2EmptyList v-else :type-of-location="typeOfLocation" />
       </template>
     </div>
   </div>

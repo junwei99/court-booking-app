@@ -5,9 +5,9 @@ import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
 import { EFetchStatus } from "@/others/constants/enums"
 import router from "@/router"
-import { onMounted, ref } from "vue"
+import { ref } from "vue"
 
-const pageFetchStatus = ref(EFetchStatus.NONE)
+const pageFetchStatus = ref(EFetchStatus.LOADED)
 
 const cartStore = useCartStore()
 
@@ -16,11 +16,6 @@ const handleCheckoutCart = () => {
     name: "checkout",
   })
 }
-
-onMounted(() => {
-  pageFetchStatus.value = EFetchStatus.LOADING
-  setTimeout(() => (pageFetchStatus.value = EFetchStatus.LOADED), 50)
-})
 </script>
 
 <template>
@@ -28,10 +23,10 @@ onMounted(() => {
     <div class="pb-[5rem]">
       <CartSection
         :page-fetch-status="pageFetchStatus"
-        :venue-title="cartStore.venueToBookLS.venueName"
-        :venue-address="cartStore.venueToBookLS.venueAddress"
-        :venue-image="cartStore.venueToBookLS.image"
-        :event-category="cartStore.venueToBookLS.eventCategory"
+        :venue-title="cartStore.venueToBook.title"
+        :venue-address="cartStore.venueToBook.address"
+        :venue-image="cartStore.venueToBook.images?.[0] ?? ''"
+        :event-category="cartStore.eventCategoryToBook?.eventCategoryName ?? ''"
         :cart-item-display-list="cartStore.cartItemsDisplayList"
         :total-price="cartStore.bookingTotalPriceInfo"
       />

@@ -27,7 +27,7 @@ export interface IInsertVenueResult {
   address: string;
   description: string;
   id: number;
-  images: stringArray;
+  images: stringArray | null;
   location_id: number | null;
   max_price: number;
   min_price: number;

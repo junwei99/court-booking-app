@@ -7,6 +7,8 @@ export interface IPage1SelectState {
   selectedCategory: number | null
 }
 
+export type TAmPm = "AM" | "PM" | ""
+
 // export interface IDictionary<TValue> {
 //   [id: string]: TValue
 // }
@@ -28,3 +30,43 @@ export type TTimeAndDurationKey =
   | "selectedTime"
   | "selectedAmPm"
   | "selectedDuration"
+
+export type TBookVenueFormData = {
+  selectedDate: Date
+  selectedCategory: number | null
+  selectedTime: string
+  selectedAmPm: TAmPm
+  selectedDuration: number
+}
+
+export type TDispatchDateEventCategorySelectItemEventProps =
+  | {
+      type: "date"
+      payload: Date
+    }
+  | {
+      type: "event-category"
+      payload: number
+    }
+
+export type TDispatchBookingTimeSelectItemEventProps =
+  | {
+      type: "time"
+      payload: string
+    }
+  | {
+      type: "amPm"
+      payload: TAmPm
+    }
+  | {
+      type: "duration"
+      payload: number
+    }
+
+export type TDispatchSelectItemEventProps =
+  | TDispatchDateEventCategorySelectItemEventProps
+  | TDispatchBookingTimeSelectItemEventProps
+
+export type TSelectItemType = TDispatchSelectItemEventProps["type"]
+export type TBookingTimeSelectItemType =
+  TDispatchBookingTimeSelectItemEventProps["type"]

@@ -1,11 +1,14 @@
-import dayjs from "dayjs"
 import type { IOutputTime } from "@/modules/book-venue/types/api"
+import type { TAmPm } from "@/modules/book-venue/types/stores/book-venue-store.types"
+import dayjs from "dayjs"
 
 export const getTransformedBookingDateTime = (
   selectedDate: Date,
   selectedTime: string,
-  selectedAmPm: string
+  selectedAmPm: TAmPm
 ) => {
+  console.log({ selectedDate, selectedTime, selectedAmPm })
+
   const formatedDay = dayjs(selectedDate).format("MM-DD-YYYY")
 
   return dayjs(`${formatedDay} ${selectedTime} ${selectedAmPm}`).toDate()

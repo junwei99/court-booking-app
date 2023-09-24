@@ -4,16 +4,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@/book-venue/*": ["./src/modules/book-venue/*"],
-      "@/common/*": ["./src/modules/common/*"]
+      "@/*": ["./src/*"]
     },
     "target": "es5",
     "downlevelIteration": true,
     "typeRoots": ["./node_modules/@types", "./modules/common/types"],
     "strict": true
   },
-
   "references": [
     {
       "path": "./tsconfig.config.json"
