@@ -130,6 +130,14 @@ const router = createRouter({
       path: "/booking-status",
       name: "booking-status",
       component: BookingStatusView,
+      beforeEnter: () => {
+        const globalLayoutStore = useGlobalLayoutStore()
+
+        globalLayoutStore.setNavbar({
+          pageMode: "checkout",
+          pageTitle: "",
+        })
+      },
       props: (route) => {
         const { bookingId } = route.query as { bookingId: string }
         return {

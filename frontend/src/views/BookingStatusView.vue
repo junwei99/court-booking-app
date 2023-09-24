@@ -82,8 +82,8 @@ onMounted(hydrateBookingInfo)
           :key="booking[0]"
           class="flex w-full justify-between mb-2"
         >
-          <div class="w-[48%] text-left">{{ booking[0] }}</div>
-          <div class="w-[48%] text-right font-bold">
+          <div class="w-[28%] text-left">{{ booking[0] }}</div>
+          <div class="w-[68%] text-right font-bold break-all">
             <PriceCurrency
               v-if="
                 booking[0] === 'Total amount' && typeof booking[1] === 'number'
