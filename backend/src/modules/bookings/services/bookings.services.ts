@@ -117,6 +117,12 @@ export const getAvailableEventUnitsToBookService = async (
     }
   })
 
+  if (!availableEventUnits.length || availableEventUnits.length < 1) {
+    return {
+      availableEventUnitsToBook: bookableEventUnitsOutput,
+    }
+  }
+
   const {
     venue_title,
     venue_id,
@@ -124,7 +130,7 @@ export const getAvailableEventUnitsToBookService = async (
     venue_address,
     venue_images,
     location_name,
-  } = availableEventUnits[0]
+  } = availableEventUnits[0] ?? {}
 
   return {
     venue: {
