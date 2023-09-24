@@ -43,7 +43,6 @@ const handleDesktopBackToPage1 = () => {
 
 //TODO: should we use server or local implementation? if server, need to write auth too
 const handleMutateCartItems = (eventUnit: IEventUnitItem) => {
-  console.log({ id: venueIdToBook.value })
   if (!venueIdToBook.value) {
     return
   }

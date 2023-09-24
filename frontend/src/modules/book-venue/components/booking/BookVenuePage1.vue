@@ -8,27 +8,10 @@ defineProps<{
   selectedCategory: number | null
 }>()
 
-// const getDatePickerMinMaxDate = (type: "min" | "max") => {
-//   const currentDate = new Date()
-//   const newDate =
-//     type === "min" ? currentDate.getDate() : currentDate.getDate() + 30
-//   currentDate.setDate(newDate)
-//   return currentDate
-// }
-
 const emit = defineEmits<{
   (e: "selectCategory", categoryId: number): void
   (e: "selectDate", date: Date): void
 }>()
-
-// const reactiveDate = computed({
-//   get() {
-//     return props.selectedDate
-//   },
-//   set(newDate: Date) {
-//     emit("selectDate", newDate)
-//   },
-// })
 
 const categorySelectOnChange = (e: Event) => {
   const target = <HTMLSelectElement>e.target
@@ -38,15 +21,6 @@ const categorySelectOnChange = (e: Event) => {
 const dateSelectOnChange = (newDate: Date) => {
   emit("selectDate", newDate)
 }
-
-// const date = ref("")
-// const show = ref(false)
-
-// const formatDate = (date: Date) => `${date.getDate()}/${date.getMonth() + 1}`
-// const onConfirm = (value: any) => {
-//   show.value = false
-//   date.value = formatDate(value)
-// }
 </script>
 
 <template>
@@ -67,23 +41,6 @@ const dateSelectOnChange = (newDate: Date) => {
     </select>
     <div class="divider"></div>
     <h2 class="font-semibold mb-5">Select your booking date</h2>
-    <!-- <DatePicker
-      v-model="reactiveDate"
-      is-expanded
-      :min-date="getDatePickerMinMaxDate('min')"
-      :max-date="getDatePickerMinMaxDate('max')"
-      :disabled-dates="disabledDateList"
-    /> -->
-    <!-- <Calendar v-model:show="show" @confirm="onConfirm" /> -->
-    <!-- <Cell title="Select Single Date" :value="date" @click="show = true" />
-    <Calendar
-      title="Select your booking date"
-      v-model:show="show"
-      color="#1C4ED8"
-      :show-confirm="false"
-      :show-title="false"
-      @confirm="onConfirm"
-    /> -->
     <DateInput
       :selected-date="selectedDate"
       @select-date="dateSelectOnChange"
