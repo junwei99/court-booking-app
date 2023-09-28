@@ -66,16 +66,13 @@ const router = createRouter({
       path: "/location/:venueId/book",
       name: "book venue",
       component: BookVenuePage,
-      beforeEnter: (to) => {
-        // const bookVenueStore = useBookVenueStore()
-        // const venueId = parseInt(to.params.venueId as string)
-        // if (
-        //   bookVenueStore.venueToBook.id &&
-        //   venueId !== bookVenueStore.venueToBook.id
-        // ) {
-        //   console.log("store resetted")
-        //   bookVenueStore.resetStore()
-        // }
+      beforeEnter: (to, _from, next) => {
+        useGlobalLayoutStore().setNavbar({
+          pageMode: "checkout",
+          pageTitle: typeof to.query.name === "string" ? to.query.name : "",
+          leftButtonAction: () => router.go(-1),
+        })
+        next()
       },
       props: (route) => {
         const venueId = parseInt((route.params?.venueId as string) ?? "")
@@ -106,8 +103,7 @@ const router = createRouter({
       name: "cart",
       component: CartView,
       beforeEnter: () => {
-        const globalLayoutStore = useGlobalLayoutStore()
-        globalLayoutStore.setNavbar({
+        useGlobalLayoutStore().setNavbar({
           pageMode: "checkout",
           pageTitle: "My Cart",
           showRightButton: false,
@@ -119,8 +115,7 @@ const router = createRouter({
       name: "checkout",
       component: CheckoutFormView,
       beforeEnter: () => {
-        const globalLayoutStore = useGlobalLayoutStore()
-        globalLayoutStore.setNavbar({
+        useGlobalLayoutStore().setNavbar({
           pageMode: "checkout",
           showRightButton: false,
         })
@@ -131,9 +126,7 @@ const router = createRouter({
       name: "booking-status",
       component: BookingStatusView,
       beforeEnter: () => {
-        const globalLayoutStore = useGlobalLayoutStore()
-
-        globalLayoutStore.setNavbar({
+        useGlobalLayoutStore().setNavbar({
           pageMode: "checkout",
           pageTitle: "",
         })

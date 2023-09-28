@@ -7,8 +7,8 @@ import {
   BookVenuePage2Skeleton,
   BookVenuePage2VenueList,
 } from "@/modules/book-venue/components/booking/book-venue-page-2"
+import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
 import { useCartStore } from "@/modules/book-venue/stores/cart.store"
-import { useNewBookVenueStore } from "@/modules/book-venue/stores/new-book-venue.store"
 import type { TBookingTimeSelectItemType } from "@/modules/book-venue/types/stores/book-venue-store.types"
 import type { IEventUnitItem } from "@/modules/common/types/venue.types"
 import { storeToRefs } from "pinia"
@@ -23,8 +23,7 @@ const emit = defineEmits<{
 }>()
 
 const cartStore = useCartStore()
-// const bookVenueStore = useBookVenueStore()
-const bookVenueStore = useNewBookVenueStore()
+const bookVenueStore = useBookVenueStore()
 const {
   formData,
   availableBookingTimeList,
@@ -34,8 +33,6 @@ const {
   bookingDateTime,
   venueInfo,
 } = storeToRefs(bookVenueStore)
-
-// const { venueState } = storeToRefs(bookVenueStore)
 
 const handleDesktopBackToPage1 = () => {
   emit("desktopBackToPage1")

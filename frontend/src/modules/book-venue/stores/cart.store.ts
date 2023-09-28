@@ -38,8 +38,6 @@ export const useCartStore = defineStore("cart", () => {
 
   const cartItemMap = ref<TCartItemMap>(new Map())
 
-  console.log({ cartItemMap })
-
   //getters
   const mergedEventUnitsList = computed(() =>
     [...cartItemMap.value.values()].flat()

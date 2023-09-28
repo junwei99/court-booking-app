@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import BookVenuePage1 from "@/modules/book-venue/components/booking/BookVenuePage1.vue"
 import BookVenuePage2 from "@/modules/book-venue/components/booking/BookVenuePage2.vue"
+import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
 import { useCartStore } from "@/modules/book-venue/stores/cart.store"
-import { useNewBookVenueStore } from "@/modules/book-venue/stores/new-book-venue.store"
 import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
 import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
 import { useGlobalLayoutStore } from "@/modules/common/stores/global-layout.store"
@@ -20,22 +20,19 @@ const props = defineProps<{
 const cartStore = useCartStore()
 
 // const bookVenueStore = useBookVenueStore()
-const bookVenueStore = useNewBookVenueStore()
+const bookVenueStore = useBookVenueStore()
 
 const { formData, eventCategoryList, fetchInitBookingTimeAndDurationStatus } =
   storeToRefs(bookVenueStore)
 
-const globalLayoutStore = useGlobalLayoutStore()
-
-const setErrorModalState = () => {
-  globalLayoutStore.setModalState({
+const setErrorModalState = () =>
+  useGlobalLayoutStore().setModalState({
     show: true,
     title:
       "Oops, there was an error when trying to retrieve data. Please try again later.",
     ctaCallback: props.navigateBack,
     buttonText: "Got it",
   })
-}
 
 const handleSelectEventCategory = (eventCategoryId: number) => {
   try {
@@ -56,22 +53,7 @@ const handleSelectBookingDate = (date: Date) => {
   }
 }
 
-// const { data: categoryList } = useQuery({
-//   queryKey: ["fetchCategoriesOfVenue", props.venueId],
-//   queryFn: () => fetchEventCategoriesOfVenue(props.venueId),
-//   staleTime: Infinity,
-//   enabled: !!props.venueId,
-// })
-
 const page = ref<1 | 2>(1)
-
-const headerBackBtnOnClick = () => {
-  if (page.value === 1) {
-    props.navigateBack()
-  } else {
-    page.value = 1
-  }
-}
 
 const nextButtonOnClick = () => {
   if (page.value === 2) {
@@ -86,25 +68,12 @@ const pageIsLoading = computed(
   () => fetchInitBookingTimeAndDurationStatus.value === "loading"
 )
 
-// watchEffect(() => {
-//   if (bookVenueStore.selectedCategory === null && categoryList.value) {
-//     //resets store if venueId is different from route venueId
-//     bookVenueStore.handleSelectCategory(categoryList.value[0].id)
-//   }
-// })
-
-onMounted(() => {
+onMounted(async () => {
   try {
-    bookVenueStore.initStore(props.venueId)
+    await bookVenueStore.initStore(props.venueId)
   } catch (error) {
     setErrorModalState()
   }
-
-  globalLayoutStore.setNavbar({
-    pageMode: "checkout",
-    pageTitle: props.venueName,
-    leftButtonAction: headerBackBtnOnClick,
-  })
 })
 </script>
 
