@@ -1,5 +1,4 @@
 import { Requestor } from "@/modules/common/services/requestor/Requestor"
-import { HandledError } from "@/modules/common/utils/custom-error.utils"
 import { validateResponse } from "@/modules/common/utils/response-validator.utils"
 import { EApiKeys } from "@/others/constants/api-keys.constants"
 import { number, object, string, type infer as TInfer } from "zod"
@@ -25,7 +24,7 @@ const eventUnitsToBookResSchema = object({
     description: string(),
     address: string(),
     images: string().array(),
-  }),
+  }).optional(),
 })
 
 export type TEventUnitsToBookRes = TInfer<typeof eventUnitsToBookResSchema>
@@ -49,7 +48,7 @@ export const fetchEventUnitsToBook = async (
   )
 
   if (!validatedEventUnitsToBookRes.success) {
-    throw new HandledError("response-doesnt-match-schema")
+    throw validatedEventUnitsToBookRes.error
   }
 
   return validatedEventUnitsToBookRes.data

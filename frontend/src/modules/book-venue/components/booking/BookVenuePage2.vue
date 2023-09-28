@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import {
   BookVenueBackButton,
-  BookVenuePage2EmptyList,
-  BookVenuePage2None,
   BookVenuePage2SelectSection,
   BookVenuePage2Skeleton,
   BookVenuePage2VenueList,
@@ -12,6 +10,7 @@ import { useCartStore } from "@/modules/book-venue/stores/cart.store"
 import type { TBookingTimeSelectItemType } from "@/modules/book-venue/types/stores/book-venue-store.types"
 import type { IEventUnitItem } from "@/modules/common/types/venue.types"
 import { storeToRefs } from "pinia"
+import BookVenuePage2TextInfo from "./book-venue-page-2/BookVenuePage2TextInfo.vue"
 
 defineProps<{
   typeOfLocation: string
@@ -20,6 +19,7 @@ defineProps<{
 
 const emit = defineEmits<{
   (e: "desktopBackToPage1"): void
+  (e: "show-error-popup"): void
 }>()
 
 const cartStore = useCartStore()
@@ -59,32 +59,36 @@ const cartHasItem = (eventUnitId: number) =>
     bookingDateTime.value
   )
 
-const selectBookingTimeItem = ({
+const selectBookingTimeItem = async ({
   type,
   payload,
 }: {
   type: TBookingTimeSelectItemType
   payload: string
 }) => {
-  if (type === "duration") {
-    return bookVenueStore.dispatchSelectItemEvent({
-      type,
-      payload: parseInt(payload),
-    })
-  }
+  try {
+    if (type === "duration") {
+      return await bookVenueStore.dispatchSelectItemEvent({
+        type,
+        payload: parseInt(payload),
+      })
+    }
 
-  if (type === "amPm" && (payload === "AM" || payload === "PM")) {
-    return bookVenueStore.dispatchSelectItemEvent({
-      type,
-      payload,
-    })
-  }
+    if (type === "amPm" && (payload === "AM" || payload === "PM")) {
+      return await bookVenueStore.dispatchSelectItemEvent({
+        type,
+        payload,
+      })
+    }
 
-  if (type === "time") {
-    return bookVenueStore.dispatchSelectItemEvent({
-      type,
-      payload,
-    })
+    if (type === "time") {
+      return await bookVenueStore.dispatchSelectItemEvent({
+        type,
+        payload,
+      })
+    }
+  } catch (error) {
+    emit("show-error-popup")
   }
 }
 </script>
@@ -104,8 +108,9 @@ const selectBookingTimeItem = ({
     <div>
       <div class="divider" />
       <h2 class="font-semibold mb-5">Select your {{ typeOfLocation }}</h2>
-      <BookVenuePage2None
+      <BookVenuePage2TextInfo
         v-if="fetchEventUnitsToBookStatus === 'none'"
+        type="none"
         :type-of-location="typeOfLocation"
       />
       <!-- loading skeleton -->
@@ -120,7 +125,11 @@ const selectBookingTimeItem = ({
           :handle-mutate-cart-items="handleMutateCartItems"
           :has-item="cartHasItem"
         />
-        <BookVenuePage2EmptyList v-else :type-of-location="typeOfLocation" />
+        <BookVenuePage2TextInfo
+          v-else
+          type="empty"
+          :type-of-location="typeOfLocation"
+        />
       </template>
     </div>
   </div>

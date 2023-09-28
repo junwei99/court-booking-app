@@ -88,7 +88,11 @@ onMounted(async () => {
       @select-date="handleSelectBookingDate"
     />
     <!-- second page -->
-    <BookVenuePage2 v-else :type-of-location="eventUnitType" />
+    <BookVenuePage2
+      v-else
+      :type-of-location="eventUnitType"
+      @show-error-popup="setErrorModalState"
+    />
   </div>
   <div
     v-if="(page === 2 && cartStore.cartSize > 0) || page === 1"

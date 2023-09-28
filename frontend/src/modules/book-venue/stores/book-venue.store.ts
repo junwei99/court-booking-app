@@ -49,9 +49,9 @@ const createBookVenueStore = ({
     const fetchInitBookingTimeAndDurationStatus = ref<
       "loading" | "none" | "fetched"
     >("none")
-    const fetchEventUnitsToBookStatus = ref<"loading" | "none" | "fetched">(
-      "none"
-    )
+    const fetchEventUnitsToBookStatus = ref<
+      "loading" | "none" | "fetched" | "error"
+    >("none")
     const availableBookingTimeList = ref<TAvailableBookingTimeList>([])
     const eventsUnitToBookList = ref<TEventUnitsToBookList>([])
     const venueInfo = ref<TVenueFromEventUnitsToBookRes>({
@@ -119,16 +119,13 @@ const createBookVenueStore = ({
           dayjs(formData.value.selectedDate).toJSON()
         )
 
-        if (!bookingTimeList.length) {
-          throw new HandledError("empty-booking-time-list")
-        }
-
         availableBookingTimeList.value = bookingTimeList
 
         fetchInitBookingTimeAndDurationStatus.value = "fetched"
       } catch (error) {
-        fetchInitBookingTimeAndDurationStatus.value = "none"
         throw error
+      } finally {
+        fetchInitBookingTimeAndDurationStatus.value = "none"
       }
     }
 
@@ -161,7 +158,8 @@ const createBookVenueStore = ({
 
         fetchEventUnitsToBookStatus.value = "fetched"
       } catch (error) {
-        fetchEventUnitsToBookStatus.value = "none"
+        console.log({ error })
+        fetchEventUnitsToBookStatus.value = "error"
         throw error
       }
     }
