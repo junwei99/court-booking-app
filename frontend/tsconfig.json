@@ -9,7 +9,8 @@
     "target": "es5",
     "downlevelIteration": true,
     "typeRoots": ["./node_modules/@types", "./modules/common/types"],
-    "strict": true
+    "strict": true,
+    "ignoreDeprecations": "5.0"
   },
   "references": [
     {
