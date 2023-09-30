@@ -14,7 +14,7 @@ export interface IQueryVenuesResult {
   description: string;
   event_categories: stringArray | null;
   id: number;
-  images: stringArray;
+  images: stringArray | null;
   location_id: number | null;
   location_name: string;
   max_price: number;

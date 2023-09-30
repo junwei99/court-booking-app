@@ -112,16 +112,17 @@ export const fetchAvailableEventUnitsToBook = async (
     throw new HandledError("Invalid parameters")
   }
 
-  const availableEventUnitsToBook = await getAvailableEventUnitsToBookService(
-    venueId,
-    eventCategoryId,
-    new Date(startDatetime),
-    duration
-  )
+  const availableEventUnitsToBookRes =
+    await getAvailableEventUnitsToBookService(
+      venueId,
+      eventCategoryId,
+      new Date(startDatetime),
+      duration
+    )
 
   const apiRes = new ApiRes(res)
 
-  return apiRes.sendSuccessRes({ availableEventUnitsToBook })
+  return apiRes.sendSuccessRes(availableEventUnitsToBookRes)
 }
 
 export const fetchBooking = async (

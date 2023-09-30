@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ECentreInfoKey } from "@/others/constants/enums"
 import centreLayoutImg from "@/assets/images/centre-layout.webp"
 import Modal from "@/modules/common/components/shared-ui/atom/Modal.vue"
+import { ECentreInfoKey } from "@/others/constants/enums"
 defineProps<{
   centreInfoModalState: { modalId: ECentreInfoKey }
   centreInfoItemMap: Map<ECentreInfoKey, { title: string }>
@@ -15,7 +15,7 @@ const emit = defineEmits<{
   <Modal
     :show="!!centreInfoModalState.modalId"
     :title="centreInfoItemMap.get(centreInfoModalState.modalId)?.title ?? ''"
-    @closeModal="() => emit('closeCentreInfoModal')"
+    @cta-action="() => emit('closeCentreInfoModal')"
   >
     <div v-if="centreInfoModalState.modalId === ECentreInfoKey.OPENING_HOURS">
       Daily: 8:00AM - 2:00AM

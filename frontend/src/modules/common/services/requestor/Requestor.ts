@@ -1,3 +1,4 @@
+import type { DeepPartial } from "@/modules/common/types/utils.types"
 import type { EApiKeys } from "@/others/constants/api-keys.constants"
 import axios from "axios"
 
@@ -23,7 +24,7 @@ export class Requestor {
         params: params,
       }
 
-      const res = await axios<TBaseResponse<TRes>>(config)
+      const res = await axios<TBaseResponse<DeepPartial<TRes>>>(config)
 
       return res.data
     } catch (error) {
@@ -48,7 +49,7 @@ export class Requestor {
         data: body,
       }
 
-      const res = await axios<TRes>(config)
+      const res = await axios<TBaseResponse<DeepPartial<TRes>>>(config)
 
       return res.data
     } catch (error) {

@@ -1,287 +1,265 @@
 import {
-  useAvailableVenueList,
-  useSelectTimeMap,
-} from "@/modules/book-venue/hooks"
-import { useBookVenueCategoryAndDate } from "@/modules/book-venue/hooks/book-venue-store/useBookVenueCategoryAndDate"
+  fetchAvailableBookingTimeList,
+  type TAvailableBookingTimeList,
+} from "@/modules/book-venue/services/apis/fetch-available-booking-time-list"
 import {
-  INITIAL_TIME_DURATION_STATE,
-  useBookVenueTimeAndDuration,
-} from "@/modules/book-venue/hooks/book-venue-store/useBookVenueTimeAndDuration"
-import { fetchAvailableBookingTimeList } from "@/modules/book-venue/services/apis/fetch-available-booking-time-list"
-import { fetchVenuesToBook } from "@/modules/book-venue/services/apis/fetch-venues-to-book"
+  fetchEventCategoriesOfVenue,
+  type TEventCategories,
+} from "@/modules/book-venue/services/apis/fetch-event-categories-of-venue"
 import {
-  getPage2StateNotAvailableConditions,
-  getTransformedBookingDateTime,
-} from "@/modules/book-venue/services/business/book-venue.business"
-import type { IOutputTime } from "@/modules/book-venue/types/api"
-import type { TTimeAndDurationKey } from "@/modules/book-venue/types/stores/book-venue-store.types"
+  fetchEventUnitsToBook,
+  type TEventUnitsToBookList,
+  type TVenueFromEventUnitsToBookRes,
+} from "@/modules/book-venue/services/apis/fetch-event-units-to-book"
+import { getTransformedBookingDateTime } from "@/modules/book-venue/services/business/book-venue.business"
+import type {
+  TBookVenueFormData,
+  TDispatchSelectItemEventProps,
+} from "@/modules/book-venue/types/stores/book-venue-store.types"
+import { HandledError } from "@/modules/common/utils/custom-error.utils"
 import dayjs from "dayjs"
 import { defineStore } from "pinia"
 import { ref } from "vue"
 
-export const useBookVenueStore = defineStore("book-venue-test", () => {
-  const isResettingOnNext = ref(false)
+type TCreateDefineStoreProps = {
+  fetchAvailableBookingTimeList: typeof fetchAvailableBookingTimeList
+  fetchEventCategoriesOfVenue: typeof fetchEventCategoriesOfVenue
+  fetchEventUnitsToBook: typeof fetchEventUnitsToBook
+}
 
-  const setIsResettingOnNext = (isResetting: boolean) => {
-    isResettingOnNext.value = isResetting
-  }
+const INITIAL_FORM_DATA = {
+  selectedDate: new Date(),
+  selectedCategory: null,
+  selectedTime: "",
+  selectedAmPm: "",
+  selectedDuration: 0,
+} as const
 
-  const venueToBook = ref({
-    id: 0,
-    venueName: "",
-    venueAddress: "",
-    eventCategory: "",
-    image: "",
-    eventUnitType: "",
-  })
+const createBookVenueStore = ({
+  fetchAvailableBookingTimeList,
+  fetchEventCategoriesOfVenue,
+  fetchEventUnitsToBook,
+}: TCreateDefineStoreProps) =>
+  defineStore("book-venue-store", () => {
+    const eventCategoryList = ref<TEventCategories>([])
+    const formData = ref<TBookVenueFormData>({ ...INITIAL_FORM_DATA })
 
-  const {
-    selectedCategory,
-    selectedDate,
-    handleSelectCategory,
-    handleSelectDate,
-    resetCategoryAndDate,
-  } = useBookVenueCategoryAndDate(setIsResettingOnNext)
+    const venueIdToBook = ref<number | null>(null)
+    const fetchEventCategoriesStatus = ref<"loading" | "none">("none")
+    const fetchInitBookingTimeAndDurationStatus = ref<
+      "loading" | "none" | "fetched"
+    >("none")
+    const fetchEventUnitsToBookStatus = ref<
+      "loading" | "none" | "fetched" | "error"
+    >("none")
+    const availableBookingTimeList = ref<TAvailableBookingTimeList>([])
+    const eventsUnitToBookList = ref<TEventUnitsToBookList>([])
+    const venueInfo = ref<TVenueFromEventUnitsToBookRes>({
+      venueId: 0,
+      title: "",
+      location: "",
+      description: "",
+      address: "",
+      images: [],
+    })
+    //booking date time initialized with current date, will be set when user select date, time, am/pm and duration
+    const bookingDateTime = ref<Date>(formData.value.selectedDate)
 
-  const {
-    bookVenueTimeAndDuration,
-    isAll3ItemsSelected,
-    resetTimeAndDuration,
-    setAmPmFromRes,
-    setDurationFromRes,
-    setTimeListRes,
-    setBookVenueTimeAndDuration,
-  } = useBookVenueTimeAndDuration()
-
-  //used to populate select element for time, am/pm and duration
-  const {
-    selectTimeMap,
-    timeListOperations,
-    amPmListOperations,
-    durationListOperations,
-  } = useSelectTimeMap()
-
-  //booking date time initialized with current date, will be set when user select date, time, am/pm and duration
-  const bookingDateTime = ref<Date>(selectedDate.value)
-
-  //used to populate venue list
-  const { venueState, clearVenues, setFetchedEventUnits } =
-    useAvailableVenueList()
-
-  const getTimeAndDurationValueFromKey = (selectKey: TTimeAndDurationKey) =>
-    bookVenueTimeAndDuration.value[selectKey]
-
-  const fetchAndSetAvailableBookingTimeList = async () => {
-    if (!selectedCategory.value) {
-      throw new Error("category not selected")
+    const resetStore = () => {
+      formData.value = { ...INITIAL_FORM_DATA }
     }
 
-    const availableBookingTimeList = await fetchAvailableBookingTimeList(
-      venueToBook.value.id,
-      selectedCategory.value,
-      dayjs(selectedDate.value).toJSON()
-    )
+    const initStore = async (venueId: number) => {
+      if (venueIdToBook.value === venueId) {
+        return
+      }
 
-    setTimeListRes(availableBookingTimeList.outputTimeList)
+      resetStore()
+      venueIdToBook.value = venueId
 
-    return availableBookingTimeList.outputTimeList
-  }
-
-  const setVenueToBook = (venue: {
-    id: number
-    venueName: string
-    venueAddress: string
-    image: string
-    eventUnitType: string
-  }) => {
-    venueToBook.value = {
-      ...venueToBook.value,
-      ...venue,
+      await getEventCategoriesOfVenue(venueId)
     }
-  }
 
-  const setEventCategoryOfVenueToBook = (eventCategory: string) => {
-    venueToBook.value.eventCategory = eventCategory
-  }
+    const getEventCategoriesOfVenue = async (venueId: number) => {
+      try {
+        fetchEventCategoriesStatus.value = "loading"
+        const eventCategories = await fetchEventCategoriesOfVenue(venueId)
+        eventCategoryList.value = eventCategories
 
-  const initLists = (
-    timeListRes: IOutputTime[],
-    selectedTimeIndex: number | undefined
-  ) => {
-    //init select time list
-    timeListOperations.init(timeListRes)
+        if (!eventCategories.length) {
+          throw new HandledError("empty-event-categories")
+        }
 
-    if (
-      bookVenueTimeAndDuration.value.selectedAmPm !==
-        INITIAL_TIME_DURATION_STATE.selectedAmPm &&
-      selectedTimeIndex &&
-      selectedTimeIndex >= 0
-    ) {
-      amPmListOperations.init(
-        timeListRes[selectedTimeIndex].amOrPm.am.isAvailable,
-        timeListRes[selectedTimeIndex].amOrPm.pm.isAvailable
-      )
-
-      if (
-        bookVenueTimeAndDuration.value.selectedDuration !==
-          INITIAL_TIME_DURATION_STATE.selectedDuration &&
-        selectedTimeIndex &&
-        selectedTimeIndex >= 0
-      ) {
-        const amPmKey =
-          bookVenueTimeAndDuration.value.selectedAmPm === "AM" ? "am" : "pm"
-
-        durationListOperations.init(
-          timeListRes[selectedTimeIndex].amOrPm[amPmKey].durations
-        )
+        dispatchSelectItemEvent({
+          type: "event-category",
+          payload: eventCategories[0].id,
+        })
+      } catch (error) {
+        throw error
+      } finally {
+        fetchEventCategoriesStatus.value = "none"
       }
     }
-  }
 
-  const initAvailableBookingTimeAndDuration = async () => {
-    const timeListRes = await fetchAndSetAvailableBookingTimeList()
+    const initAvailableBookingTimeAndDuration = async () => {
+      if (!formData.value.selectedCategory) {
+        throw new HandledError("category-not-selected")
+      }
 
-    const selectedTimeIndex = selectTimeMap.value
-      .get("selectedTime")
-      ?.list.findIndex(
-        (listObj) =>
-          listObj.text === bookVenueTimeAndDuration.value.selectedTime
-      )
+      if (!venueIdToBook.value) {
+        throw new HandledError("no-venue-id")
+      }
 
-    initLists(timeListRes, selectedTimeIndex)
+      try {
+        fetchInitBookingTimeAndDurationStatus.value = "loading"
 
-    if (isResettingOnNext.value) {
-      setBookVenueTimeAndDuration({
-        ...INITIAL_TIME_DURATION_STATE,
-      })
-      clearVenues()
-      setIsResettingOnNext(false)
-      return
+        const bookingTimeList = await fetchAvailableBookingTimeList(
+          venueIdToBook.value,
+          formData.value.selectedCategory,
+          dayjs(formData.value.selectedDate).toJSON()
+        )
+
+        availableBookingTimeList.value = bookingTimeList
+
+        fetchInitBookingTimeAndDurationStatus.value = "fetched"
+      } catch (error) {
+        throw error
+      } finally {
+        fetchInitBookingTimeAndDurationStatus.value = "none"
+      }
     }
 
-    const {
-      getIsTimeNotAvailable,
-      getIsAmPmNotAvailable,
-      getIsDurationNotAvailable,
-    } = getPage2StateNotAvailableConditions(
-      selectedTimeIndex,
-      bookVenueTimeAndDuration.value.selectedAmPm,
-      bookVenueTimeAndDuration.value.selectedDuration,
-      timeListRes
-    )
+    const setEventUnitsToBook = async () => {
+      try {
+        fetchEventUnitsToBookStatus.value = "loading"
+        if (!venueIdToBook.value || !formData.value.selectedCategory) {
+          return
+        }
 
-    if (getIsTimeNotAvailable()) {
-      setBookVenueTimeAndDuration({
-        ...INITIAL_TIME_DURATION_STATE,
-      })
-      amPmListOperations.reset()
-      durationListOperations.reset()
+        const startDatetime = getTransformedBookingDateTime(
+          formData.value.selectedDate,
+          formData.value.selectedTime,
+          formData.value.selectedAmPm
+        )
 
-      clearVenues()
-    } else if (getIsAmPmNotAvailable()) {
-      setBookVenueTimeAndDuration({
-        ...INITIAL_TIME_DURATION_STATE,
-        selectedTime: bookVenueTimeAndDuration.value.selectedTime,
-      })
+        bookingDateTime.value = startDatetime
 
-      clearVenues()
-    } else if (getIsDurationNotAvailable()) {
-      setBookVenueTimeAndDuration({
-        ...bookVenueTimeAndDuration.value,
-        selectedDuration: INITIAL_TIME_DURATION_STATE.selectedDuration,
-      })
-      clearVenues()
-    }
-  }
+        const eventUnitsToBookRes = await fetchEventUnitsToBook({
+          venueId: venueIdToBook.value,
+          eventCategoryId: formData.value.selectedCategory,
+          startDatetime,
+          duration: formData.value.selectedDuration,
+        })
 
-  const hydrateAvailableEventUnits = () => {
-    //if all 3 select has a value,  fetch venue list
-    const transformedBookingDateTime = getTransformedBookingDateTime(
-      selectedDate.value,
-      bookVenueTimeAndDuration.value.selectedTime,
-      bookVenueTimeAndDuration.value.selectedAmPm
-    )
+        eventsUnitToBookList.value =
+          eventUnitsToBookRes.availableEventUnitsToBook
 
-    // bookingDateTime.value = transformedBookingDateTime
-    bookingDateTime.value = transformedBookingDateTime
+        venueInfo.value = eventUnitsToBookRes.venue
 
-    const bookingDuration = parseInt(
-      bookVenueTimeAndDuration.value.selectedDuration
-    )
-
-    const fetchVenuesToBookCallback = async () =>
-      await fetchVenuesToBook(
-        venueToBook.value.id,
-        selectedCategory.value as number,
-        transformedBookingDateTime,
-        bookingDuration
-      )
-
-    setFetchedEventUnits(
-      fetchVenuesToBookCallback,
-      bookingDuration,
-      transformedBookingDateTime
-    )
-  }
-
-  const handleSelectTimeAndDurationOnChange = async (
-    selectKey: TTimeAndDurationKey,
-    selectValue: string
-  ) => {
-    setBookVenueTimeAndDuration({
-      ...bookVenueTimeAndDuration.value,
-      [selectKey]: selectValue,
-    })
-
-    //populate list
-    if (selectKey === "selectedTime") {
-      setAmPmFromRes(selectValue, amPmListOperations.init)
-      setDurationFromRes(durationListOperations.init)
-    } else if (selectKey === "selectedAmPm") {
-      setDurationFromRes(durationListOperations.init)
+        fetchEventUnitsToBookStatus.value = "fetched"
+      } catch (error) {
+        console.log({ error })
+        fetchEventUnitsToBookStatus.value = "error"
+        throw error
+      }
     }
 
-    if (!isAll3ItemsSelected.value) {
-      clearVenues()
-      return
+    const reducer = ({ type, payload }: TDispatchSelectItemEventProps) => {
+      switch (type) {
+        case "date":
+          return {
+            formData: {
+              selectedDate: payload,
+              selectedTime: INITIAL_FORM_DATA.selectedTime,
+              selectedAmPm: INITIAL_FORM_DATA.selectedAmPm,
+              selectedDuration: INITIAL_FORM_DATA.selectedDuration,
+            },
+            availableBookingTimeList: [],
+            eventsUnitToBookList: [],
+          }
+        case "event-category":
+          return {
+            formData: {
+              selectedCategory: payload,
+              selectedTime: INITIAL_FORM_DATA.selectedTime,
+              selectedAmPm: INITIAL_FORM_DATA.selectedAmPm,
+              selectedDuration: INITIAL_FORM_DATA.selectedDuration,
+            },
+            availableBookingTimeList: [],
+            eventsUnitToBookList: [],
+          }
+        case "time":
+          return {
+            formData: {
+              selectedTime: payload,
+              selectedAmPm: INITIAL_FORM_DATA.selectedAmPm,
+              selectedDuration: INITIAL_FORM_DATA.selectedDuration,
+            },
+            eventsUnitToBookList: [],
+          }
+        case "amPm":
+          return {
+            formData: {
+              selectedAmPm: payload,
+              selectedDuration: INITIAL_FORM_DATA.selectedDuration,
+            },
+            eventsUnitToBookList: [],
+          }
+        case "duration":
+          return {
+            formData: { selectedDuration: payload },
+            eventsUnitToBookList: [],
+          }
+        default:
+          throw new Error("invalid props is passed to reducer!")
+      }
     }
 
-    hydrateAvailableEventUnits()
-  }
+    const dispatchSelectItemEvent = async (
+      props: TDispatchSelectItemEventProps
+    ) => {
+      const stateToUpdate = reducer(props)
 
-  const resetStore = () => {
-    resetTimeAndDuration()
-    resetCategoryAndDate()
-    timeListOperations.reset()
-    amPmListOperations.reset()
-    durationListOperations.reset()
-    clearVenues()
-  }
+      formData.value = { ...formData.value, ...stateToUpdate.formData }
 
-  const getters = {
-    selectedCategory,
-    selectedDate,
-    bookVenueTimeAndDuration,
-    venueState,
-    selectTimeMap,
-    bookingDateTime,
-    venueToBook,
-  } as const
+      eventsUnitToBookList.value = stateToUpdate.eventsUnitToBookList
 
-  const actions = {
-    setVenueToBook,
-    setEventCategoryOfVenueToBook,
-    handleSelectCategory,
-    handleSelectDate,
-    handleSelectTimeAndDurationOnChange,
-    initAvailableBookingTimeAndDuration,
-    getTimeAndDurationValueFromKey,
-    resetStore,
-    hydrateAvailableEventUnits,
-  } as const
+      if (stateToUpdate.availableBookingTimeList) {
+        availableBookingTimeList.value = stateToUpdate.availableBookingTimeList
+      }
 
-  return {
-    ...getters,
-    ...actions,
-  }
+      /** if selectedCategory and selectedDate has value, fetch for booking time and durations */
+      if (
+        stateToUpdate.formData.selectedCategory ||
+        stateToUpdate.formData.selectedDate
+      ) {
+        await initAvailableBookingTimeAndDuration()
+      }
+
+      //refetch event units if all values in form is available
+      if (stateToUpdate.formData.selectedDuration) {
+        await setEventUnitsToBook()
+      }
+    }
+
+    return {
+      initStore,
+      dispatchSelectItemEvent,
+      formData,
+      eventCategoryList,
+      availableBookingTimeList,
+      eventsUnitToBookList,
+      fetchInitBookingTimeAndDurationStatus,
+      fetchEventUnitsToBookStatus,
+      resetStore,
+      venueIdToBook,
+      venueInfo,
+      bookingDateTime,
+    }
+  })
+
+export const useBookVenueStore = createBookVenueStore({
+  fetchAvailableBookingTimeList,
+  fetchEventCategoriesOfVenue,
+  fetchEventUnitsToBook,
 })

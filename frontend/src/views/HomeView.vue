@@ -42,12 +42,9 @@ const navItemsList = [
   { id: "9", title: "Futsal", icon: futsalJPG },
 ]
 
-const onSwiper = (swiper: SwiperClass) => {
-  console.log(swiper)
-}
-const onSlideChange = (swiper: SwiperClass) => {
-  console.log("slide change", swiper)
-}
+const onSwiper = (swiper: SwiperClass) => {}
+
+const onSlideChange = (swiper: SwiperClass) => {}
 
 const itemCardOnClick = (venueId: number) => {
   props.navigateToVenuePage(venueId)
@@ -82,7 +79,7 @@ const itemCardOnClick = (venueId: number) => {
           v-for="venue in venueList"
           :key="venue.id"
           class="mt-site-padding hover:cursor-pointer"
-          @click="() => itemCardOnClick(venue.id)"
+          @click="itemCardOnClick(venue.id)"
           :event-categories="venue.eventCategories"
           :title="venue.title"
           :location="venue.location"

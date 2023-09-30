@@ -2,7 +2,7 @@ import type {
   ISelectTimeObj,
   TSelectTimeMap,
 } from "@/book-venue/types/components"
-import type { IOutputTime } from "@/modules/book-venue/types/api"
+import type { TAvailableBookingTimeList } from "@/modules/book-venue/services/apis/fetch-available-booking-time-list"
 import type { IDuration } from "@/modules/book-venue/types/api/booking-res.types"
 import { InitialPage2SelectState } from "@/modules/book-venue/types/stores"
 import { ref } from "vue"
@@ -66,7 +66,7 @@ export const useSelectTimeMap = () => {
   )
 
   const timeListOperations = {
-    init(availableBookingTimeList: Array<IOutputTime>) {
+    init(availableBookingTimeList: TAvailableBookingTimeList) {
       let time1List: Array<ISelectTimeObj> = structuredClone(initialTimeList)
 
       availableBookingTimeList

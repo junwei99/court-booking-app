@@ -3,11 +3,12 @@ import { eventUnitRouter } from "@/modules/event-units/event-units.routes"
 import { venueRouter } from "@/modules/venues/venues.routes"
 import bodyParser from "body-parser"
 import cors from "cors"
+import { config } from "dotenv"
 import express from "express"
 import { Client } from "pg"
 import { bookingsRouter } from "./modules/bookings/bookings.routes"
 
-require("dotenv").config()
+config()
 
 const app = express()
 export let client: Client
@@ -33,7 +34,7 @@ const createConnection = async () => {
 
     try {
       await client.connect()
-      console.log("Connected to the database successfully")
+      console.log("Connected to the database successfully hehe")
       return client
     } catch (error) {
       retries -= 1

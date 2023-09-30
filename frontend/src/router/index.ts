@@ -1,4 +1,3 @@
-import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
 import { useGlobalLayoutStore } from "@/modules/common/stores/global-layout.store"
 import { createRouter, createWebHistory } from "vue-router"
 
@@ -11,6 +10,9 @@ const BookingStatusView = () => import("@/views/BookingStatusView.vue")
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(_to, _from, savedPosition) {
+    return savedPosition ?? { top: 0 }
+  },
   routes: [
     {
       path: "/",
@@ -64,17 +66,13 @@ const router = createRouter({
       path: "/location/:venueId/book",
       name: "book venue",
       component: BookVenuePage,
-      beforeEnter: (to) => {
-        const bookVenueStore = useBookVenueStore()
-        const venueId = parseInt(to.params.venueId as string)
-
-        if (
-          bookVenueStore.venueToBook.id &&
-          venueId !== bookVenueStore.venueToBook.id
-        ) {
-          console.log("store resetted")
-          bookVenueStore.resetStore()
-        }
+      beforeEnter: (to, _from, next) => {
+        useGlobalLayoutStore().setNavbar({
+          pageMode: "checkout",
+          pageTitle: typeof to.query.name === "string" ? to.query.name : "",
+          leftButtonAction: () => router.go(-1),
+        })
+        next()
       },
       props: (route) => {
         const venueId = parseInt((route.params?.venueId as string) ?? "")
@@ -105,8 +103,7 @@ const router = createRouter({
       name: "cart",
       component: CartView,
       beforeEnter: () => {
-        const globalLayoutStore = useGlobalLayoutStore()
-        globalLayoutStore.setNavbar({
+        useGlobalLayoutStore().setNavbar({
           pageMode: "checkout",
           pageTitle: "My Cart",
           showRightButton: false,
@@ -118,8 +115,7 @@ const router = createRouter({
       name: "checkout",
       component: CheckoutFormView,
       beforeEnter: () => {
-        const globalLayoutStore = useGlobalLayoutStore()
-        globalLayoutStore.setNavbar({
+        useGlobalLayoutStore().setNavbar({
           pageMode: "checkout",
           showRightButton: false,
         })
@@ -129,6 +125,12 @@ const router = createRouter({
       path: "/booking-status",
       name: "booking-status",
       component: BookingStatusView,
+      beforeEnter: () => {
+        useGlobalLayoutStore().setNavbar({
+          pageMode: "checkout",
+          pageTitle: "",
+        })
+      },
       props: (route) => {
         const { bookingId } = route.query as { bookingId: string }
         return {
@@ -137,9 +139,6 @@ const router = createRouter({
       },
     },
   ],
-  scrollBehavior() {
-    return { top: 0 }
-  },
 })
 
 export default router

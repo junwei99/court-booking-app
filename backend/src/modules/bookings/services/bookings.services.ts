@@ -117,7 +117,32 @@ export const getAvailableEventUnitsToBookService = async (
     }
   })
 
-  return bookableEventUnitsOutput
+  if (!availableEventUnits.length || availableEventUnits.length < 1) {
+    return {
+      availableEventUnitsToBook: bookableEventUnitsOutput,
+    }
+  }
+
+  const {
+    venue_title,
+    venue_id,
+    venue_description,
+    venue_address,
+    venue_images,
+    location_name,
+  } = availableEventUnits[0] ?? {}
+
+  return {
+    venue: {
+      title: venue_title,
+      venueId: venue_id,
+      location: location_name,
+      description: venue_description,
+      address: venue_address,
+      images: venue_images,
+    },
+    availableEventUnitsToBook: bookableEventUnitsOutput,
+  }
 }
 
 export const getBookingService = async (bookingId: string) => {
