@@ -11,13 +11,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
-      - name: Check for changes in directory
-        id: check_changes
+        with:
+          fetch-depth: 0  # fetch all commits
+  
+      - name: Check for changes in a directory
         run: |
-          changes=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- ./backend)
+          changes=$(git diff --name-only cda5aa24d0c22d7cf08aa69810720ff650ac5753 0e02d6d0f43cc7266005d918700560523a5333f2 -- ./backend)
           if [ -n "$changes" ]; then
-            echo "::set-output name=has_changes::true"
+            echo "Changes in backend directory detected."
           fi
-        shell: bash
 
