@@ -19,5 +19,7 @@ jobs:
           changes=$(git diff --name-only cda5aa24d0c22d7cf08aa69810720ff650ac5753 0e02d6d0f43cc7266005d918700560523a5333f2 -- ./backend)
           if [ -n "$changes" ]; then
             echo "Changes in backend directory detected."
+          else
+            echo "No changes on the backend" 
           fi
 
