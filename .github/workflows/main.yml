@@ -1,8 +1,10 @@
 name: Deploy on Server
+
 on:
   push:
     branches:
       - junwei99-patch-1
+
 jobs:
   check_changes:
     runs-on: ubuntu-latest
@@ -12,14 +14,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # fetch all commits
-  
+          fetch-depth: 0 # fetch all commits
+
       - name: Check for changes in a directory
+        id: check_changes
         run: |
-          changes=$(git diff --name-only cda5aa24d0c22d7cf08aa69810720ff650ac5753 0e02d6d0f43cc7266005d918700560523a5333f2 -- ./backend)
+          changes=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- ./backend)
           if [ -n "$changes" ]; then
+            echo "::set-output name=has_changes::true"
             echo "Changes in backend directory detected."
           else
+            echo "::set-output name=has_changes::false"
             echo "No changes on the backend" 
           fi
 
+  deploy:
+    needs: check_changes
+    if: needs.check_changes.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Server
+        env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          HOST: ${{ secrets.HOST }}
+          USER: ${{ secrets.USER }}
+        run: |
+          # Save private key to a file
+          echo "$PRIVATE_KEY" > private_key.pem
+
+          # Set the necessary permissions for the private key
+          chmod 600 private_key.pem
+
+          # SSH into the server and run the commands
+          ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST "echo 'Successfully connected to the server'" || echo "Failed to connect to the server"
