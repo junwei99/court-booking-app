@@ -38,7 +38,8 @@ jobs:
           HOST: ${{ vars.HOST }}
           USER: ${{ vars.USER }}
         run: |
-          ssh -vvv -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY $USER@$HOST "echo 'Successfully connected to the server';     if [ $? -eq 0 ]; then
+          ssh -vvv -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY $USER@$HOST "echo 'Successfully connected to the server'"
+          if [ $? -eq 0 ]; then
             echo "SSH Connection successful"
           else
             echo "SSH Connection failed"
