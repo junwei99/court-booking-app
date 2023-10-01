@@ -33,18 +33,9 @@ jobs:
     if: needs.check_changes.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Add SSH key to agent
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          echo "$SSH_PRIVATE_KEY" > private.key
-          chmod 600 private.key
-          eval `ssh-agent -s`
-          ssh-add private.key
-          ssh-add -L
       - name: Deploy to Server
         env:
           HOST: ${{ vars.HOST }}
           USER: ${{ vars.USER }}
         run: |
-          ssh -vvv -o StrictHostKeyChecking=no -A $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
+          ssh -vvv -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY -A $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
