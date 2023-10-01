@@ -19,7 +19,7 @@ app.use(bodyParser.json())
 
 const routesList = [venueRouter, eventUnitRouter, bookingsRouter]
 
-console.log("test github actions, yeah")
+console.log("test github actions, bo")
 
 const createConnection = async () => {
   let retries = 5
