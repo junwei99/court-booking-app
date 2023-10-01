@@ -50,7 +50,7 @@ export const getVenueListService = async () => {
         max: venue.max_price,
       },
       location: venue.location_name,
-      image: venue.images[0],
+      image: venue.images?.[0] ?? [],
     }))
   }
 
