@@ -52,7 +52,7 @@ jobs:
           docker-compose push
 
   deploy:
-    needs: check_changes
+    needs: build_and_push
     runs-on: ubuntu-latest
     steps:
       - name: Write SSH key to file
