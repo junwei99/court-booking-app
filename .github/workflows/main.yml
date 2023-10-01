@@ -35,7 +35,8 @@ jobs:
     steps:
       - name: Deploy to Server
         env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           HOST: ${{ vars.HOST }}
           USER: ${{ vars.USER }}
         run: |
-          ssh -vvv -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY $USER@$HOST exit
+          ssh -vvv -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
