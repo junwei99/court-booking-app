@@ -36,12 +36,12 @@ jobs:
       - name: Deploy to Server
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          HOST: ${{ secrets.HOST }}
-          USER: ${{ secrets.USER }}
+          HOST: ${{ vars.HOST }}
+          USER: ${{ vars.USER }}
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key.pem
-          echo "host: ${secrets.HOST}" 
-          echo "user: ${secrets.USER}" 
+          echo "host: ${vars.HOST}" 
+          echo "user: ${vars.USER}" 
           chmod 600 private_key.pem
           cat private_key.pem  # Remove this after debugging
           ssh -vvv -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
