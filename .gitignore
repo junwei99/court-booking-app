@@ -15,7 +15,7 @@ lerna-debug.log*
 **/coverage
 *.local
 .vscode/
-# *.env
+*.env
 
 /cypress/videos/
 /cypress/screenshots/
