@@ -40,6 +40,8 @@ jobs:
           USER: ${{ secrets.USER }}
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key.pem
+          echo "host: $HOST" 
+          echo "user: $USER" 
           chmod 600 private_key.pem
           cat private_key.pem  # Remove this after debugging
-          ssh -v -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
+          ssh -vvv -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
