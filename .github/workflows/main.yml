@@ -33,10 +33,15 @@ jobs:
     if: needs.check_changes.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to Server
+      - name: Write SSH key to file
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+      - name: Deploy to Server
+        env:
           HOST: ${{ vars.HOST }}
           USER: ${{ vars.USER }}
         run: |
-          ssh -vvv -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
+          ssh -vvv -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
