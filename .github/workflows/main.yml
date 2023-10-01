@@ -45,7 +45,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          cd $GITHUB-WORKSPACE/backend
+          cd $GITHUB_WORKSPACE/backend
           docker-compose build
           docker-compose push
 
