@@ -39,6 +39,7 @@ jobs:
           SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
         run: |
           echo "$SSH_PRIVATE_KEY" > private.key
+          chmod 600 private.key
           eval `ssh-agent -s`
           ssh-add private.key
 
