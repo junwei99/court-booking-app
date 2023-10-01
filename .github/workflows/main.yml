@@ -41,6 +41,7 @@ jobs:
           chmod 600 private.key
           eval `ssh-agent -s`
           ssh-add private.key
+          ssh-add -L
       - name: Deploy to Server
         env:
           HOST: ${{ vars.HOST }}
