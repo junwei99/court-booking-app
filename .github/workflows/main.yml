@@ -20,17 +20,32 @@ jobs:
         id: check_changes
         run: |
           changes=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- ./backend)
-          # if [ -n "$changes" ]; then
+          if [ -n "$changes" ]; then
             echo "::set-output name=has_changes::true"
             echo "Changes in backend directory detected."
-          # else
-          #   echo "::set-output name=has_changes::false"
-          #   echo "No changes on the backend" 
-          # fi
+          else
+            echo "::set-output name=has_changes::false"
+            echo "No changes on the backend" 
+          fi
+
+  build_and_push:
+    needs: check_changes
+    if: needs.check_changes.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          docker-compose -f ./backend/docker-compose.yml build
+          docker-compose -f ./backend/docker-compose.yml push
 
   deploy:
     needs: check_changes
-    if: needs.check_changes.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Write SSH key to file
@@ -44,4 +59,8 @@ jobs:
           HOST: ${{ vars.HOST }}
           USER: ${{ vars.USER }}
         run: |
-          ssh -vvv -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
+          ssh -vvv -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST << 'EOF'
+          cd court-booking-app
+          docker-compose pull
+          docker-compose up -d
+          EOF
