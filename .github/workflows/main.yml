@@ -35,15 +35,11 @@ jobs:
     steps:
       - name: Deploy to Server
         env:
-          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           HOST: ${{ secrets.HOST }}
           USER: ${{ secrets.USER }}
         run: |
-          # Save private key to a file
-          echo "$PRIVATE_KEY" > private_key.pem
-
-          # Set the necessary permissions for the private key
+          echo "$SSH_PRIVATE_KEY" > private_key.pem
           chmod 600 private_key.pem
-
-          # SSH into the server and run the commands
-          ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST "echo 'Successfully connected to the server'" || echo "Failed to connect to the server"
+          cat private_key.pem  # Remove this after debugging
+          ssh -v -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
