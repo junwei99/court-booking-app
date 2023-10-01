@@ -20,13 +20,13 @@ jobs:
         id: check_changes
         run: |
           changes=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- ./backend)
-          if [ -n "$changes" ]; then
+          # if [ -n "$changes" ]; then
             echo "::set-output name=has_changes::true"
             echo "Changes in backend directory detected."
-          else
-            echo "::set-output name=has_changes::false"
-            echo "No changes on the backend" 
-          fi
+          # else
+          #   echo "::set-output name=has_changes::false"
+          #   echo "No changes on the backend" 
+          # fi
 
   deploy:
     needs: check_changes
