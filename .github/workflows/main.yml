@@ -41,10 +41,9 @@ jobs:
           chmod 600 private.key
           eval `ssh-agent -s`
           ssh-add private.key
-
       - name: Deploy to Server
         env:
           HOST: ${{ vars.HOST }}
           USER: ${{ vars.USER }}
         run: |
-          ssh -i -vvv -o StrictHostKeyChecking=no -A $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
+          ssh -vvv -A $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
