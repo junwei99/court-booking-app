@@ -36,8 +36,8 @@ jobs:
       - name: Deploy to Server
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          HOST: ${{ secrets.HOST }}
-          USER: ${{ secrets.USER }}
+          HOST: ${{ env.HOST }}
+          USER: ${{ env.USER }}
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key.pem
           echo "host: $HOST" 
