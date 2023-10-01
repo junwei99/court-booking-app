@@ -46,4 +46,4 @@ jobs:
           HOST: ${{ vars.HOST }}
           USER: ${{ vars.USER }}
         run: |
-          ssh -o StrictHostKeyChecking=no $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
+          ssh -vvv -o StrictHostKeyChecking=no $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
