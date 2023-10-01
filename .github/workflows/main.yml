@@ -41,7 +41,7 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > private.key
           sudo chmod 600 private.key
           eval `ssh-agent -s`
-          ssh-add private.key
+          echo "$SSH_PASSPHRASE" | ssh-add private.key
 
       - name: Deploy to Server
         env:
