@@ -36,7 +36,6 @@ jobs:
       - name: Add SSH key to agent
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
         run: |
           echo "$SSH_PRIVATE_KEY" > private.key
           chmod 600 private.key
@@ -48,4 +47,4 @@ jobs:
           HOST: ${{ vars.HOST }}
           USER: ${{ vars.USER }}
         run: |
-          ssh -vvv -o StrictHostKeyChecking=no -A $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
+          ssh -i -vvv -o StrictHostKeyChecking=no -A $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
