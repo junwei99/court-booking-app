@@ -12,9 +12,10 @@ jobs:
       has_changes: ${{ steps.check_changes.outputs.has_changes }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # fetch all commits
+          ref: junwei99-patch-1
+          fetch-depth: 0
 
       - name: Check for changes in a directory
         id: check_changes
