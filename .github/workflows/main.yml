@@ -46,6 +46,4 @@ jobs:
           HOST: ${{ vars.HOST }}
           USER: ${{ vars.USER }}
         run: |
-          chmod 600 private_key.pem
-          cat private_key.pem  # Remove this after debugging
-          ssh -vvv -o StrictHostKeyChecking=no $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
+          ssh -o StrictHostKeyChecking=no $USER@$HOST "echo 'Successfully connected to the server'" || echo "SSH Exit Code: $?"
