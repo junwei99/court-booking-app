@@ -6,33 +6,37 @@ on:
       - junwei99-patch-1
 
 jobs:
-  check_changes:
+  # check_changes:
+  #   runs-on: ubuntu-latest
+  #   # outputs:
+  #   # has_changes: ${{ steps.check_changes.outputs.has_changes }}
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: junwei99-patch-1
+  #         fetch-depth: 0
+  #     # - name: Check for changes in a directory
+  #     #   id: check_changes
+  #     #   run: |
+  #     #     changes=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- ./backend)
+  #     #     if [ -n "$changes" ]; then
+  #     #       echo "::set-output name=has_changes::true"
+  #     #       echo "Changes in backend directory detected."
+  #     #     else
+  #     #       echo "::set-output name=has_changes::false"
+  #     #       echo "No changes on the backend"
+  #     #     fi
+
+  build_and_push:
     runs-on: ubuntu-latest
-    # outputs:
-    # has_changes: ${{ steps.check_changes.outputs.has_changes }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           ref: junwei99-patch-1
           fetch-depth: 0
-      # - name: Check for changes in a directory
-      #   id: check_changes
-      #   run: |
-      #     changes=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- ./backend)
-      #     if [ -n "$changes" ]; then
-      #       echo "::set-output name=has_changes::true"
-      #       echo "Changes in backend directory detected."
-      #     else
-      #       echo "::set-output name=has_changes::false"
-      #       echo "No changes on the backend"
-      #     fi
 
-  build_and_push:
-    needs: check_changes
-    # if: needs.check_changes.outputs.has_changes == 'true'
-    runs-on: ubuntu-latest
-    steps:
       - name: List files in current directory
         run: |
           echo "Listing contents of $GITHUB_WORKSPACE"
