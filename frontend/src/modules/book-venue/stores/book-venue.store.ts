@@ -243,18 +243,20 @@ const createBookVenueStore = ({
     }
 
     return {
-      initStore,
-      dispatchSelectItemEvent,
-      formData,
+      //state
       eventCategoryList,
       availableBookingTimeList,
       eventsUnitToBookList,
+      formData,
+      bookingDateTime,
+      venueIdToBook,
+      venueInfo,
+      //actions
+      initStore,
+      dispatchSelectItemEvent,
       fetchInitBookingTimeAndDurationStatus,
       fetchEventUnitsToBookStatus,
       resetStore,
-      venueIdToBook,
-      venueInfo,
-      bookingDateTime,
     }
   })
 
