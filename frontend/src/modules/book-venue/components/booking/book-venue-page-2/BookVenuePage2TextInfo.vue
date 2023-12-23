@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed } from 'vue'
 
 const props = defineProps<{
-  type: "none" | "empty"
+  type: 'none' | 'empty'
   typeOfLocation: string
 }>()
 
 const copywriting = computed(() => {
-  if (props.type === "empty") {
+  if (props.type === 'empty') {
     return `Oops, no ${props.typeOfLocation}s is found.`
   }
 
-  if (props.type === "none") {
+  if (props.type === 'none') {
     return `Please select a time and duration to see the ${props.typeOfLocation}s available`
   }
 
-  return ""
+  return ''
 })
 </script>
 <template>

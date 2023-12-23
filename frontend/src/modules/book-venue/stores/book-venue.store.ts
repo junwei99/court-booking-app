@@ -1,25 +1,25 @@
 import {
   fetchAvailableBookingTimeList,
   type TAvailableBookingTimeList,
-} from "@/modules/book-venue/services/apis/fetch-available-booking-time-list"
+} from '@/modules/book-venue/services/apis/fetch-available-booking-time-list'
 import {
   fetchEventCategoriesOfVenue,
   type TEventCategories,
-} from "@/modules/book-venue/services/apis/fetch-event-categories-of-venue"
+} from '@/modules/book-venue/services/apis/fetch-event-categories-of-venue'
 import {
   fetchEventUnitsToBook,
   type TEventUnitsToBookList,
   type TVenueFromEventUnitsToBookRes,
-} from "@/modules/book-venue/services/apis/fetch-event-units-to-book"
-import { getTransformedBookingDateTime } from "@/modules/book-venue/services/business/book-venue.business"
+} from '@/modules/book-venue/services/apis/fetch-event-units-to-book'
+import { getTransformedBookingDateTime } from '@/modules/book-venue/services/business/book-venue.business'
 import type {
   TBookVenueFormData,
   TDispatchSelectItemEventProps,
-} from "@/modules/book-venue/types/stores/book-venue-store.types"
-import { HandledError } from "@/modules/common/utils/custom-error.utils"
-import dayjs from "dayjs"
-import { defineStore } from "pinia"
-import { ref } from "vue"
+} from '@/modules/book-venue/types/stores/book-venue-store.types'
+import { HandledError } from '@/modules/common/utils/custom-error.utils'
+import dayjs from 'dayjs'
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
 type TCreateDefineStoreProps = {
   fetchAvailableBookingTimeList: typeof fetchAvailableBookingTimeList
@@ -30,8 +30,8 @@ type TCreateDefineStoreProps = {
 const INITIAL_FORM_DATA = {
   selectedDate: new Date(),
   selectedCategory: null,
-  selectedTime: "",
-  selectedAmPm: "",
+  selectedTime: '',
+  selectedAmPm: '',
   selectedDuration: 0,
 } as const
 
@@ -40,26 +40,26 @@ const createBookVenueStore = ({
   fetchEventCategoriesOfVenue,
   fetchEventUnitsToBook,
 }: TCreateDefineStoreProps) =>
-  defineStore("book-venue-store", () => {
+  defineStore('book-venue-store', () => {
     const eventCategoryList = ref<TEventCategories>([])
     const formData = ref<TBookVenueFormData>({ ...INITIAL_FORM_DATA })
 
     const venueIdToBook = ref<number | null>(null)
-    const fetchEventCategoriesStatus = ref<"loading" | "none">("none")
+    const fetchEventCategoriesStatus = ref<'loading' | 'none'>('none')
     const fetchInitBookingTimeAndDurationStatus = ref<
-      "loading" | "none" | "fetched"
-    >("none")
+      'loading' | 'none' | 'fetched'
+    >('none')
     const fetchEventUnitsToBookStatus = ref<
-      "loading" | "none" | "fetched" | "error"
-    >("none")
+      'loading' | 'none' | 'fetched' | 'error'
+    >('none')
     const availableBookingTimeList = ref<TAvailableBookingTimeList>([])
     const eventsUnitToBookList = ref<TEventUnitsToBookList>([])
     const venueInfo = ref<TVenueFromEventUnitsToBookRes>({
       venueId: 0,
-      title: "",
-      location: "",
-      description: "",
-      address: "",
+      title: '',
+      location: '',
+      description: '',
+      address: '',
       images: [],
     })
     //booking date time initialized with current date, will be set when user select date, time, am/pm and duration
@@ -82,36 +82,36 @@ const createBookVenueStore = ({
 
     const getEventCategoriesOfVenue = async (venueId: number) => {
       try {
-        fetchEventCategoriesStatus.value = "loading"
+        fetchEventCategoriesStatus.value = 'loading'
         const eventCategories = await fetchEventCategoriesOfVenue(venueId)
         eventCategoryList.value = eventCategories
 
         if (!eventCategories.length) {
-          throw new HandledError("empty-event-categories")
+          throw new HandledError('empty-event-categories')
         }
 
         dispatchSelectItemEvent({
-          type: "event-category",
+          type: 'event-category',
           payload: eventCategories[0].id,
         })
       } catch (error) {
         throw error
       } finally {
-        fetchEventCategoriesStatus.value = "none"
+        fetchEventCategoriesStatus.value = 'none'
       }
     }
 
     const initAvailableBookingTimeAndDuration = async () => {
       if (!formData.value.selectedCategory) {
-        throw new HandledError("category-not-selected")
+        throw new HandledError('category-not-selected')
       }
 
       if (!venueIdToBook.value) {
-        throw new HandledError("no-venue-id")
+        throw new HandledError('no-venue-id')
       }
 
       try {
-        fetchInitBookingTimeAndDurationStatus.value = "loading"
+        fetchInitBookingTimeAndDurationStatus.value = 'loading'
 
         const bookingTimeList = await fetchAvailableBookingTimeList(
           venueIdToBook.value,
@@ -121,17 +121,17 @@ const createBookVenueStore = ({
 
         availableBookingTimeList.value = bookingTimeList
 
-        fetchInitBookingTimeAndDurationStatus.value = "fetched"
+        fetchInitBookingTimeAndDurationStatus.value = 'fetched'
       } catch (error) {
         throw error
       } finally {
-        fetchInitBookingTimeAndDurationStatus.value = "none"
+        fetchInitBookingTimeAndDurationStatus.value = 'none'
       }
     }
 
     const setEventUnitsToBook = async () => {
       try {
-        fetchEventUnitsToBookStatus.value = "loading"
+        fetchEventUnitsToBookStatus.value = 'loading'
         if (!venueIdToBook.value || !formData.value.selectedCategory) {
           return
         }
@@ -156,17 +156,17 @@ const createBookVenueStore = ({
 
         venueInfo.value = eventUnitsToBookRes.venue
 
-        fetchEventUnitsToBookStatus.value = "fetched"
+        fetchEventUnitsToBookStatus.value = 'fetched'
       } catch (error) {
         console.log({ error })
-        fetchEventUnitsToBookStatus.value = "error"
+        fetchEventUnitsToBookStatus.value = 'error'
         throw error
       }
     }
 
     const reducer = ({ type, payload }: TDispatchSelectItemEventProps) => {
       switch (type) {
-        case "date":
+        case 'date':
           return {
             formData: {
               selectedDate: payload,
@@ -177,7 +177,7 @@ const createBookVenueStore = ({
             availableBookingTimeList: [],
             eventsUnitToBookList: [],
           }
-        case "event-category":
+        case 'event-category':
           return {
             formData: {
               selectedCategory: payload,
@@ -188,7 +188,7 @@ const createBookVenueStore = ({
             availableBookingTimeList: [],
             eventsUnitToBookList: [],
           }
-        case "time":
+        case 'time':
           return {
             formData: {
               selectedTime: payload,
@@ -197,7 +197,7 @@ const createBookVenueStore = ({
             },
             eventsUnitToBookList: [],
           }
-        case "amPm":
+        case 'amPm':
           return {
             formData: {
               selectedAmPm: payload,
@@ -205,13 +205,13 @@ const createBookVenueStore = ({
             },
             eventsUnitToBookList: [],
           }
-        case "duration":
+        case 'duration':
           return {
             formData: { selectedDuration: payload },
             eventsUnitToBookList: [],
           }
         default:
-          throw new Error("invalid props is passed to reducer!")
+          throw new Error('invalid props is passed to reducer!')
       }
     }
 

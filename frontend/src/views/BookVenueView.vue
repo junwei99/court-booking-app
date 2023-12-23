@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import BookVenuePage1 from "@/modules/book-venue/components/booking/BookVenuePage1.vue"
-import BookVenuePage2 from "@/modules/book-venue/components/booking/BookVenuePage2.vue"
-import { useBookVenueStore } from "@/modules/book-venue/stores/book-venue.store"
-import { useCartStore } from "@/modules/book-venue/stores/cart.store"
-import Button from "@/modules/common/components/shared-ui/atom/Button.vue"
-import PriceCurrency from "@/modules/common/components/shared-ui/atom/PriceCurrency.vue"
-import { useGlobalLayoutStore } from "@/modules/common/stores/global-layout.store"
-import { storeToRefs } from "pinia"
-import { computed, onMounted, ref } from "vue"
+import BookVenuePage1 from '@/modules/book-venue/components/booking/BookVenuePage1.vue'
+import BookVenuePage2 from '@/modules/book-venue/components/booking/BookVenuePage2.vue'
+import { useBookVenueStore } from '@/modules/book-venue/stores/book-venue.store'
+import { useCartStore } from '@/modules/book-venue/stores/cart.store'
+import Button from '@/modules/common/components/shared-ui/atom/Button.vue'
+import PriceCurrency from '@/modules/common/components/shared-ui/atom/PriceCurrency.vue'
+import { useGlobalLayoutStore } from '@/modules/common/stores/global-layout.store'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, ref } from 'vue'
 
 const props = defineProps<{
   venueId: number
@@ -29,15 +29,15 @@ const setErrorModalState = () =>
   useGlobalLayoutStore().setModalState({
     show: true,
     title:
-      "Oops, there was an error when trying to retrieve data. Please try again later.",
+      'Oops, there was an error when trying to retrieve data. Please try again later.',
     ctaCallback: props.navigateBack,
-    buttonText: "Got it",
+    buttonText: 'Got it',
   })
 
-const handleSelectEventCategory = (eventCategoryId: number) => {
+const handleSelectEventCategory = async (eventCategoryId: number) => {
   try {
-    bookVenueStore.dispatchSelectItemEvent({
-      type: "event-category",
+    await bookVenueStore.dispatchSelectItemEvent({
+      type: 'event-category',
       payload: eventCategoryId,
     })
   } catch (error) {
@@ -45,9 +45,12 @@ const handleSelectEventCategory = (eventCategoryId: number) => {
   }
 }
 
-const handleSelectBookingDate = (date: Date) => {
+const handleSelectBookingDate = async (date: Date) => {
   try {
-    bookVenueStore.dispatchSelectItemEvent({ type: "date", payload: date })
+    await bookVenueStore.dispatchSelectItemEvent({
+      type: 'date',
+      payload: date,
+    })
   } catch (error) {
     setErrorModalState()
   }
@@ -65,7 +68,7 @@ const nextButtonOnClick = () => {
 }
 
 const pageIsLoading = computed(
-  () => fetchInitBookingTimeAndDurationStatus.value === "loading"
+  () => fetchInitBookingTimeAndDurationStatus.value === 'loading'
 )
 
 onMounted(async () => {

@@ -1,19 +1,19 @@
-import { client } from "@/index"
-import { insertBookings } from "@/modules/bookings/queries/insert-booking/insert-booking.queries"
-import { insertBookingItems } from "@/modules/bookings/queries/insert-bookings-items/insert-bookings-items.queries"
-import { queryAvailableEventUnitsToBook } from "@/modules/bookings/queries/query-available-event-units-to-book/query-available-event-units-to-book.queries"
-import { queryBookings } from "@/modules/bookings/queries/query-bookings/query-bookings.queries"
+import { client } from '@/index'
+import { insertBookings } from '@/modules/bookings/queries/insert-booking/insert-booking.queries'
+import { insertBookingItems } from '@/modules/bookings/queries/insert-bookings-items/insert-bookings-items.queries'
+import { queryAvailableEventUnitsToBook } from '@/modules/bookings/queries/query-available-event-units-to-book/query-available-event-units-to-book.queries'
+import { queryBookings } from '@/modules/bookings/queries/query-bookings/query-bookings.queries'
 import {
   getFilteredIntervalDateList,
   getIntervalDateList,
   getTransformedTimeslots,
-} from "@/modules/bookings/services/get-available-timeslots"
-import { TBookingParam } from "@/modules/bookings/types/bookings-controllers.types"
-import { TBookingList } from "@/modules/bookings/types/bookings-services.types"
-import { HandledError } from "@/modules/common/utils/HandledError.utils"
-import dayjs from "dayjs"
-import isBetween from "dayjs/plugin/isBetween"
-import { queryBooking } from "../queries/query-booking/query-booking.queries"
+} from '@/modules/bookings/services/get-available-timeslots'
+import { TBookingParam } from '@/modules/bookings/types/bookings-controllers.types'
+import { TBookingList } from '@/modules/bookings/types/bookings-services.types'
+import { HandledError } from '@/modules/common/utils/HandledError.utils'
+import dayjs from 'dayjs'
+import isBetween from 'dayjs/plugin/isBetween'
+import { queryBooking } from '../queries/query-booking/query-booking.queries'
 
 dayjs.extend(isBetween)
 
@@ -31,7 +31,7 @@ export const getAvailableTimeslotsService = async (
   const intervalMin = 30
 
   const intervalDateList = getIntervalDateList(
-    dayjs(startDatetime).startOf("day").toDate(),
+    dayjs(startDatetime).startOf('day').toDate(),
     intervalMin
   )
 
@@ -64,7 +64,7 @@ export const createBookingItemsService = async (
     const { bookingStartDate, duration, eventUnitId } = booking
     return {
       bookingStartDate,
-      bookingEndDate: dayjs(bookingStartDate).add(duration, "minute").toDate(),
+      bookingEndDate: dayjs(bookingStartDate).add(duration, 'minute').toDate(),
       eventUnitId,
       bookingId,
     }
@@ -94,11 +94,11 @@ export const getAvailableEventUnitsToBookService = async (
       minutesDuration,
     ].every(Boolean)
   ) {
-    throw new HandledError("Invalid params provided.")
+    throw new HandledError('Invalid params provided.')
   }
 
   const bookingEndDatetime = bookingStartDtDayjs
-    .add(minutesDuration, "minute")
+    .add(minutesDuration, 'minute')
     .toDate()
 
   const availableEventUnits = await queryAvailableEventUnitsToBook.run(
@@ -149,7 +149,7 @@ export const getBookingService = async (bookingId: string) => {
   const bookings = await queryBooking.run({ bookingId }, client)
 
   if (!bookings || bookings.length <= 0) {
-    throw new HandledError("Booking not found")
+    throw new HandledError('Booking not found')
   }
 
   const totalAmount = bookings.reduce((accumulator, currentValue) => {
